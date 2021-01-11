@@ -9,6 +9,19 @@ spl_autoload_register(function($classname) {
         $path = __DIR__.'/classes/';
 
         $file = explode('\\', $classname);
+
+        if (isset($file[count($file) - 2])) {
+
+            switch ($file[count($file) - 2]) {
+
+                case 'Handlers':
+                    $path .= 'handlers/';
+                    break;
+
+            }
+
+        }
+
         $file = $file[count($file) - 1].'.php';
 
         if (file_exists($path.$file)) require_once $path.$file;

@@ -2,6 +2,8 @@
 
 namespace EPStatistics;
 
+use wpdb;
+
 final class Main
 {
 
@@ -9,10 +11,8 @@ final class Main
     protected $url;
     protected $wpdb;
 
-    public function __construct(string $path, string $url)
+    public function __construct(string $path, string $url, wpdb $wpdb)
     {
-
-        global $wpdb;
         
         $this->path = $path;
         $this->url = $url;
