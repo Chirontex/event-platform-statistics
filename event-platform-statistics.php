@@ -17,6 +17,8 @@ require_once __DIR__.'/vendor/autoload.php';
 
 global $wpdb;
 
+if (!($wpdb instanceof wpdb)) $wpdb = new wpdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
+
 new Main(
     plugin_dir_path(__FILE__),
     plugin_dir_url(__FILE__),
