@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Event Platform Statistics
+ */
 namespace EPStatistics\Handlers;
 
 use wpdb;
@@ -40,7 +42,10 @@ class Participants
 
             foreach ($select as $values) {
 
-                $result[$values['user_id']]['email'] = $values['user_email'];
+                if (!isset(
+                    $result[$values['user_id']]['email']
+                )) $result[$values['user_id']]['email'] = $values['user_email'];
+
                 $result[$values['user_id']][$values['meta_key']] = $values['meta_value'];
 
             }

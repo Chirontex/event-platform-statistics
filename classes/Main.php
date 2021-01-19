@@ -1,22 +1,25 @@
 <?php
-
+/**
+ * Event Platform Statistics
+ */
 namespace EPStatistics;
-
-use wpdb;
 
 final class Main
 {
 
-    protected $path;
-    protected $url;
-    protected $wpdb;
+    private $path;
+    private $url;
+    private $wpdb;
 
-    public function __construct(string $path, string $url, wpdb $wpdb)
+    public function __construct(string $path, string $url)
     {
+
+        global $wpdb;
+
+        $this->wpdb = $wpdb;
         
         $this->path = $path;
         $this->url = $url;
-        $this->wpdb = $wpdb;
 
     }
 

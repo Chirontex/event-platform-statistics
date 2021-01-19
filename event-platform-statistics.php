@@ -11,16 +11,11 @@ use EPStatistics\Main;
 
 require_once __DIR__.'/event-platform-statistics-autoload.php';
 
-if (!file_exists(__DIR__.'/vendor/autoload.php')) exec('composer install');
+if (!file_exists(__DIR__.'/vendor/autoload.php')) wp_die('Event Platform Statistics: отсутствуют необходимые модули.');
 
 require_once __DIR__.'/vendor/autoload.php';
 
-global $wpdb;
-
-if (!($wpdb instanceof wpdb)) $wpdb = new wpdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
-
 new Main(
     plugin_dir_path(__FILE__),
-    plugin_dir_url(__FILE__),
-    $wpdb
+    plugin_dir_url(__FILE__)
 );
