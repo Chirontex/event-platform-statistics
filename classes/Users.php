@@ -6,7 +6,7 @@ namespace EPStatistics;
 
 use wpdb;
 
-class Participants
+class Users
 {
 
     protected $wpdb;
