@@ -21,6 +21,24 @@ final class Main
         $this->path = $path;
         $this->url = $url;
 
+        $this->adminPageInit();
+
+    }
+
+    private function adminPageInit() : void
+    {
+
+        add_action('admin_menu', function() {
+
+            add_menu_page(
+                'Статистика платформы',
+                'Статистика платформы',
+                8,
+                $this->path.'event-platform-statistics-admin.php'
+            );
+
+        });
+
     }
 
 }

@@ -2,7 +2,7 @@
 /**
  * Event Platform Statistics
  */
-namespace EPStatistics\Handlers;
+namespace EPStatistics;
 
 use wpdb;
 
