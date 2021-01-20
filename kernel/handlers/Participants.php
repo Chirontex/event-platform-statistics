@@ -53,7 +53,7 @@ class Participants extends Handler
         $spreadsheet = new Spreadsheet;
 
         $worksheet = $spreadsheet->getSheet(0);
-        $worksheet->setCodeName('Участники');
+        $worksheet->setTitle('Участники');
 
         $data = $this->users->getAllData();
 

@@ -5,6 +5,7 @@
 namespace EPStatistics;
 
 use EPStatistics\Handlers\Participants;
+use EPStatistics\Exceptions\ParticipantsException;
 
 final class Main
 {
@@ -62,14 +63,48 @@ final class Main
                 $this->path
             );
 
-            header('Content-type: application/vnd.ms-excel; charset=utf-8');
-            header('Content-disposition: attachment; filename=Participants.xlsx');
+            try {
 
-            echo $participants->getAll();
+                $filedata = $participants->getAll();
 
-            die;
+                if (empty($filedata)) $this->adminStatusSet(
+                    'danger',
+                    'Произошла неизвестная ошибка.'
+                );
+                else {
+
+                    header('Content-type: application/vnd.ms-excel; charset=utf-8');
+                    header('Content-disposition: attachment; filename=Participants.xlsx');
+
+                    echo $filedata;
+
+                    die;
+
+                }
+
+            } catch (ParticipantsException $e) {
+
+                $this->adminStatusSet(
+                    'danger',
+                    'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
+                );
+
+            }
 
         }
+
+    }
+
+    private function adminStatusSet(string $alert_type, string $text) : void
+    {
+
+        ob_start();
+
+?>
+<div class="alert alert-<?= $alert_type ?> text-center mb-5 mx-auto" style="max-width: 300px;"><?= $text ?></div>
+<?php
+
+        $GLOBALS['eps_admin_status'] = ob_get_clean();
 
     }
 
