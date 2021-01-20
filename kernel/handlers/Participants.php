@@ -37,7 +37,7 @@ class Participants extends Handler
 
     }
 
-    public function getAllParticipants() : string
+    public function getAll() : string
     {
 
         $result = '';

@@ -65,7 +65,7 @@ final class Main
             header('Content-type: application/vnd.ms-excel; charset=utf-8');
             header('Content-disposition: attachment; filename=Participants.xlsx');
 
-            echo $participants->getAllParticipants();
+            echo $participants->getAll();
 
             die;
 
