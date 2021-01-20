@@ -46,7 +46,7 @@ class Participants extends Handler
 
             $pathfile = $this->path.'/'.$this->generateRandomString().'.xlsx';
 
-        } while (!file_exists($pathfile));
+        } while (file_exists($pathfile));
 
         file_put_contents($pathfile, '');
 

@@ -12,6 +12,7 @@ final class Main
     private $path;
     private $url;
     private $wpdb;
+    private $admin_script_file;
 
     public function __construct(string $path, string $url)
     {
@@ -23,8 +24,15 @@ final class Main
         $this->path = $path;
         $this->url = $url;
 
+        $this->admin_script_file = 'event-platform-statistics-admin.php';
+
         $this->adminPageInit();
-        $this->downloadParticipantsInit();
+
+        if (strpos($_GET['page'], $this->admin_script_file) !== false) {
+            
+            $this->downloadParticipantsInit();
+        
+        }
 
     }
 
@@ -37,7 +45,7 @@ final class Main
                 'Статистика платформы',
                 'Статистика платформы',
                 8,
-                $this->path.'event-platform-statistics-admin.php'
+                $this->path.$this->admin_script_file
             );
 
         });
@@ -47,7 +55,7 @@ final class Main
     private function downloadParticipantsInit() : void
     {
 
-        if ($_POST['eps-download-participants']) {
+        if (isset($_POST['eps-download-participants'])) {
 
             $participants = new Participants(
                 new Users($this->wpdb),
