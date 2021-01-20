@@ -6,7 +6,7 @@ spl_autoload_register(function($classname) {
 
     if (strpos($classname, 'EPStatistics') !== false) {
 
-        $path = __DIR__.'/classes/';
+        $path = __DIR__.'/kernel/';
 
         $file = explode('\\', $classname);
 
@@ -16,6 +16,14 @@ spl_autoload_register(function($classname) {
 
                 case 'Handlers':
                     $path .= 'handlers/';
+                    break;
+
+                case 'Exceptions':
+                    $path .= 'exceptions/';
+                    break;
+
+                case 'Traits':
+                    $path .= 'traits/';
                     break;
 
             }
