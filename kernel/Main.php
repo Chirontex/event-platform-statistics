@@ -4,6 +4,8 @@
  */
 namespace EPStatistics;
 
+use EPStatistics\Handlers\Participants;
+
 final class Main
 {
 
@@ -22,6 +24,7 @@ final class Main
         $this->url = $url;
 
         $this->adminPageInit();
+        $this->downloadParticipantsInit();
 
     }
 
@@ -38,6 +41,27 @@ final class Main
             );
 
         });
+
+    }
+
+    private function downloadParticipantsInit() : void
+    {
+
+        if ($_POST['eps-download-participants']) {
+
+            $participants = new Participants(
+                new Users($this->wpdb),
+                $this->path
+            );
+
+            header('Content-type: application/vnd.ms-excel; charset=utf-8');
+            header('Content-disposition: attachment; filename=Participants.xlsx');
+
+            echo $participants->getAllParticipants();
+
+            die;
+
+        }
 
     }
 

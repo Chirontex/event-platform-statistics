@@ -37,8 +37,10 @@ class Participants extends Handler
 
     }
 
-    public function getAllParticipants()
+    public function getAllParticipants() : string
     {
+
+        $result = '';
 
         do {
 
@@ -51,8 +53,39 @@ class Participants extends Handler
         $spreadsheet = new Spreadsheet;
 
         $worksheet = $spreadsheet->getSheet(0);
+        $worksheet->setCodeName('Участники');
 
-        
+        $data = $this->users->getAllData();
+
+        if (!empty($data)) {
+
+            $worksheet->setCellValue('A1', 'E-mail');
+
+            $i = 2;
+
+            foreach ($data as $userdata) {
+
+                $worksheet->setCellValue('A'.$i, $userdata['email']);
+
+                $i += 1;
+
+            }
+
+        }
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save($pathfile);
+
+        $result = file_get_contents($pathfile);
+
+        if (!is_string($result)) throw new ParticipantsException(
+            'Cannot read a saved file.',
+            -11
+        );
+
+        unlink($pathfile);
+
+        return $result;
 
     }
 
