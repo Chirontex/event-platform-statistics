@@ -5,52 +5,28 @@
 namespace EPStatistics\Handlers;
 
 use EPStatistics\Users;
-use EPStatistics\Exceptions\ParticipantsException;
+use EPStatistics\Interfaces\WorksheetHandler;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
-class Participants extends Handler
+class Participants implements WorksheetHandler
 {
 
     protected $users;
 
-    public function __construct(Users $users, string $path)
+    public function __construct(Users $users)
     {
         
         $this->users = $users;
 
-        $path .= 'temp';
-
-        if (!file_exists($path)) {
-            
-            if (!mkdir($path)) throw new ParticipantsException(
-                'Directory creation failure.',
-                -10
-            );
-        
-        }
-
-        parent::__construct($path);
-
     }
 
-    public function getAll() : string
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name): Worksheet
     {
+        
+        if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
 
-        $result = '';
-
-        do {
-
-            $pathfile = $this->path.'/'.$this->generateRandomString().'.xlsx';
-
-        } while (file_exists($pathfile));
-
-        file_put_contents($pathfile, '');
-
-        $spreadsheet = new Spreadsheet;
-
-        $worksheet = $spreadsheet->getSheet(0);
-        $worksheet->setTitle('Участники');
+        $worksheet = new Worksheet($spreadsheet, $name);
 
         $data = $this->users->getAllData();
 
@@ -70,19 +46,7 @@ class Participants extends Handler
 
         }
 
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save($pathfile);
-
-        $result = file_get_contents($pathfile);
-
-        if (!is_string($result)) throw new ParticipantsException(
-            'Cannot read a saved file.',
-            -11
-        );
-
-        unlink($pathfile);
-
-        return $result;
+        return $worksheet;
 
     }
 

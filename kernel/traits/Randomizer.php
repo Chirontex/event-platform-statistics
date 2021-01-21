@@ -7,6 +7,13 @@ namespace EPStatistics\Traits;
 trait Randomizer
 {
 
+    /**
+     * Generage a random string of digits and letters.
+     * 
+     * @param int $length
+     * 
+     * @return string
+     */
     protected function generateRandomString(int $length = 32) : string
     {
 

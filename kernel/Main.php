@@ -4,8 +4,10 @@
  */
 namespace EPStatistics;
 
+use EPStatistics\Handlers\SpreadsheetFile;
 use EPStatistics\Handlers\Participants;
-use EPStatistics\Exceptions\ParticipantsException;
+use EPStatistics\Exceptions\HandlerException;
+use EPStatistics\Exceptions\SpreadsheetFileException;
 
 final class Main
 {
@@ -43,8 +45,8 @@ final class Main
         add_action('admin_menu', function() {
 
             add_menu_page(
-                'Статистика платформы',
-                'Статистика платформы',
+                'Статистика',
+                'Статистика',
                 8,
                 $this->path.$this->admin_script_file
             );
@@ -58,14 +60,22 @@ final class Main
 
         if (isset($_POST['eps-download-participants'])) {
 
-            $participants = new Participants(
-                new Users($this->wpdb),
-                $this->path
+            $spreadsheet_file = new SpreadsheetFile($this->path.'temp');
+
+            $participants = new Participants(new Users($this->wpdb));
+
+            $spreadsheet_file->worksheetAdd(
+                $participants->worksheetGet(
+                    $spreadsheet_file->spreadsheetGet(),
+                    'Участники'
+                )
             );
 
             try {
 
-                $filedata = $participants->getAll();
+                $spreadsheet_file->spreadsheetSave();
+
+                $filedata = $spreadsheet_file->fileGetUnlink();
 
                 if (empty($filedata)) $this->adminStatusSet(
                     'danger',
@@ -82,14 +92,13 @@ final class Main
 
                 }
 
-            } catch (ParticipantsException $e) {
+            } catch (HandlerException $e) {}
+            catch (SpreadsheetFileException $e) {}
 
-                $this->adminStatusSet(
-                    'danger',
-                    'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
-                );
-
-            }
+            if (isset($e)) $this->adminStatusSet(
+                'danger',
+                'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
+            );
 
         }
 

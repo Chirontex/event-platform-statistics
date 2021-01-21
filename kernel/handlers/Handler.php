@@ -82,6 +82,10 @@ class Handler
         $file = file_get_contents($this->pathfile);
 
         if (is_string($file)) $result = $file;
+        else throw new HandlerException(
+            'Cannot read a saved file.',
+            -21
+        );
 
         return $result;
 

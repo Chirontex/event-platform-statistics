@@ -19,12 +19,22 @@ class SpreadsheetFile extends Handler
     {
 
         $this->spreadsheet = new Spreadsheet;
+        $this->spreadsheet->removeSheetByIndex(0);
+        
         $this->worksheets_count = 0;
         
         parent::__construct($path);
 
     }
 
+    /**
+     * Add worksheet to spreadsheet.
+     * 
+     * @param Worksheet $worksheet
+     * 
+     * @return int
+     * Amount of worksheets in spreadsheet at this moment.
+     */
     public function worksheetAdd(Worksheet $worksheet) : int
     {
 
@@ -36,6 +46,25 @@ class SpreadsheetFile extends Handler
 
     }
 
+    /**
+     * Return spreadsheet object.
+     * 
+     * @return Spreadsheet
+     */
+    public function spreadsheetGet() : Spreadsheet
+    {
+
+        return $this->spreadsheet;
+
+    }
+
+    /**
+     * Save spreadsheet to file.
+     * 
+     * @return void
+     * 
+     * @throws SpreadsheetFileException
+     */
     public function spreadsheetSave() : void
     {
 

@@ -26,6 +26,10 @@ spl_autoload_register(function($classname) {
                     $path .= 'traits/';
                     break;
 
+                case 'Interfaces':
+                    $path .= 'interfaces/';
+                    break;
+
             }
 
         }
