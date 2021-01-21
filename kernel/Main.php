@@ -31,11 +31,10 @@ final class Main
 
         $this->adminPageInit();
 
-        if (strpos($_GET['page'], $this->admin_script_file) !== false) {
-            
-            $this->downloadParticipantsInit();
-        
-        }
+        if (strpos(
+                $_GET['page'],
+                $this->admin_script_file
+            ) !== false) $this->downloadInit();
 
     }
 
@@ -55,21 +54,25 @@ final class Main
 
     }
 
-    private function downloadParticipantsInit() : void
+    private function downloadInit() : void
     {
 
-        if (isset($_POST['eps-download-participants'])) {
+        if (isset($_POST['eps-download-init'])) {
 
             $spreadsheet_file = new SpreadsheetFile($this->path.'temp');
 
-            $participants = new Participants(new Users($this->wpdb));
+            if (isset($_POST['eps-download-participants'])) {
 
-            $spreadsheet_file->worksheetAdd(
-                $participants->worksheetGet(
-                    $spreadsheet_file->spreadsheetGet(),
-                    'Участники'
-                )
-            );
+                $participants = new Participants(new Users($this->wpdb));
+
+                $spreadsheet_file->worksheetAdd(
+                    $participants->worksheetGet(
+                        $spreadsheet_file->spreadsheetGet(),
+                        'Участники'
+                    )
+                );
+
+            }
 
             try {
 
@@ -83,8 +86,10 @@ final class Main
                 );
                 else {
 
+                    date_default_timezone_set('Europe/Moscow');
+
                     header('Content-type: application/vnd.ms-excel; charset=utf-8');
-                    header('Content-disposition: attachment; filename=Participants.xlsx');
+                    header('Content-disposition: attachment; filename=Statistics_'.date("Y-m-d_H-i-s").'.xlsx');
 
                     echo $filedata;
 
@@ -110,7 +115,7 @@ final class Main
         ob_start();
 
 ?>
-<div class="alert alert-<?= $alert_type ?> text-center mb-5 mx-auto" style="max-width: 300px;"><?= $text ?></div>
+<div class="alert alert-<?= $alert_type ?> text-center mb-5 mx-auto eps-column"><?= $text ?></div>
 <?php
 
         $GLOBALS['eps_admin_status'] = ob_get_clean();
