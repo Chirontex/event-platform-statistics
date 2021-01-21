@@ -6,14 +6,11 @@ namespace EPStatistics\Handlers;
 
 use EPStatistics\Users;
 use EPStatistics\Exceptions\ParticipantsException;
-use EPStatistics\Traits\Randomizer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class Participants extends Handler
 {
-
-    use Randomizer;
 
     protected $users;
 
