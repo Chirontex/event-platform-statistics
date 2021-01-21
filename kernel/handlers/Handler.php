@@ -5,6 +5,7 @@
 namespace EPStatistics\Handlers;
 
 use EPStatistics\Traits\Randomizer;
+use EPStatistics\Exceptions\HandlerException;
 
 class Handler
 {
@@ -17,8 +18,20 @@ class Handler
 
     public function __construct(string $path)
     {
+
+        if (!file_exists($path)) {
+
+            if (!mkdir($path)) throw new HandlerException(
+                'Directory doesn\'t exist and cannot be created.',
+                -20
+            );
+
+        }
         
         $this->path = $path;
+
+        if (substr($this->path, -1) !== '/' &&
+            substr($this->path, -1) !== '\\') $this->path .= '/';
 
     }
 
@@ -33,7 +46,7 @@ class Handler
      * 
      * @return bool
      */
-    public function fileCreate(string $filename = '', string $extension = 'xlsx') : bool
+    protected function fileCreate(string $filename = '', string $extension = 'xlsx') : bool
     {
 
         if (substr($extension, 0, 1) !== '.') $extension = '.'.$extension;
