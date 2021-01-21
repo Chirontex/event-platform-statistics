@@ -22,6 +22,11 @@ class Users
 
     }
 
+    /**
+     * Return all users data.
+     * 
+     * @return array
+     */
     public function getAllData() : array
     {
 
