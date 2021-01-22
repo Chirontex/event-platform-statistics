@@ -41,6 +41,7 @@ class Participants implements WorksheetHandler
             $worksheet->setCellValue('G1', 'Дата рождения');
             $worksheet->setCellValue('H1', 'Организация');
             $worksheet->setCellValue('I1', 'Специальность');
+            $worksheet->setCellValue('J1', 'Город');
 
             $i = 2;
 
@@ -55,6 +56,7 @@ class Participants implements WorksheetHandler
                 $worksheet->setCellValue('G'.$i, $userdata['Date_of_Birth']);
                 $worksheet->setCellValue('H'.$i, $userdata['Organization']);
                 $worksheet->setCellValue('I'.$i, $userdata['Specialty']);
+                $worksheet->setCellValue('J'.$i, $userdata['town']);
 
                 $i += 1;
 
