@@ -42,6 +42,7 @@ class Participants implements WorksheetHandler
             $worksheet->setCellValue('H1', 'Организация');
             $worksheet->setCellValue('I1', 'Специальность');
             $worksheet->setCellValue('J1', 'Город');
+            $worksheet->setCellValue('K1', 'Дано согласие');
 
             $i = 2;
 
@@ -57,6 +58,11 @@ class Participants implements WorksheetHandler
                 $worksheet->setCellValue('H'.$i, $userdata['Organization']);
                 $worksheet->setCellValue('I'.$i, $userdata['Specialty']);
                 $worksheet->setCellValue('J'.$i, $userdata['town']);
+                
+                if (empty(
+                    $userdata['Soglasye']
+                )) $worksheet->setCellValue('K'.$i, 'Нет');
+                else $worksheet->setCellValue('K'.$i, 'Да');
 
                 $i += 1;
 
