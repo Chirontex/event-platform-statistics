@@ -21,7 +21,7 @@ class Participants implements WorksheetHandler
 
     }
 
-    public function worksheetGet(Spreadsheet $spreadsheet, string $name): Worksheet
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name) : Worksheet
     {
         
         if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
@@ -32,13 +32,19 @@ class Participants implements WorksheetHandler
 
         if (!empty($data)) {
 
-            $worksheet->setCellValue('A1', 'E-mail');
+            $worksheet->setCellValue('A1', 'ID');
+            $worksheet->setCellValue('B1', 'E-mail');
+            $worksheet->setCellValue('C1', 'Имя');
+            $worksheet->setCellValue('D1', 'Фамилия');
 
             $i = 2;
 
-            foreach ($data as $userdata) {
+            foreach ($data as $user_id => $userdata) {
 
-                $worksheet->setCellValue('A'.$i, $userdata['email']);
+                $worksheet->setCellValue('A'.$i, $user_id);
+                $worksheet->setCellValue('B'.$i, $userdata['email']);
+                $worksheet->setCellValue('C'.$i, $userdata['first_name']);
+                $worksheet->setCellValue('D'.$i, $userdata['last_name']);
 
                 $i += 1;
 
