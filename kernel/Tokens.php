@@ -107,21 +107,7 @@ class Tokens {
     public function tokenCheckUnique(string $token) : bool
     {
 
-        $select = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT *
-                    FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table." AS t
-                    WHERE t.token = %s",
-                $token
-            ),
-            ARRAY_A
-        );
-
-        if (is_array($select)) return empty($select);
-        else throw new TokensException(
-            'Token checking failure.',
-            -42
-        );
+        return empty($this->tokenSelect($token));
 
     }
 
@@ -211,6 +197,23 @@ class Tokens {
         return !empty($delete);
 
     }
+    
+    /**
+     * Return user ID by token.
+     * 
+     * @param string $token
+     * 
+     * @return int
+     */
+    public function userGetByToken(string $token) : int
+    {
+
+        $select = $this->tokenSelect($token);
+
+        if (empty($select)) return 0;
+        else return $select[0]['user_id'];
+
+    }
 
     /**
      * Inserting token into DB table.
@@ -247,6 +250,34 @@ class Tokens {
             ['%d', '%s']
         ) === false) return false;
         else return true;
+
+    }
+
+    /**
+     * Selecting token in DB.
+     * 
+     * @param string $token
+     * 
+     * @return array
+     */
+    protected function tokenSelect(string $token) : array
+    {
+
+        $select = $this->wpdb->get_results(
+            $this->wpdb->prepare(
+                "SELECT *
+                    FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table." AS t
+                    WHERE t.token = %s",
+                $token
+            ),
+            ARRAY_A
+        );
+
+        if (is_array($select)) return $select;
+        else throw new TokensException(
+            'Token selecting in DB failure.',
+            -45
+        );
 
     }
 

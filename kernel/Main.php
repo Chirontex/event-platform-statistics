@@ -9,6 +9,7 @@ use EPStatistics\Handlers\Participants;
 use EPStatistics\Handlers\PresenceEffect;
 use EPStatistics\Exceptions\HandlerException;
 use EPStatistics\Exceptions\SpreadsheetFileException;
+use EPStatistics\Exceptions\TokensException;
 
 final class Main
 {
@@ -31,6 +32,10 @@ final class Main
         $this->admin_script_file = 'event-platform-statistics-admin.php';
 
         $this->apiRoutesInit();
+
+        $this->apiTokenGet();
+        $this->apiTokenRemove();
+
         $this->adminPageInit();
 
         if (strpos(
@@ -150,6 +155,50 @@ final class Main
                     }
                 ]
             );
+
+        });
+
+    }
+
+    private function apiTokenGet() : void
+    {
+
+        add_action('wp_login', function($user_login, $user) {
+
+            $tokens = new Tokens($this->wpdb);
+
+            try {
+
+                $token = $tokens->tokenGetGenerate($user->ID);
+
+            } catch (TokensException $e) {
+
+                wp_die($e->getCode().': '.$e->getMessage());
+
+            }
+
+            setcookie('eps_api_token', $token);
+
+        }, 10, 2);
+
+    }
+
+    private function apiTokenRemove() : void
+    {
+
+        add_action('wp_logout', function($user_id) {
+
+            $tokens = new Tokens($this->wpdb);
+
+            try {
+
+                $tokens->tokenDeleteByUser((int)$user_id);
+
+            } catch (TokensException $e) {
+
+                wp_die($e->getCode().': '.$e->getMessage());
+
+            }
 
         });
 
