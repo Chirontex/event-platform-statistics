@@ -43,8 +43,13 @@ class Participants implements WorksheetHandler
             $worksheet->setCellValue('I1', 'Специальность');
             $worksheet->setCellValue('J1', 'Город');
             $worksheet->setCellValue('K1', 'Дано согласие');
+            $worksheet->setCellValue('L1', 'НМО');
 
-            $i = 2;
+            $worksheet->setCellValue('K2', 'Всего:');
+
+            $i = 3;
+
+            $nmo_count = 0;
 
             foreach ($data as $user_id => $userdata) {
 
@@ -63,6 +68,12 @@ class Participants implements WorksheetHandler
                     $userdata['Soglasye']
                 )) $worksheet->setCellValue('K'.$i, 'Нет');
                 else $worksheet->setCellValue('K'.$i, 'Да');
+
+                $nmo = count($userdata['presence_times']);
+
+                $worksheet->setCellValue('L'.$i, $nmo);
+
+                $nmo_count += $nmo;
 
                 $i += 1;
 

@@ -104,9 +104,38 @@ class PresenceTimes
 
         if (is_array($select)) return $select;
         else throw new PresenceTimesException(
-            'Getting presence times exception.',
+            'Getting presence times failure.',
             -32
         );
+
+    }
+
+    /**
+     * Return presence times records ordered by users.
+     * 
+     * @return array
+     * 
+     * @throws PresenceTimesException
+     */
+    public function getOrderedByUsers() : array
+    {
+
+        $select = $this->getAll();
+
+        if (empty($select)) return $select;
+        else {
+
+            $ordered = [];
+
+            foreach ($select as $record) {
+
+                $ordered[$record['user_id']][] = $record['presence_datetime'];
+
+            }
+
+            return $ordered;
+
+        }
 
     }
 

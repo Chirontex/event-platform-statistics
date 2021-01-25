@@ -4,6 +4,7 @@
  */
 namespace EPStatistics;
 
+use EPStatistics\PresenceTimes;
 use wpdb;
 
 class Users
@@ -12,6 +13,8 @@ class Users
     protected $wpdb;
     protected $dbname;
 
+    protected $presence_times;
+
     public function __construct(wpdb $wpdb, string $dbname = '')
     {
         
@@ -19,6 +22,8 @@ class Users
 
         if (empty($dbname)) $this->dbname = DB_NAME;
         else $this->dbname = $dbname;
+
+        $this->presence_times = new PresenceTimes($this->wpdb, $this->dbname);
 
     }
 
@@ -45,11 +50,21 @@ class Users
 
         if (!empty($select) && is_array($select)) {
 
+            $presence = $this->presence_times->getOrderedByUsers();
+
             foreach ($select as $values) {
 
                 if (!isset(
                     $result[$values['user_id']]['email']
                 )) $result[$values['user_id']]['email'] = $values['user_email'];
+
+                if (!isset(
+                        $result[$values['user_id']]['presence_times']
+                    ) &&
+                    isset(
+                        $presence[$values['user_id']]
+                    )
+                ) $result[$values['user_Id']]['presence_times'] = $presence[$values['user_id']];
 
                 $result[$values['user_id']][$values['meta_key']] = $values['meta_value'];
 
