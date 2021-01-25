@@ -4,6 +4,7 @@
  */
 namespace EPStatistics\Handlers;
 
+use EPStatistics\Tokens;
 use EPStatistics\PresenceTimes;
 use EPStatistics\Exceptions\PresenceTimesException;
 use EPStatistics\Interfaces\WorksheetHandler;
@@ -32,7 +33,9 @@ class PresenceEffect implements WorksheetHandler
 
         $result = [];
 
-        $user_id = get_current_user_id();
+        $tokens = new Tokens($this->presence_times->wpdbGet());
+
+        $user_id = $tokens->userGetByToken($_COOKIE['eps_api_token']);
 
         try {
 
