@@ -173,7 +173,7 @@ final class Main
 
             } catch (TokensException $e) {
 
-                wp_die($e->getCode().': '.$e->getMessage());
+                wp_die('Event Platform Statistics error, '.$e->getCode().': '.$e->getMessage());
 
             }
 
@@ -186,19 +186,11 @@ final class Main
     private function apiTokenRemove() : void
     {
 
-        add_action('wp_logout', function($user_id) {
+        add_action('wp_logout', function() {
 
             $tokens = new Tokens($this->wpdb);
 
-            try {
-
-                $tokens->tokenDeleteByUser((int)$user_id);
-
-            } catch (TokensException $e) {
-
-                wp_die($e->getCode().': '.$e->getMessage());
-
-            }
+            $tokens->tokenDelete($_COOKIE['eps_api_token']);
 
         });
 
