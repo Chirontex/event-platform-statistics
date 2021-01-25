@@ -6,6 +6,7 @@ namespace EPStatistics;
 
 use EPStatistics\Handlers\SpreadsheetFile;
 use EPStatistics\Handlers\Participants;
+use EPStatistics\Handlers\PresenceEffect;
 use EPStatistics\Exceptions\HandlerException;
 use EPStatistics\Exceptions\SpreadsheetFileException;
 
@@ -29,6 +30,7 @@ final class Main
 
         $this->admin_script_file = 'event-platform-statistics-admin.php';
 
+        $this->apiRoutesInit();
         $this->adminPageInit();
 
         if (strpos(
@@ -119,6 +121,37 @@ final class Main
 <?php
 
         $GLOBALS['eps_admin_status'] = ob_get_clean();
+
+    }
+
+    private function apiRoutesInit() : void
+    {
+
+        add_action('rest_api_init', function() {
+
+            register_rest_route(
+                'event-platform-statistics/v1',
+                '/presence-time/add',
+                [
+                    'methods' => ['GET', 'POST'],
+                    'callback' => function() {
+
+                        $presence_effect = new PresenceEffect(
+                            new PresenceTimes($this->wpdb)
+                        );
+
+                        return $presence_effect->apiAddPresenceTime();
+
+                    },
+                    'permission_callback' => function() {
+
+                        return true;
+
+                    }
+                ]
+            );
+
+        });
 
     }
 

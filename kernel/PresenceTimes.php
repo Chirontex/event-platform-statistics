@@ -22,7 +22,7 @@ class PresenceTimes
         if (empty($dbname)) $this->dbname = DB_NAME;
         else $this->dbname = $dbname;
 
-        $this->table = 'presence';
+        $this->table = 'epstatistics_presence_times';
 
         $this->createTable();
 
