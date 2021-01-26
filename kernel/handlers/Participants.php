@@ -69,7 +69,8 @@ class Participants implements WorksheetHandler
                 )) $worksheet->setCellValue('K'.$i, 'Нет');
                 else $worksheet->setCellValue('K'.$i, 'Да');
 
-                $nmo = count($userdata['presence_times']);
+                $nmo = is_array($userdata['presence_times']) ?
+                    count($userdata['presence_times']) : 0;
 
                 $worksheet->setCellValue('L'.$i, $nmo);
 
@@ -78,6 +79,8 @@ class Participants implements WorksheetHandler
                 $i += 1;
 
             }
+
+            $worksheet->setCellValue('L2', $nmo_count);
 
         }
 

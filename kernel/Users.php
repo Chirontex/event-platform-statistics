@@ -64,7 +64,7 @@ class Users
                     isset(
                         $presence[$values['user_id']]
                     )
-                ) $result[$values['user_Id']]['presence_times'] = $presence[$values['user_id']];
+                ) $result[$values['user_id']]['presence_times'] = $presence[$values['user_id']];
 
                 $result[$values['user_id']][$values['meta_key']] = $values['meta_value'];
 
