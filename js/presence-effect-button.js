@@ -65,5 +65,10 @@ function epsPresenceConfirmationMessage(atts)
 
     message.innerHTML = atts['text'];
 
-    setTimeout(button.parentNode.removeChild(message), atts['timeout']);
+    setTimeout(epsPresenceConfirmationTimerHandler, atts['timeout'], button, message);
+}
+
+function epsPresenceConfirmationTimerHandler(button_node, message_node)
+{
+    button_node.parentNode.removeChild(message_node);
 }

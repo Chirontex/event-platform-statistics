@@ -218,16 +218,17 @@ final class Main
             ob_start();
 
 ?>
+<button type="button" id="eps-presence-effect-button" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>');"><?= htmlspecialchars($content) ?></button>
+<script src="<?= $this->url ?>js/presence-effect-button.js"></script>
 <script>
 if (!window.jQuery)
 {
-    document.write(
-        '<script src="<?= $this->url ?>js/jquery-3.5.1.min.js"></script>'
-    );
+    let eps_jquery_init = document.createElement('script');
+    eps_jquery_init.setAttribute('src', '<?= $this->url ?>js/jquery-3.5.1.min.js');
+
+    document.getElementById('eps-presence-effect-button').parentNode.insertBefore(eps_jquery_init, document.getElementById('eps-presence-effect-button'));
 }
 </script>
-<script src="<?= $this->url ?>js/presence-effect-button.js"></script>
-<button type="button" id="eps-presence-effect-button" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>');"><?= htmlspecialchars($content) ?></button>
 <?php
 
             return ob_get_clean();
