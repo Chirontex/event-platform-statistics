@@ -36,6 +36,7 @@ final class Main
         $this->apiTokenGet();
         $this->apiTokenRemove();
 
+        $this->shortcodeInit();
         $this->adminPageInit();
 
         if (strpos(
@@ -191,6 +192,45 @@ final class Main
             $tokens = new Tokens($this->wpdb);
 
             $tokens->tokenDelete($_COOKIE['eps_api_token']);
+
+        });
+
+    }
+
+    private function shortcodeInit() : void
+    {
+
+        add_shortcode('eps-presence-effect-button', function($atts, $content) {
+
+            $atts = shortcode_atts([
+                'button-class' => '',
+                'button-style' => '',
+                'message-position' => 'after',
+                'message-class' => '',
+                'message-style' => ''
+            ], $atts);
+
+            if ($atts['message-position'] !== 'before' &&
+                $atts['message-position'] !== 'after') $atts['message'] = 'after';
+
+            if (empty($content)) $content = 'Подтвердите Ваше присутствие';
+
+            ob_start();
+
+?>
+<script>
+if (!window.jQuery)
+{
+    document.write(
+        '<script src="<?= $this->url ?>js/jquery-3.5.1.min.js"></script>'
+    );
+}
+</script>
+<script src="<?= $this->url ?>js/presence-effect-button.js"></script>
+<button type="button" id="eps-presence-effect-button" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>');"><?= htmlspecialchars($content) ?></button>
+<?php
+
+            return ob_get_clean();
 
         });
 
