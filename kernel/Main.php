@@ -82,6 +82,21 @@ final class Main
 
             }
 
+            if (isset($_POST['eps-download-nmo'])) {
+
+                $presence_effect = new PresenceEffect(
+                    new PresenceTimes($this->wpdb)
+                );
+
+                $spreadsheet_file->worksheetAdd(
+                    $presence_effect->worksheetGet(
+                        $spreadsheet_file->spreadsheetGet(),
+                        'НМО'
+                    )
+                );
+
+            }
+
             try {
 
                 $spreadsheet_file->spreadsheetSave();

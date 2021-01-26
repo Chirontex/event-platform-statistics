@@ -74,7 +74,34 @@ class PresenceEffect implements WorksheetHandler
 
         $worksheet = new Worksheet($spreadsheet, $name);
 
-        // some logic
+        $confirmations = $this->presence_times->getOrderedByUsers();
+
+        if (!empty($times)) {
+
+            $worksheet->setCellValue('A1', 'ID пользователя');
+            $worksheet->setCellValue('B1', 'Другие');
+
+            $i = 2;
+
+            foreach ($confirmations as $user_id => $times) {
+
+                $worksheet->setCellValue('A'.$i, $user_id);
+
+                $time_str = '';
+                
+                foreach ($times as $time) {
+
+                    $time_str .= $time.'; ';
+
+                }
+
+                $worksheet->setCellValue('B'.$i, $time_str);
+
+                $i += 1;
+
+            }
+
+        }
 
         return $worksheet;
 
