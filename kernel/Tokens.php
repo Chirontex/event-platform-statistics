@@ -42,7 +42,7 @@ class Tokens {
 
         if ($this->wpdb->query(
             "CREATE TABLE IF NOT EXISTS `".$this->wpdb->prefix.$this->table."` (
-                `id` BIGINT NOT NULL AUTO_INCREMENT,
+                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `user_id` BIGINT NOT NULL,
                 `token` CHAR(128) NOT NULL,
                 PRIMARY KEY (`id`),
