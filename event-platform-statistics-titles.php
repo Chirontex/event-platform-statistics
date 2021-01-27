@@ -15,7 +15,7 @@ if (file_exists(plugin_dir_path(__FILE__).'css/bootstrap.min.css')) {
 }
 
 ?>
-<!-- place for custom style -->
+<link rel="stylesheet" href="<?= plugin_dir_url(__FILE__) ?>css/titles.css">
 <?php
 
 if (file_exists(plugin_dir_path(__FILE__).'js/bootstrap.bundle.min.js')) {
@@ -41,5 +41,13 @@ if (file_exists(plugin_dir_path(__FILE__).'js/bootstrap.bundle.min.js')) {
 if (!empty($eps_titles_status)) echo $eps_titles_status;
 
 ?>
-    
+    <form action="" method="post" class="eps-titles-form mx-auto">
+        <h4 class="text-center mb-4">Добавить новый элемент программы:</h4>
+        <div class="form-group mb-2">
+            <input type="text" class="form-control" id="eps-titles-header" name="eps-titles-header" placeholder="Введите заголовок">
+        </div>
+        <div class="row">
+            
+        </div>
+    </form>
 </div>

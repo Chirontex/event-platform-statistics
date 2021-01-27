@@ -33,7 +33,7 @@ if (file_exists(plugin_dir_path(__FILE__).'js/bootstrap.bundle.min.js')) {
 }
 
 ?>
-<script src="<?= plugin_dir_url(__FILE__) ?>js/admin.js"></script>
+<script src="<?= plugin_dir_url(__FILE__) ?>js/output.js"></script>
 <div class="container-fluid">
     <h1 class="h3 text-center my-5">Статистика</h1>
 <?php
