@@ -17,7 +17,8 @@ final class Main
     private $path;
     private $url;
     private $wpdb;
-    private $admin_script_file;
+    private $output_script_file;
+    private $titles_script_file;
 
     public function __construct(string $path, string $url)
     {
@@ -29,7 +30,8 @@ final class Main
         $this->path = $path;
         $this->url = $url;
 
-        $this->admin_script_file = 'event-platform-statistics-admin.php';
+        $this->output_script_file = 'event-platform-statistics-output.php';
+        $this->titles_script_file = 'event-platform-statistics-titles.php';
 
         $this->apiRoutesInit();
 
@@ -37,16 +39,16 @@ final class Main
         $this->apiTokenRemove();
 
         $this->shortcodeInit();
-        $this->adminPageInit();
+        $this->adminMenuInit();
 
         if (strpos(
                 $_GET['page'],
-                $this->admin_script_file
+                $this->output_script_file
             ) !== false) $this->downloadInit();
 
     }
 
-    private function adminPageInit() : void
+    private function adminMenuInit() : void
     {
 
         add_action('admin_menu', function() {
@@ -55,7 +57,14 @@ final class Main
                 'Статистика',
                 'Статистика',
                 8,
-                $this->path.$this->admin_script_file
+                $this->path.$this->output_script_file
+            );
+
+            add_menu_page(
+                'Титры',
+                'Титры',
+                8,
+                $this->path.$this->titles_script_file
             );
 
         });
