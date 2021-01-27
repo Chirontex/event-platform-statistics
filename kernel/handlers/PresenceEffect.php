@@ -16,6 +16,9 @@ class PresenceEffect implements WorksheetHandler
 
     protected $presence_times;
 
+    const WORKSHEET_MODE_RAW = 'raw';
+    const WORKSHEET_MODE_TITLES = 'titles';
+
     public function __construct(PresenceTimes $presence_times)
     {
         
@@ -67,7 +70,7 @@ class PresenceEffect implements WorksheetHandler
 
     }
 
-    public function worksheetGet(Spreadsheet $spreadsheet, string $name) : Worksheet
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name, string $mode = 'raw') : Worksheet
     {
 
         if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
@@ -76,7 +79,7 @@ class PresenceEffect implements WorksheetHandler
 
         $confirmations = $this->presence_times->getOrderedByUsers();
 
-        if (!empty($times)) {
+        if (!empty($confirmations)) {
 
             $worksheet->setCellValue('A1', 'ID пользователя');
             $worksheet->setCellValue('B1', 'Другие');

@@ -239,7 +239,7 @@ final class Main
 if (!window.jQuery)
 {
     let eps_jquery_init = document.createElement('script');
-    eps_jquery_init.setAttribute('src', '<?= $this->url ?>js/jquery-3.5.1.min.js');
+    eps_jquery_init.setAttribute('src', '<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js');
 
     document.getElementById('eps-presence-effect-button').parentNode.insertBefore(eps_jquery_init, document.getElementById('eps-presence-effect-button'));
 }
