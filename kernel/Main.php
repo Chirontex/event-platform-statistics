@@ -82,7 +82,7 @@ final class Main
 
             }
 
-            if (isset($_POST['eps-download-nmo'])) {
+            if (isset($_POST['eps-download-nmo-raw'])) {
 
                 $presence_effect = new PresenceEffect(
                     new PresenceTimes($this->wpdb)
@@ -91,7 +91,7 @@ final class Main
                 $spreadsheet_file->worksheetAdd(
                     $presence_effect->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
-                        'НМО'
+                        'НМО (перечень)'
                     )
                 );
 

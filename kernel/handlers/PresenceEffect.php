@@ -75,32 +75,40 @@ class PresenceEffect implements WorksheetHandler
 
         if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
 
+        if ($mode !== 'raw' && $mode !== 'titles') $mode = 'raw';
+
         $worksheet = new Worksheet($spreadsheet, $name);
 
         $confirmations = $this->presence_times->getOrderedByUsers();
 
         if (!empty($confirmations)) {
 
-            $worksheet->setCellValue('A1', 'ID пользователя');
-            $worksheet->setCellValue('B1', 'Другие');
+            switch ($mode) {
 
-            $i = 2;
+                case 'raw':
 
-            foreach ($confirmations as $user_id => $times) {
+                    $worksheet->setCellValue('A1', 'ID пользователя');
+                    $worksheet->setCellValue('B1', 'Дата и время подтверждения');
 
-                $worksheet->setCellValue('A'.$i, $user_id);
+                    $i = 2;
 
-                $time_str = '';
-                
-                foreach ($times as $time) {
+                    foreach ($confirmations as $user_id => $times) {
 
-                    $time_str .= $time.'; ';
+                        foreach ($times as $time) {
 
-                }
+                            $worksheet->setCellValue('A'.$i, $user_id);
+                            $worksheet->setCellValue('B'.$i, $time);
 
-                $worksheet->setCellValue('B'.$i, $time_str);
+                            $i += 1;
 
-                $i += 1;
+                        }
+
+                    }
+
+                    break;
+
+                case 'titles':
+                    break;
 
             }
 
