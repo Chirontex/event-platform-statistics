@@ -16,6 +16,7 @@ if (!file_exists(__DIR__.'/vendor/autoload.php')) wp_die('Event Platform Statist
 require_once __DIR__.'/vendor/autoload.php';
 
 $eps_admin_status = '';
+$eps_titles_status = '';
 
 new Main(
     plugin_dir_path(__FILE__),
