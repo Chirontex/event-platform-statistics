@@ -58,6 +58,8 @@ final class Main
                 isset($_POST['eps-titles-end-date']) &&
                 isset($_POST['eps-titles-end-time'])) $this->titleAdd();
 
+            $this->titlesOutput();
+
         }
 
     }
@@ -324,6 +326,48 @@ if (!window.jQuery)
                 );
 
             }
+
+        }
+
+    }
+
+    private function titlesOutput() : void
+    {
+
+        $titles = new Titles($this->wpdb);
+
+        try {
+
+            $select = $titles->selectTitles();
+
+        } catch (TitlesException $e) {
+
+            $this->adminStatusSet(
+                'danger',
+                'Ошибка загрузки титров, '.$e->getCode().': "'.$e->getMessage().'"'
+            );
+
+        }
+
+        if (!isset($e) && !empty($select)) {
+
+            ob_start();
+
+            foreach ($select as $title) {
+
+?>
+<tr>
+    <td><?= htmlspecialchars($title['title']) ?></td>
+    <td><?= $title['datetime_start'] ?></td>
+    <td><?= $title['datetime_end'] ?></td>
+    <td><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>
+    <td></td>
+</tr>
+<?php
+
+            }
+
+            $GLOBALS['eps_titles_tbody'] = ob_get_clean();
 
         }
 

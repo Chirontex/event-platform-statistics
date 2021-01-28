@@ -72,4 +72,17 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
             <button type="submit" class="btn btn-primary" id="eps-titles-form-submit" disabled="true">Сохранить</button>
         </div>
     </form>
+    <h4 class="text-center my-4">Сохранённые элементы программы</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Заголовок</th>
+                <th>Дата и время начала</th>
+                <th>Дата и время конца</th>
+                <th>НМО</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="eps-titles-table"><?= $eps_titles_tbody ?></tbody>
+    </table>
 </div>
