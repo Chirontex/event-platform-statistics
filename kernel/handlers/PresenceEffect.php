@@ -4,6 +4,7 @@
  */
 namespace EPStatistics\Handlers;
 
+use EPStatistics\Users;
 use EPStatistics\Tokens;
 use EPStatistics\PresenceTimes;
 use EPStatistics\Exceptions\PresenceTimesException;
@@ -79,27 +80,38 @@ class PresenceEffect implements WorksheetHandler
 
         $worksheet = new Worksheet($spreadsheet, $name);
 
-        $confirmations = $this->presence_times->getOrderedByUsers();
+        $users = new Users($this->presence_times->wpdbGet());
 
-        if (!empty($confirmations)) {
+        $users_data = $users->getAllData();
+
+        if (!empty($users_data)) {
 
             switch ($mode) {
 
                 case 'raw':
 
-                    $worksheet->setCellValue('A1', 'ID пользователя');
-                    $worksheet->setCellValue('B1', 'Дата и время подтверждения');
+                    $worksheet->setCellValue('A1', 'ID');
+                    $worksheet->setCellValue('B1', 'ФИО');
+                    $worksheet->setCellValue('C1', 'Дата и время подтверждения');
 
                     $i = 2;
 
-                    foreach ($confirmations as $user_id => $times) {
+                    foreach ($users_data as $user_id => $values) {
 
-                        foreach ($times as $time) {
+                        if (isset($values['presence_times'])) {
 
-                            $worksheet->setCellValue('A'.$i, $user_id);
-                            $worksheet->setCellValue('B'.$i, $time);
+                            foreach ($values['presence_times'] as $datetime) {
 
-                            $i += 1;
+                                $worksheet->setCellValue('A'.$i, $user_id);
+                                $worksheet->setCellValue(
+                                    'B'.$i,
+                                    $values['Surname'].' '.$values['Name'].' '.$values['LastName']
+                                );
+                                $worksheet->setCellValue('C'.$i, $datetime);
+
+                                $i += 1;
+
+                            }
 
                         }
 

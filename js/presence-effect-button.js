@@ -43,7 +43,7 @@ function epsPresenceConfirmationSend(message_position, message_class, message_st
         console.log(jqXHR);
 
         epsPresenceConfirmationMessage({
-            text: 'Ошибка отправки. Пожалуйста, обратитесь в техподдержку.',
+            text: 'Ошибка отправки. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.',
             class: message_class,
             style: message_style,
             position: message_position,

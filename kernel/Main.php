@@ -139,7 +139,7 @@ final class Main
 
                     date_default_timezone_set('Europe/Moscow');
 
-                    header('Content-type: application/vnd.ms-excel; charset=utf-8');
+                    header('Content-type: application; charset=utf-8');
                     header('Content-disposition: attachment; filename=Statistics_'.date("Y-m-d_H-i-s").'.xlsx');
 
                     echo $filedata;
@@ -209,36 +209,43 @@ final class Main
 
                         $result = [];
 
-                        $titles = new Titles($this->wpdb);
+                        if (isset($_REQUEST['list'])) {
 
-                        $list_name = trim($_REQUEST['list']);
+                            $titles = new Titles($this->wpdb);
 
-                        try {
+                            $list_name = trim($_REQUEST['list']);
 
-                            $select = $titles->selectTitles($list_name, true);
+                            try {
 
-                        } catch (TitlesException $e) {
+                                $select = $titles->selectTitles($list_name, true);
 
-                            $result = [
-                                'code' => $e->getCode(),
-                                'message' => $e->getMessage()
-                            ];
+                            } catch (TitlesException $e) {
 
-                        }
+                                $result = [
+                                    'code' => $e->getCode(),
+                                    'message' => $e->getMessage()
+                                ];
 
-                        if (empty($result)) {
+                            }
 
-                            if (empty($select)) $result = [
-                                'code' => 1,
-                                'message' => 'The answer is empty.'
-                            ];
-                            else $result = [
-                                'code' => 0,
-                                'message' => 'Success.',
-                                'data' => htmlspecialchars($select[0]['title'])
-                            ];
+                            if (empty($result)) {
 
-                        }
+                                if (empty($select)) $result = [
+                                    'code' => 1,
+                                    'message' => 'The answer is empty.'
+                                ];
+                                else $result = [
+                                    'code' => 0,
+                                    'message' => 'Success.',
+                                    'data' => htmlspecialchars($select[0]['title'])
+                                ];
+
+                            }
+
+                        } else $result = [
+                            'code' => -99,
+                            'message' => 'Too few arguments for this request.'
+                        ];
 
                         return $result;
 
@@ -355,6 +362,8 @@ if (!window.jQuery)
 
     document.getElementById('<?=$atts['id'] ?>').parentNode.insertBefore(eps_jquery_init, document.getElementById('<?=$atts['id'] ?>'));
 }
+
+epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
 </script>
 <?php
 
