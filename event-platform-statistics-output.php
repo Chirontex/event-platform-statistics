@@ -15,7 +15,7 @@ if (file_exists(plugin_dir_path(__FILE__).'css/bootstrap.min.css')) {
 }
 
 ?>
-<link rel="stylesheet" href="<?= plugin_dir_url(__FILE__) ?>css/admin.css">
+<link rel="stylesheet" href="<?= plugin_dir_url(__FILE__) ?>css/output.css">
 <?php
 
 if (file_exists(plugin_dir_path(__FILE__).'js/bootstrap.bundle.min.js')) {

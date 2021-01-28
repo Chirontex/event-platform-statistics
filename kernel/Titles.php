@@ -87,8 +87,8 @@ class Titles
             $this->wpdb->prefix.$this->table,
             [
                 'title' => $title,
-                'datetime_start' => date($timestamp_start),
-                'datetime_end' => date($timestamp_end),
+                'datetime_start' => date("Y-m-d H:i:s", $timestamp_start),
+                'datetime_end' => date("Y-m-d H:i:s", $timestamp_end),
                 'nmo' => $nmo
             ],
             ['%s', '%s', '%s', '%d']
