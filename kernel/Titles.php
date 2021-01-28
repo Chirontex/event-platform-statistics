@@ -42,6 +42,7 @@ class Titles
                 "CREATE TABLE IF NOT EXISTS `".$this->wpdb->prefix.$this->table."` (
                     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                     `title` TEXT NOT NULL,
+                    `list_name` TEXT NOT NULL,
                     `datetime_start` DATETIME NOT NULL,
                     `datetime_end` DATETIME NOT NULL,
                     `nmo` TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -73,12 +74,17 @@ class Titles
      * 
      * @throws TitlesException
      */
-    public function titleAdd(string $title, int $timestamp_start, int $timestamp_end, int $nmo = 0) : bool
+    public function titleAdd(string $title, string $list_name, int $timestamp_start, int $timestamp_end, int $nmo = 0) : bool
     {
 
         if (empty($title)) throw new TitlesException(
             'Title cannot be empty.',
             -51
+        );
+
+        if (empty($list_name)) throw new TitlesException(
+            'List name cannot be empty.',
+            -54
         );
 
         if ($nmo < 0 || $nmo > 1) $nmo = 0;
@@ -87,11 +93,12 @@ class Titles
             $this->wpdb->prefix.$this->table,
             [
                 'title' => $title,
+                'list_name' => $list_name,
                 'datetime_start' => date("Y-m-d H:i:s", $timestamp_start),
                 'datetime_end' => date("Y-m-d H:i:s", $timestamp_end),
                 'nmo' => $nmo
             ],
-            ['%s', '%s', '%s', '%d']
+            ['%s', '%s', '%s', '%s', '%d']
         ) === false) return false;
         else return true;
 

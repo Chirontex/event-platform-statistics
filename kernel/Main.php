@@ -53,6 +53,7 @@ final class Main
             ) !== false) {
 
             if (isset($_POST['eps-titles-header']) &&
+                isset($_POST['eps-titles-list']) &&
                 isset($_POST['eps-titles-start-date']) &&
                 isset($_POST['eps-titles-start-time']) &&
                 isset($_POST['eps-titles-end-date']) &&
@@ -306,6 +307,7 @@ if (!window.jQuery)
 
                 $add = $titles->titleAdd(
                     $_POST['eps-titles-header'],
+                    $_POST['eps-titles-list'],
                     $timestamp_start,
                     $timestamp_end,
                     $nmo
@@ -360,6 +362,7 @@ if (!window.jQuery)
 ?>
 <tr>
     <td><?= htmlspecialchars($title['title']) ?></td>
+    <td><?= htmlspecialchars($title['list_name']) ?></td>
     <td><?= $title['datetime_start'] ?></td>
     <td><?= $title['datetime_end'] ?></td>
     <td><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>

@@ -6,8 +6,9 @@ function epsTitlesSubmitCheck()
     const end_date = document.getElementById('eps-titles-end-date');
     const end_time = document.getElementById('eps-titles-end-time');
     const header = document.getElementById('eps-titles-header');
+    const list = document.getElementById('eps-titles-list');
 
-    if (start_date.value !== '' && start_time !== '' && end_date !== '' && end_time !== '' && header !== '')
+    if (start_date.value !== '' && start_time.value !== '' && end_date.value !== '' && end_time.value !== '' && header.value !== '' && list.value !== '')
     {
         if (button.hasAttribute('disabled')) button.removeAttribute('disabled');
     }
