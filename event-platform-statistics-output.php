@@ -46,8 +46,12 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
             <input type="checkbox" class="form-check-input" name="eps-download-participants" id="eps-download-participants" value="true" checked="true" onclick="epsAdminSubmitCheck();">
             <label for="eps-download-participants" class="form-check-label">Участники</label>
         </div>
+        <div class="mb-2">
+            <input type="checkbox" class="form-check-input" name="eps-download-nmo-titles" id="eps-download-nmo-titles" value="true" checked="true" onclick="epsAdminSubmitCheck();">
+            <label for="eps-download-nmo-titles" class="form-check-label">НМО</label>
+        </div>
         <div class="mb-5">
-            <input type="checkbox" class="form-check-input" name="eps-download-nmo-raw" id="eps-download-nmo-raw" value="true" checked="true" onclick="epsAdminSubmitCheck();">
+            <input type="checkbox" class="form-check-input" name="eps-download-nmo-raw" id="eps-download-nmo-raw" value="true" onclick="epsAdminSubmitCheck();">
             <label for="eps-download-nmo-raw" class="form-check-label">НМО (перечень)</label>
         </div>
         <input type="hidden" name="eps-download-init" value="true">

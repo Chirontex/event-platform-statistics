@@ -6,8 +6,10 @@ namespace EPStatistics\Handlers;
 
 use EPStatistics\Users;
 use EPStatistics\Tokens;
+use EPStatistics\Titles;
 use EPStatistics\PresenceTimes;
 use EPStatistics\Exceptions\PresenceTimesException;
+use EPStatistics\Exceptions\TitlesException;
 use EPStatistics\Interfaces\WorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -120,6 +122,89 @@ class PresenceEffect implements WorksheetHandler
                     break;
 
                 case 'titles':
+
+                    $titles = new Titles($this->presence_times->wpdbGet());
+
+                    try {
+
+                        $titles_selected = $titles->selectTitles();
+
+                        $row = 1;
+
+                        $worksheet->setCellValue('A'.$row, 'ID пользователя');
+                        $worksheet->setCellValue('B'.$row, 'ФИО');
+                        $worksheet->setCellValue('C'.$row, 'Всего подтверждений');
+
+                        $col = 4;
+
+                        foreach ($titles_selected as $title) {
+
+                            if ($title['nmo'] !== '1') continue;
+
+                            $worksheet->setCellValue(
+                                $this->getColumnName($col).$row,
+                                $title['id']
+                            );
+
+                            $col += 1;
+
+                        }
+
+                        $row += 1;
+
+                        foreach ($users_data as $user_id => $values) {
+
+                            $worksheet->setCellValue('A'.$row, $user_id);
+                            $worksheet->setCellValue(
+                                'B'.$row,
+                                $values['Surname'].' '.$values['Name'].' '.$values['LastName']
+                            );
+
+                            $col = 4;
+
+                            $confs_total = 0;
+
+                            foreach ($titles_selected as $title) {
+
+                                if ($title['nmo'] !== '1') continue;
+
+                                $confs = 0;
+
+                                if (isset($values['presence_times'])) {
+
+                                    foreach ($values['presence_times'] as $datetime) {
+
+                                        $datetime = strtotime($datetime);
+
+                                        if ($datetime >= strtotime($title['datetime_start']) &&
+                                            $datetime <= strtotime($title['datetime_end'])) {
+
+                                            $confs += 1;
+                                            $confs_total += 1;
+
+                                        }
+
+                                    }
+
+                                }
+
+                                $worksheet->setCellValue(
+                                    $this->getColumnName($col).$row,
+                                    $confs
+                                );
+
+                                $col += 1;
+
+                            }
+
+                            $worksheet->setCellValue('C'.$row, $confs_total);
+
+                            $row += 1;
+
+                        }
+
+                    } catch (TitlesException $e) {}
+
                     break;
 
             }
@@ -127,6 +212,54 @@ class PresenceEffect implements WorksheetHandler
         }
 
         return $worksheet;
+
+    }
+
+    /**
+     * Calculates a column name by it's periodic number.
+     * 
+     * @param int $number
+     * If $number lesser than 1 or bigger than 650,
+     * the method will return an empty string.
+     * 
+     * @return string
+     */
+    protected function getColumnName(int $number) : string
+    {
+
+        $name = '';
+
+        if ($number > 0) {
+
+            $alphabet = range('A', 'Z');
+
+            if ($number <= count($alphabet)) $name = $alphabet[$number - 1];
+            else {
+
+                $fi = 0;
+
+                $dif = $number - count($alphabet);
+
+                while ($dif > count($alphabet)) {
+
+                    $fi += 1;
+
+                    $dif = $dif - count($alphabet);
+
+                }
+
+                if ($fi <= count($alphabet)) {
+
+                    $name .= $alphabet[$fi];
+                    $name .= $alphabet[$dif - 1];
+
+                }
+
+            }
+
+        }
+
+        return $name;
 
     }
 

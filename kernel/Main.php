@@ -110,7 +110,7 @@ final class Main
 
             }
 
-            if (isset($_POST['eps-download-nmo-raw'])) {
+            if (isset($_POST['eps-download-nmo-titles'])) {
 
                 $presence_effect = new PresenceEffect(
                     new PresenceTimes($this->wpdb)
@@ -119,7 +119,24 @@ final class Main
                 $spreadsheet_file->worksheetAdd(
                     $presence_effect->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
-                        'НМО (перечень)'
+                        'НМО',
+                        $presence_effect::WORKSHEET_MODE_TITLES
+                    )
+                );
+
+            }
+
+            if (isset($_POST['eps-download-nmo-raw'])) {
+
+                if (!($presence_effect instanceof PresenceEffect)) $presence_effect = new PresenceEffect(
+                    new PresenceTimes($this->wpdb)
+                );
+
+                $spreadsheet_file->worksheetAdd(
+                    $presence_effect->worksheetGet(
+                        $spreadsheet_file->spreadsheetGet(),
+                        'НМО (перечень)',
+                        $presence_effect::WORKSHEET_MODE_RAW
                     )
                 );
 

@@ -47,7 +47,7 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
             <input type="text" class="form-control" id="eps-titles-header" name="eps-titles-header" placeholder="Введите заголовок" required="true" oninput="epsTitlesSubmitCheck();">
         </div>
         <div class="form-group mb-3">
-            <input type="text" class="form-control" id="eps-titles-list" name="eps-titles-list" placeholder="Укажите имя списка" required="true" oninput="epsTitlesSubmitCheck();">
+            <input type="text" class="form-control" id="eps-titles-list" name="eps-titles-list" placeholder="Укажите обозначение зала" required="true" oninput="epsTitlesSubmitCheck();">
         </div>
         <p>Дата и время начала:</p>
         <div class="row mb-3">
@@ -80,7 +80,7 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
         <thead>
             <tr>
                 <th>Заголовок</th>
-                <th>Название списка</th>
+                <th>Зал</th>
                 <th>Дата и время начала</th>
                 <th>Дата и время конца</th>
                 <th>НМО</th>
