@@ -38,30 +38,30 @@ if (file_exists(plugin_dir_path(__FILE__).'js/bootstrap.bundle.min.js')) {
     <h1 class="h3 text-center my-5">Титры</h1>
 <?php
 
-if (!empty($eps_titles_status)) echo $eps_titles_status;
+if (!empty($eps_admin_status)) echo $eps_admin_status;
 
 ?>
     <form action="" method="post" class="eps-titles-form mx-auto">
         <h4 class="text-center mb-4">Добавить новый элемент программы:</h4>
         <div class="form-group mb-3">
-            <input type="text" class="form-control" id="eps-titles-header" name="eps-titles-header" placeholder="Введите заголовок">
+            <input type="text" class="form-control" id="eps-titles-header" name="eps-titles-header" placeholder="Введите заголовок" required="true">
         </div>
         <p>Дата и время начала:</p>
         <div class="row mb-3">
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <input type="date" class="form-control" id="eps-titles-start-date" name="eps-titles-start-date">
+                <input type="date" class="form-control" id="eps-titles-start-date" name="eps-titles-start-date" required="true">
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <input type="time" class="form-control" id="eps-titles-start-time" name="eps-titles-start-time">
+                <input type="time" class="form-control" id="eps-titles-start-time" name="eps-titles-start-time" required="true">
             </div>
         </div>
         <p>Дата и время конца:</p>
         <div class="row mb-3">
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <input type="date" class="form-control" id="eps-titles-end-date" name="eps-titles-end-date">
+                <input type="date" class="form-control" id="eps-titles-end-date" name="eps-titles-end-date" required="true">
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <input type="time" class="form-control" id="eps-titles-end-time" name="eps-titles-end-time">
+                <input type="time" class="form-control" id="eps-titles-end-time" name="eps-titles-end-time" required="true">
             </div>
         </div>
         <div class="form-group mb-3">

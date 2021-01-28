@@ -10,6 +10,7 @@ use EPStatistics\Handlers\PresenceEffect;
 use EPStatistics\Exceptions\HandlerException;
 use EPStatistics\Exceptions\SpreadsheetFileException;
 use EPStatistics\Exceptions\TokensException;
+use EPStatistics\Exceptions\TitlesException;
 
 final class Main
 {
@@ -45,6 +46,19 @@ final class Main
                 $_GET['page'],
                 $this->output_script_file
             ) !== false) $this->downloadInit();
+
+        if (strpos(
+                $_GET['page'],
+                $this->titles_script_file
+            ) !== false) {
+
+            if (isset($_POST['eps-titles-header']) &&
+                isset($_POST['eps-titles-start-date']) &&
+                isset($_POST['eps-titles-start-time']) &&
+                isset($_POST['eps-titles-end-date']) &&
+                isset($_POST['eps-titles-end-time'])) $this->titleAdd();
+
+        }
 
     }
 
@@ -258,6 +272,60 @@ if (!window.jQuery)
             return ob_get_clean();
 
         });
+
+    }
+
+    private function titleAdd() : void
+    {
+
+        $timestamp_start = strtotime(
+            $_POST['eps-titles-start-date'].' '.$_POST['eps-titles-start-time']
+        );
+
+        $timestamp_end = strtotime(
+            $_POST['eps-titles-end-date'].' '.$_POST['eps-titles-end-time']
+        );
+
+        if (isset($_POST['eps-titles-nmo'])) $nmo = 1;
+        else $nmo = 0;
+
+        if ($timestamp_start === false ||
+            $timestamp_end === false) $this->adminStatusSet(
+                'danger',
+                'Дата и время были указаны некорректно.'
+            );
+        else {
+
+            $titles = new Titles($this->wpdb);
+
+            try {
+
+                $add = $titles->titleAdd(
+                    $_POST['eps-titles-header'],
+                    $timestamp_start,
+                    $timestamp_end,
+                    $nmo
+                );
+
+                if ($add) $this->adminStatusSet(
+                    'success',
+                    'Элемент программы успешно сохранён!'
+                );
+                else $this->adminStatusSet(
+                    'danger',
+                    'Не удалось сохранить элемент программы.'
+                );
+
+            } catch (TitlesException $e) {
+
+                $this->adminStatusSet(
+                    'danger',
+                    'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
+                );
+
+            }
+
+        }
 
     }
 
