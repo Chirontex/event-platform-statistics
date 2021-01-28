@@ -1,11 +1,13 @@
+var eps_title_default = '';
+
 function epsTitleGet(title_id, list_name)
 {
     const title = document.getElementById(title_id);
 
-    if (window.eps_title_default == undefined) window.eps_title_default = title.innerHTML;
+    if (window.eps_title_default == '') window.eps_title_default = title.innerHTML;
 
     let request = $.ajax({
-        url: "/event-platform-statistics/v1/titles/get-actual-title",
+        url: "/wp-json/event-platform-statistics/v1/titles/get-actual-title",
         method: "POST",
         data: {list: list_name},
         dataType: "json"

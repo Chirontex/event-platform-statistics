@@ -339,18 +339,9 @@ final class Main
 ?>
 <button type="button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>');"><?= htmlspecialchars($content) ?></button>
 <script src="<?= $this->url ?>js/presence-effect-button.js"></script>
-<script>
-if (!window.jQuery)
-{
-    let eps_jquery_init = document.createElement('script');
-    eps_jquery_init.setAttribute('src', '<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js');
-
-    document.getElementById('<?=$atts['id'] ?>').parentNode.insertBefore(eps_jquery_init, document.getElementById('<?=$atts['id'] ?>'));
-}
-</script>
 <?php
 
-            return ob_get_clean();
+            return ob_get_clean().$this->jqueryInitCheck($atts['id']);
 
         });
 
@@ -362,29 +353,29 @@ if (!window.jQuery)
                 'id' => 'eps-title',
                 'class' => '',
                 'style' => ''
-            ],$atts);
+            ], $atts);
 
-            if (empty($content)) $content = 'В данный момент ничего не происходит';
+            if (empty($content)) $content = 'В данный момент ничего не происходит.';
 
             ob_start();
 
 ?>
-<<?= htmlspecialchars($atts['tag']) ?> id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['class']) ?>" style="<?= htmlspecialchars($atts['style']) ?>"><?= htmlspecialchars($atts['content']) ?></<?= htmlspecialchars($atts['tag']) ?>>
+<<?= htmlspecialchars($atts['tag']) ?> id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['class']) ?>" style="<?= htmlspecialchars($atts['style']) ?>"><?= htmlspecialchars($content) ?></<?= htmlspecialchars($atts['tag']) ?>>
+<script src="<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js"></script>
 <script src="<?= $this->url ?>js/titles-client.js"></script>
+<?php
+
+            $output = ob_get_clean().$this->jqueryInitCheck($atts['id']);
+
+            ob_start();
+
+?>
 <script>
-if (!window.jQuery)
-{
-    let eps_jquery_init = document.createElement('script');
-    eps_jquery_init.setAttribute('src', '<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js');
-
-    document.getElementById('<?=$atts['id'] ?>').parentNode.insertBefore(eps_jquery_init, document.getElementById('<?=$atts['id'] ?>'));
-}
-
 epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
 </script>
 <?php
 
-            return ob_get_clean();
+            return $output.ob_get_clean();
 
         });
 
@@ -519,6 +510,51 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
             );
 
         }
+
+    }
+
+    private function jqueryInitCheck(string $element_id) : string
+    {
+
+        ob_start();
+
+?>
+<script>
+(function() {
+
+let jquery_url = '<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js';
+
+let scripts = document.getElementsByTagName('script');
+
+let jquery_loaded = false;
+
+for (let i = 0; i < scripts.length; i++)
+{
+    if (scripts[i].hasAttribute('src'))
+    {
+        if (scripts[i].getAttribute('src') == jquery_url)
+        {
+            jquery_loaded = true;
+            break;
+        }
+    }
+}
+
+if (!jquery_loaded)
+{
+    let jquery_init = document.createElement('script');
+    jquery_init.setAttribute('src', jquery_url);
+
+    let element_node = document.getElementById('<?= $element_id ?>');
+
+    element_node.parentNode.insertBefore(jquery_init, element_node.nextSibling);
+}
+
+})
+</script>
+<?php
+
+        return ob_get_clean();
 
     }
 
