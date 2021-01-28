@@ -111,12 +111,16 @@ class Titles
      * 
      * @throws TitlesException
      */
-    public function selectTitles() : array
+    public function selectTitles(string $list_name = '') : array
     {
+
+        $where = "";
+
+        if (!empty($list_name)) $where = " AS t WHERE t.list_name = '".$list_name."'";
 
         $select = $this->wpdb->get_results(
             "SELECT *
-                FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table,
+                FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table.$where,
             ARRAY_A
         );
 

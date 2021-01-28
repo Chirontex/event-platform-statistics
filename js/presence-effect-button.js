@@ -1,6 +1,6 @@
-function epsPresenceConfirmationSend(message_position, message_class, message_style)
+function epsPresenceConfirmationSend(message_position, message_class, message_style, button_id)
 {
-    const button = document.getElementById('eps-presence-effect-button');
+    const button = document.getElementById(button_id);
 
     let button_text = button.innerHTML;
 
@@ -28,7 +28,8 @@ function epsPresenceConfirmationSend(message_position, message_class, message_st
             class: message_class,
             style: message_style,
             position: message_position,
-            timeout: 3000
+            timeout: 3000,
+            button: button_id
         });
 
         button.removeAttribute('disabled');
@@ -46,14 +47,15 @@ function epsPresenceConfirmationSend(message_position, message_class, message_st
             class: message_class,
             style: message_style,
             position: message_position,
-            timeout: 3000
+            timeout: 3000,
+            button: button_id
         });
     });
 }
 
 function epsPresenceConfirmationMessage(atts)
 {
-    const button = document.getElementById('eps-presence-effect-button');
+    const button = document.getElementById(atts['button']);
 
     const message = document.createElement('p');
 

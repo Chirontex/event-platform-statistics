@@ -39,7 +39,7 @@ final class Main
         $this->apiTokenGet();
         $this->apiTokenRemove();
 
-        $this->shortcodeInit();
+        $this->shortcodesInit();
         $this->adminMenuInit();
 
         if (strpos(
@@ -240,7 +240,7 @@ final class Main
 
     }
 
-    private function shortcodeInit() : void
+    private function shortcodesInit() : void
     {
 
         add_shortcode('eps-presence-effect-button', function($atts, $content) {
@@ -249,6 +249,7 @@ final class Main
                 'button-class' => '',
                 'button-style' => '',
                 'message-position' => 'after',
+                'id' => 'eps-presence-effect-button',
                 'message-class' => '',
                 'message-style' => ''
             ], $atts);
@@ -261,7 +262,7 @@ final class Main
             ob_start();
 
 ?>
-<button type="button" id="eps-presence-effect-button" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>');"><?= htmlspecialchars($content) ?></button>
+<button type="button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>');"><?= htmlspecialchars($content) ?></button>
 <script src="<?= $this->url ?>js/presence-effect-button.js"></script>
 <script>
 if (!window.jQuery)
@@ -269,7 +270,39 @@ if (!window.jQuery)
     let eps_jquery_init = document.createElement('script');
     eps_jquery_init.setAttribute('src', '<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js');
 
-    document.getElementById('eps-presence-effect-button').parentNode.insertBefore(eps_jquery_init, document.getElementById('eps-presence-effect-button'));
+    document.getElementById('<?=$atts['id'] ?>').parentNode.insertBefore(eps_jquery_init, document.getElementById('<?=$atts['id'] ?>'));
+}
+</script>
+<?php
+
+            return ob_get_clean();
+
+        });
+
+        add_shortcode('eps-title', function($atts, $content) {
+
+            $atts = shortcode_atts([
+                'list' => '',
+                'tag' => 'h3',
+                'id' => 'eps-title',
+                'class' => '',
+                'style' => ''
+            ],$atts);
+
+            if (empty($content)) $content = 'В данный момент ничего не происходит';
+
+            ob_start();
+
+?>
+<<?= htmlspecialchars($atts['tag']) ?> id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['class']) ?>" style="<?= htmlspecialchars($atts['style']) ?>"><?= htmlspecialchars($atts['content']) ?></<?= htmlspecialchars($atts['tag']) ?>>
+<script src="<?= $this->url ?>js/titles-client.js"></script>
+<script>
+if (!window.jQuery)
+{
+    let eps_jquery_init = document.createElement('script');
+    eps_jquery_init.setAttribute('src', '<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js');
+
+    document.getElementById('<?=$atts['id'] ?>').parentNode.insertBefore(eps_jquery_init, document.getElementById('<?=$atts['id'] ?>'));
 }
 </script>
 <?php
@@ -295,7 +328,8 @@ if (!window.jQuery)
         else $nmo = 0;
 
         if ($timestamp_start === false ||
-            $timestamp_end === false) $this->adminStatusSet(
+            $timestamp_end === false ||
+            $timestamp_start >= $timestamp_end) $this->adminStatusSet(
                 'danger',
                 'Дата и время были указаны некорректно.'
             );

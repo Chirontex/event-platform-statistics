@@ -51,19 +51,19 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
         </div>
         <p>Дата и время начала:</p>
         <div class="row mb-3">
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2">
                 <input type="date" class="form-control" id="eps-titles-start-date" name="eps-titles-start-date" required="true" oninput="epsTitlesSubmitCheck();">
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2">
                 <input type="time" class="form-control" id="eps-titles-start-time" name="eps-titles-start-time" required="true" oninput="epsTitlesSubmitCheck();">
             </div>
         </div>
         <p>Дата и время конца:</p>
         <div class="row mb-3">
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2">
                 <input type="date" class="form-control" id="eps-titles-end-date" name="eps-titles-end-date" required="true" oninput="epsTitlesSubmitCheck();">
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2">
                 <input type="time" class="form-control" id="eps-titles-end-time" name="eps-titles-end-time" required="true" oninput="epsTitlesSubmitCheck();">
             </div>
         </div>
