@@ -200,6 +200,57 @@ final class Main
                 ]
             );
 
+            register_rest_route(
+                'event-platform-statistics/v1',
+                '/titles/get-actual-title',
+                [
+                    'methods' => ['GET', 'POST'],
+                    'callback' => function() {
+
+                        $result = [];
+
+                        $titles = new Titles($this->wpdb);
+
+                        $list_name = trim($_REQUEST['list']);
+
+                        try {
+
+                            $select = $titles->selectTitles($list_name, true);
+
+                        } catch (TitlesException $e) {
+
+                            $result = [
+                                'code' => $e->getCode(),
+                                'message' => $e->getMessage()
+                            ];
+
+                        }
+
+                        if (empty($result)) {
+
+                            if (empty($select)) $result = [
+                                'code' => 1,
+                                'message' => 'The answer is empty.'
+                            ];
+                            else $result = [
+                                'code' => 0,
+                                'message' => 'Success.',
+                                'data' => htmlspecialchars($select[0]['title'])
+                            ];
+
+                        }
+
+                        return $result;
+
+                    },
+                    'permission_callback' => function() {
+
+                        return true;
+
+                    }
+                ]
+            );
+
         });
 
     }

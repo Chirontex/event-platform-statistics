@@ -107,16 +107,34 @@ class Titles
     /**
      * Return all titles.
      * 
+     * @param string $list_name
+     * 
+     * @param bool $actual
+     * 
      * @return array
      * 
      * @throws TitlesException
      */
-    public function selectTitles(string $list_name = '') : array
+    public function selectTitles(string $list_name = '', bool $actual = false) : array
     {
 
         $where = "";
 
-        if (!empty($list_name)) $where = " AS t WHERE t.list_name = '".$list_name."'";
+        if (!empty($list_name)) $where = $this->wpdb->prepare(" AS t WHERE t.list_name = %s", $list_name);
+
+        if ($actual) {
+
+            date_default_timezone_set('Europe/Moscow');
+
+            $now = date("Y-m-d H:i:s");
+
+            $where .= empty($where) ?
+            " AS t WHERE " :
+            " AND ";
+
+            $where .= "t.datetime_start < '".$now."' AND t.datetime_end > '".$now."'";
+
+        }
 
         $select = $this->wpdb->get_results(
             "SELECT *
