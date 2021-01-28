@@ -85,4 +85,8 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
         </thead>
         <tbody id="eps-titles-table"><?= $eps_titles_tbody ?></tbody>
     </table>
+    <form action="" method="post" hidden="true">
+        <input type="hidden" id="eps-titles-title-delete" name="eps-titles-title-delete" required="true">
+        <button type="submit" id="eps-titles-delete-submit"></button>
+    </form>
 </div>

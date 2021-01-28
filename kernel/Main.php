@@ -58,6 +58,8 @@ final class Main
                 isset($_POST['eps-titles-end-date']) &&
                 isset($_POST['eps-titles-end-time'])) $this->titleAdd();
 
+            if (isset($_POST['eps-titles-title-delete'])) $this->titleDelete();
+
             $this->titlesOutput();
 
         }
@@ -361,13 +363,46 @@ if (!window.jQuery)
     <td><?= $title['datetime_start'] ?></td>
     <td><?= $title['datetime_end'] ?></td>
     <td><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>
-    <td></td>
+    <td><a href="javascript:void(0)" onclick="epsTitlesDelete(<?= $title['id'] ?>);">Удалить</a></td>
 </tr>
 <?php
 
             }
 
             $GLOBALS['eps_titles_tbody'] = ob_get_clean();
+
+        }
+
+    }
+
+    private function titleDelete() : void
+    {
+
+        $titles = new Titles($this->wpdb);
+
+        try {
+
+            $delete = $titles->titleDelete((int)$_POST['eps-titles-title-delete']);
+
+        } catch (TitlesException $e) {
+
+            $this->adminStatusSet(
+                'danger',
+                'Ошибка удаления элемента программы, код '.$e->getCode().': "'.$e->getMessage().'"'
+            );
+
+        }
+
+        if (!isset($e)) {
+
+            if ($delete) $this->adminStatusSet(
+                'success',
+                'Элемент программы успешно удалён!'
+            );
+            else $this->adminStatusSet(
+                'danger',
+                'Не удалось удалить элемент программы'
+            );
 
         }
 

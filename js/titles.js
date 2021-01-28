@@ -16,3 +16,9 @@ function epsTitlesSubmitCheck()
         if (!button.hasAttribute('disabled')) button.setAttribute('disabled', 'true');
     }
 }
+
+function epsTitlesDelete(id)
+{
+    document.getElementById('eps-titles-title-delete').value = id;
+    document.getElementById('eps-titles-delete-submit').click();
+}
