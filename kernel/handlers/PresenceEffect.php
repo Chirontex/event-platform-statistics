@@ -152,7 +152,7 @@ class PresenceEffect implements WorksheetHandler
 
                             $worksheet->setCellValue(
                                 $this->getColumnName($col).$row,
-                                'п.п. '.$title['id']
+                                'Лекция ID '.$title['id']
                             );
 
                             $col += 1;

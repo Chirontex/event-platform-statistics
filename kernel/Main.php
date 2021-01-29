@@ -8,6 +8,7 @@ use EPStatistics\Handlers\SpreadsheetFile;
 use EPStatistics\Handlers\Participants;
 use EPStatistics\Handlers\PresenceEffect;
 use EPStatistics\Handlers\TitlesWorksheet;
+use EPStatistics\Handlers\Demography;
 use EPStatistics\Exceptions\HandlerException;
 use EPStatistics\Exceptions\SpreadsheetFileException;
 use EPStatistics\Exceptions\TokensException;
@@ -108,6 +109,19 @@ final class Main
                     $participants->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
                         'Участники'
+                    )
+                );
+
+            }
+
+            if (isset($_POST['eps-download-demography'])) {
+
+                $demography = new Demography(new Users($this->wpdb));
+
+                $spreadsheet_file->worksheetAdd(
+                    $demography->worksheetGet(
+                        $spreadsheet_file->spreadsheetGet(),
+                        'Демография'
                     )
                 );
 

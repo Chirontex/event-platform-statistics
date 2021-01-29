@@ -30,7 +30,7 @@ class TitlesWorksheet implements WorksheetHandler
 
         $titles_selected = $this->titles->selectTitles();
 
-        $worksheet->setCellValue('A1', 'ID');
+        $worksheet->setCellValue('A1', 'ID лекции');
         $worksheet->setCellValue('B1', 'Заголовок');
         $worksheet->setCellValue('C1', 'Зал');
         $worksheet->setCellValue('D1', 'Начало');

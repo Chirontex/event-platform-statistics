@@ -76,4 +76,37 @@ class Users
 
     }
 
+    /**
+     * Return users IDs grouped by towns.
+     * 
+     * @return array
+     */
+    public function getUsersTowns() : array
+    {
+
+        $result = [];
+
+        $select = $this->wpdb->get_results(
+            "SELECT t.user_id, t.meta_value
+                FROM ".$this->dbname.".".$this->wpdb->prefix."usermeta AS t
+                WHERE t.meta_key = 'town'",
+            ARRAY_A
+        );
+
+        if (is_array($select) && !empty($select)) {
+
+            foreach ($select as $values) {
+
+                $town = trim($values['meta_value']);
+
+                $result[empty($town) ? 'not_specified' : $town][] = $values['user_id'];
+
+            }
+
+        }
+
+        return $result;
+
+    }
+
 }
