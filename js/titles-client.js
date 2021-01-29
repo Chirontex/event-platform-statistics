@@ -1,4 +1,4 @@
-var eps_title_default = {};
+if (eps_title_default == undefined) var eps_title_default = {};
 
 function epsTitleGet(title_id, list_name)
 {

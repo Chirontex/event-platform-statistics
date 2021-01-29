@@ -142,7 +142,7 @@ class PresenceEffect implements WorksheetHandler
 
                         $worksheet->setCellValue('A'.$row, 'ID пользователя');
                         $worksheet->setCellValue('B'.$row, 'ФИО');
-                        $worksheet->setCellValue('C'.$row, 'Всего подтверждений');
+                        $worksheet->setCellValue('C'.$row, 'Всего релевантных подтверждений');
 
                         $col = 4;
 

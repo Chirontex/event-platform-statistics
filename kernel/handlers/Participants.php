@@ -43,9 +43,9 @@ class Participants implements WorksheetHandler
             $worksheet->setCellValue('I1', 'Специальность');
             $worksheet->setCellValue('J1', 'Город');
             $worksheet->setCellValue('K1', 'Дано согласие');
-            $worksheet->setCellValue('L1', 'НМО');
+            $worksheet->setCellValue('L1', 'Всего подтверждений присутствия');
 
-            $worksheet->setCellValue('K2', 'Всего:');
+            $worksheet->setCellValue('K2', 'По всем пользователям:');
 
             $i = 3;
 

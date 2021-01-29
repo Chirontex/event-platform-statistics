@@ -58,6 +58,12 @@ function epsTitlesUpdate(id)
     let datetime_start = datetime_start_cell.innerHTML.split(' ');
     let datetime_end = datetime_end_cell.innerHTML.split(' ');
 
+    datetime_start[0] = datetime_start[0].split('.');
+    datetime_start[0] = datetime_start[0][2]+'-'+datetime_start[0][1]+'-'+datetime_start[0][0];
+
+    datetime_end[0] = datetime_end[0].split('.');
+    datetime_end[0] = datetime_end[0][2]+'-'+datetime_end[0][1]+'-'+datetime_end[0][0];
+
     let row = document.createElement('div');
     row.setAttribute('class', 'row');
 
