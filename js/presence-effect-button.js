@@ -22,7 +22,7 @@ function epsPresenceConfirmationSend(message_position, message_class, message_st
         let message_text;
 
         if (answer['code'] == 0) message_text = 'Подтверждение присутствия успешно отправлено!';
-        else message_text = 'Ошибка обработки на подтверждения на сервере. Пожалуйста, обратитесь в техподдержку.';
+        else message_text = 'Ошибка обработки подтверждения на сервере. Пожалуйста, обратитесь в техподдержку.';
 
         epsPresenceConfirmationMessage({
             text: message_text,
