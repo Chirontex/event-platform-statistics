@@ -493,8 +493,8 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
     <td><?= $title['id'] ?></td>
     <td id="eps-title-title-<?= $title['id'] ?>"><?= htmlspecialchars($title['title']) ?></td>
     <td id="eps-title-list-name-<?= $title['id'] ?>"><?= htmlspecialchars($title['list_name']) ?></td>
-    <td id="eps-title-datetime-start-<?= $title['id'] ?>"><?= date("Y-m-d H:i", strtotime($title['datetime_start'])) ?></td>
-    <td id="eps-title-datetime-end-<?= $title['id'] ?>"><?= date("Y-m-d H:i", strtotime($title['datetime_end'])) ?></td>
+    <td id="eps-title-datetime-start-<?= $title['id'] ?>"><?= date("d.m.Y H:i", strtotime($title['datetime_start'])) ?></td>
+    <td id="eps-title-datetime-end-<?= $title['id'] ?>"><?= date("d.m.Y H:i", strtotime($title['datetime_end'])) ?></td>
     <td id="eps-title-nmo-<?= $title['id'] ?>"><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>
     <td id="eps-title-update-button-<?= $title['id'] ?>"><a href="javascript:void(0)" onclick="epsTitlesUpdate(<?= $title['id'] ?>);">Редактировать</a></td>
     <td><a href="javascript:void(0)" onclick="epsTitlesDelete(<?= $title['id'] ?>);">Удалить</a></td>
