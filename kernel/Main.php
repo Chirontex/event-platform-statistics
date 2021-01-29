@@ -7,6 +7,7 @@ namespace EPStatistics;
 use EPStatistics\Handlers\SpreadsheetFile;
 use EPStatistics\Handlers\Participants;
 use EPStatistics\Handlers\PresenceEffect;
+use EPStatistics\Handlers\TitlesWorksheet;
 use EPStatistics\Exceptions\HandlerException;
 use EPStatistics\Exceptions\SpreadsheetFileException;
 use EPStatistics\Exceptions\TokensException;
@@ -111,6 +112,15 @@ final class Main
             }
 
             if (isset($_POST['eps-download-nmo-titles'])) {
+
+                $titles_worksheet = new TitlesWorksheet(new Titles($this->wpdb));
+
+                $spreadsheet_file->worksheetAdd(
+                    $titles_worksheet->worksheetGet(
+                        $spreadsheet_file->spreadsheetGet(),
+                        'Программа'
+                    )
+                );
 
                 $presence_effect = new PresenceEffect(
                     new PresenceTimes($this->wpdb)
