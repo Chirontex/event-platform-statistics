@@ -1,4 +1,4 @@
-function epsPresenceConfirmationSend(message_position, message_class, message_style, button_id)
+function epsPresenceConfirmationSend(message_position, message_class, message_style, button_id, list_name)
 {
     const button = document.getElementById(button_id);
 
@@ -10,6 +10,7 @@ function epsPresenceConfirmationSend(message_position, message_class, message_st
     let request = $.ajax({
         url: "/wp-json/event-platform-statistics/v1/presence-time/add",
         method: "POST",
+        data: {list: list_name},
         dataType: "json"
     });
 

@@ -60,6 +60,8 @@ final class Main
                 isset($_POST['eps-titles-end-date']) &&
                 isset($_POST['eps-titles-end-time'])) $this->titleAdd();
 
+            if (isset($_POST['eps-titles-title-update'])) $this->titleUpdate();
+
             if (isset($_POST['eps-titles-title-delete'])) $this->titleDelete();
 
             $this->titlesOutput();
@@ -331,6 +333,7 @@ final class Main
         add_shortcode('eps-presence-effect-button', function($atts, $content) {
 
             $atts = shortcode_atts([
+                'list' => 'Общий',
                 'button-class' => '',
                 'button-style' => '',
                 'message-position' => 'after',
@@ -347,7 +350,7 @@ final class Main
             ob_start();
 
 ?>
-<button type="button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>');"><?= htmlspecialchars($content) ?></button>
+<button type="button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
 <script src="<?= $this->url ?>js/presence-effect-button.js"></script>
 <?php
 
@@ -358,7 +361,7 @@ final class Main
         add_shortcode('eps-title', function($atts, $content) {
 
             $atts = shortcode_atts([
-                'list' => '',
+                'list' => 'Общий',
                 'tag' => 'h3',
                 'id' => 'eps-title',
                 'class' => '',
@@ -418,8 +421,8 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
             try {
 
                 $add = $titles->titleAdd(
-                    $_POST['eps-titles-header'],
-                    $_POST['eps-titles-list'],
+                    trim($_POST['eps-titles-header']),
+                    trim($_POST['eps-titles-list']),
                     $timestamp_start,
                     $timestamp_end,
                     $nmo
@@ -472,12 +475,14 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
             foreach ($select as $title) {
 
 ?>
-<tr>
-    <td><?= htmlspecialchars($title['title']) ?></td>
-    <td><?= htmlspecialchars($title['list_name']) ?></td>
-    <td><?= $title['datetime_start'] ?></td>
-    <td><?= $title['datetime_end'] ?></td>
-    <td><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>
+<tr id="eps-title-<?= $title['id'] ?>">
+    <td><?= $title['id'] ?></td>
+    <td id="eps-title-title-<?= $title['id'] ?>"><?= htmlspecialchars($title['title']) ?></td>
+    <td id="eps-title-list-name-<?= $title['id'] ?>"><?= htmlspecialchars($title['list_name']) ?></td>
+    <td id="eps-title-datetime-start-<?= $title['id'] ?>"><?= date("Y-m-d H:i", strtotime($title['datetime_start'])) ?></td>
+    <td id="eps-title-datetime-end-<?= $title['id'] ?>"><?= date("Y-m-d H:i", strtotime($title['datetime_end'])) ?></td>
+    <td id="eps-title-nmo-<?= $title['id'] ?>"><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>
+    <td id="eps-title-update-button-<?= $title['id'] ?>"><a href="javascript:void(0)" onclick="epsTitlesUpdate(<?= $title['id'] ?>);">Редактировать</a></td>
     <td><a href="javascript:void(0)" onclick="epsTitlesDelete(<?= $title['id'] ?>);">Удалить</a></td>
 </tr>
 <?php
@@ -485,6 +490,50 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
             }
 
             $GLOBALS['eps_titles_tbody'] = ob_get_clean();
+
+        }
+
+    }
+
+    private function titleUpdate() : void
+    {
+
+        $titles = new Titles($this->wpdb);
+
+        $timestamp_start = strtotime(
+            $_POST['eps-titles-title-update-date-start'].' '.$_POST['eps-titles-title-update-time-start']
+        );
+
+        $timestamp_end = strtotime(
+            $_POST['eps-titles-title-update-date-end'].' '.$_POST['eps-titles-title-update-time-end']
+        );
+
+        if ($timestamp_start >= $timestamp_end) $this->adminStatusSet(
+            'danger',
+            'Дата и время были указаны некорректно.'
+        );
+        else {
+
+            try {
+
+                if ($titles->titleUpdate(
+                    (int)$_POST['eps-titles-title-update'],
+                    trim($_POST['eps-title-title-update-title']),
+                    trim($_POST['eps-titles-title-update-list-name']),
+                    $timestamp_start,
+                    $timestamp_end,
+                    (int)$_POST['eps-titles-title-update-nmo']
+                )) $this->adminStatusSet('success', 'Элемент программы успешно отредактирован!');
+                else $this->adminStatusSet('danger', 'Не удалось отредактировать элемент программы.');
+
+            } catch (TitlesException $e) {
+
+                $this->adminStatusSet(
+                    'danger',
+                    'Ошибка редактирования, код '.$e->getCode().': "'.$e->getMessage().'"'
+                );
+
+            }
 
         }
 

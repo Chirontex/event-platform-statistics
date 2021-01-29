@@ -43,6 +43,7 @@ class PresenceTimes
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `user_id` BIGINT UNSIGNED NOT NULL,
                 `presence_datetime` DATETIME NOT NULL,
+                `titles_list_name` TEXT NOT NULL,
                 PRIMARY KEY (`id`)
             )
             COLLATE='utf8mb4_unicode_ci'
@@ -64,7 +65,7 @@ class PresenceTimes
      * 
      * @throws PresenceTimesException
      */
-    public function add(int $user_id) : bool
+    public function add(int $user_id, string $list_name) : bool
     {
 
         date_default_timezone_set('Europe/Moscow');
@@ -74,13 +75,19 @@ class PresenceTimes
             -31
         );
 
+        if (empty($list_name)) throw new PresenceTimesException(
+            'List name cannot be empty.',
+            -33
+        );
+
         if ($this->wpdb->insert(
                 $this->wpdb->prefix.$this->table,
                 [
                     'user_id' => $user_id,
+                    'titles_list_name' => $list_name,
                     'presence_datetime' => date("Y-m-d H:i:s")
                 ],
-                ['%d', '%s']
+                ['%d', '%s', '%s']
         ) === false) return false;
         else return true;
 
@@ -129,7 +136,10 @@ class PresenceTimes
 
             foreach ($select as $record) {
 
-                $ordered[$record['user_id']][] = $record['presence_datetime'];
+                $ordered[$record['user_id']][] = [
+                    'datetime' => $record['presence_datetime'],
+                    'list' => $record['titles_list_name']
+                ];
 
             }
 

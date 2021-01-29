@@ -105,6 +105,65 @@ class Titles
     }
 
     /**
+     * Update a title.
+     * 
+     * @param int $id
+     * ID cannot be lesser than 1.
+     * 
+     * @param string $title
+     * Title cannot be empty.
+     * 
+     * @param string $list_name
+     * List name cannot be empty.
+     * 
+     * @param int $timestamp_start
+     * 
+     * @param int $timestamp_end
+     * 
+     * @param int $nmo
+     * 
+     * @return bool
+     * 
+     * @throws TitlesException
+     */
+    public function titleUpdate(int $id, string $title, string $list_name, int $timestamp_start, int $timestamp_end, int $nmo = 0) : bool
+    {
+
+        if ($id < 1) throw new TitlesException(
+            'ID cannot be lesser than 1.',
+            -53
+        );
+
+        if (empty($title)) throw new TitlesException(
+            'Title cannot be empty.',
+            -51
+        );
+
+        if (empty($list_name)) throw new TitlesException(
+            'List name cannot be empty.',
+            -54
+        );
+
+        if ($nmo < 0 || $nmo > 1) $nmo = 0;
+
+        if ($this->wpdb->update(
+            $this->wpdb->prefix.$this->table,
+            [
+                'title' => $title,
+                'list_name' => $list_name,
+                'datetime_start' => date("Y-m-d H:i:s", $timestamp_start),
+                'datetime_end' => date("Y-m-d H:i:s", $timestamp_end),
+                'nmo' => $nmo
+            ],
+            ['id' => $id],
+            ['%s', '%s', '%s', '%s', '%d'],
+            '%d'
+        ) === false) return false;
+        else return true;
+
+    }
+
+    /**
      * Return all titles.
      * 
      * @param string $list_name

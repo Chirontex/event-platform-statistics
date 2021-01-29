@@ -79,11 +79,13 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Заголовок</th>
                 <th>Зал</th>
                 <th>Дата и время начала</th>
                 <th>Дата и время конца</th>
                 <th>НМО</th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -92,5 +94,9 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
     <form action="" method="post" hidden="true">
         <input type="hidden" id="eps-titles-title-delete" name="eps-titles-title-delete" required="true">
         <button type="submit" id="eps-titles-delete-submit"></button>
+    </form>
+    <form action="" method="post" hidden="true">
+        <input type="hidden" id="eps-titles-title-update" name="eps-titles-title-update" required="true">
+        <button type="submit" id="eps-titles-update-submit"></button>
     </form>
 </div>

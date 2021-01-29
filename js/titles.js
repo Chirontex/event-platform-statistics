@@ -23,3 +23,180 @@ function epsTitlesDelete(id)
     document.getElementById('eps-titles-title-delete').value = id;
     document.getElementById('eps-titles-delete-submit').click();
 }
+
+function epsTitlesUpdate(id)
+{
+    const title_cell = document.getElementById('eps-title-title-'+id);
+    const list_name_cell = document.getElementById('eps-title-list-name-'+id);
+    const datetime_start_cell = document.getElementById('eps-title-datetime-start-'+id);
+    const datetime_end_cell = document.getElementById('eps-title-datetime-end-'+id);
+    const nmo_cell = document.getElementById('eps-title-nmo-'+id);
+    const button_cell = document.getElementById('eps-title-update-button-'+id);
+
+    let element = document.createElement('input');
+    element.setAttribute('type', 'text');
+    element.setAttribute('id', 'eps-titles-title-update-title-'+id);
+    element.setAttribute('class', 'form-control');
+    element.setAttribute('placeholder', 'Введите заголовок');
+    element.setAttribute('value', title_cell.innerHTML);
+    element.setAttribute('oninput', 'epsTitlesUpdateCheck('+id+');');
+
+    title_cell.innerHTML = '';
+    title_cell.appendChild(element);
+
+    element = document.createElement('input');
+    element.setAttribute('type', 'text');
+    element.setAttribute('id', 'eps-titles-title-update-list-name-'+id);
+    element.setAttribute('class', 'form-control');
+    element.setAttribute('placeholder', 'Укажите обозначение зала');
+    element.setAttribute('value', list_name_cell.innerHTML);
+    element.setAttribute('oninput', 'epsTitlesUpdateCheck('+id+');');
+
+    list_name_cell.innerHTML = '';
+    list_name_cell.appendChild(element);
+
+    let datetime_start = datetime_start_cell.innerHTML.split(' ');
+    let datetime_end = datetime_end_cell.innerHTML.split(' ');
+
+    let row = document.createElement('div');
+    row.setAttribute('class', 'row');
+
+    datetime_start_cell.innerHTML = '';
+    datetime_start_cell.appendChild(row);
+
+    let col_1 = document.createElement('div');
+    col_1.setAttribute('class', 'col-xs-6 col-sm-6 col-md-6 col-lg-6');
+
+    row.appendChild(col_1);
+
+    let col_2 = document.createElement('div');
+    col_2.setAttribute('class', 'col-xs-6 col-sm-6 col-md-6 col-lg-6');
+
+    row.appendChild(col_2);
+
+    element = document.createElement('input');
+    element.setAttribute('type', 'date');
+    element.setAttribute('id', 'eps-titles-title-update-date-start-'+id);
+    element.setAttribute('class', 'form-control');
+    element.setAttribute('value', datetime_start[0]);
+    element.setAttribute('oninput', 'epsTitlesUpdateCheck('+id+');');
+
+    col_1.appendChild(element);
+
+    element = document.createElement('input');
+    element.setAttribute('type', 'time');
+    element.setAttribute('id', 'eps-titles-title-update-time-start-'+id);
+    element.setAttribute('class', 'form-control');
+    element.setAttribute('value', datetime_start[1]);
+    element.setAttribute('oninput', 'epsTitlesUpdateCheck('+id+');');
+
+    col_2.appendChild(element);
+
+    row = document.createElement('div');
+    row.setAttribute('class', 'row');
+
+    datetime_end_cell.innerHTML = '';
+    datetime_end_cell.appendChild(row);
+
+    col_1 = document.createElement('div');
+    col_1.setAttribute('class', 'col-xs-6 col-sm-6 col-md-6 col-lg-6');
+
+    row.appendChild(col_1);
+
+    col_2 = document.createElement('div');
+    col_2.setAttribute('class', 'col-xs-6 col-sm-6 col-md-6 col-lg-6');
+
+    row.appendChild(col_2);
+
+    element = document.createElement('input');
+    element.setAttribute('type', 'date');
+    element.setAttribute('id', 'eps-titles-title-update-date-end-'+id);
+    element.setAttribute('class', 'form-control');
+    element.setAttribute('value', datetime_end[0]);
+    element.setAttribute('oninput', 'epsTitlesUpdateCheck('+id+');');
+
+    col_1.appendChild(element);
+
+    element = document.createElement('input');
+    element.setAttribute('type', 'time');
+    element.setAttribute('id', 'eps-titles-title-update-time-end-'+id);
+    element.setAttribute('class', 'form-control');
+    element.setAttribute('value', datetime_end[1]);
+    element.setAttribute('oninput', 'epsTitlesUpdateCheck('+id+');');
+
+    col_2.appendChild(element);
+
+    let nmo = nmo_cell.innerHTML;
+
+    element = document.createElement('select');
+    element.setAttribute('id', 'eps-titles-title-update-nmo-'+id);
+    element.setAttribute('class', 'form-select');
+
+    nmo_cell.innerHTML = '';
+    nmo_cell.appendChild(element);
+
+    let option = document.createElement('option');
+    option.setAttribute('value', '1');
+
+    if (nmo == 'Да') option.setAttribute('selected', 'true');
+
+    element.appendChild(option);
+
+    option.innerHTML = 'Да';
+
+    option = document.createElement('option');
+    option.setAttribute('value', '0');
+
+    if (nmo == 'Нет') option.setAttribute('selected', 'true');
+
+    element.appendChild(option);
+
+    option.innerHTML = 'Нет';
+
+    element = document.createElement('a');
+    element.setAttribute('href', 'javascript:void(0)');
+    element.setAttribute('id', 'eps-titles-title-update-save-button-'+id);
+    element.setAttribute('onclick', 'epsTitleUpdateInit('+id+');');
+
+    button_cell.innerHTML= '';
+    button_cell.appendChild(element);
+
+    element.innerHTML = 'Сохранить';
+}
+
+function epsTitlesUpdateCheck(id)
+{
+    const title = document.getElementById('eps-titles-title-update-title-'+id);
+    const list_name = document.getElementById('eps-titles-title-update-list-name-'+id);
+    const date_start = document.getElementById('eps-titles-title-update-date-start-'+id);
+    const time_start = document.getElementById('eps-titles-title-update-time-start-'+id);
+    const date_end = document.getElementById('eps-titles-title-update-date-end-'+id);
+    const time_end = document.getElementById('eps-titles-title-update-time-end-'+id);
+    
+    let button = document.getElementById('eps-titles-title-update-save-button-'+id);
+
+    const button_parent = button.parentNode;
+
+    if (title.value !== '' && list_name.value !== '' && date_start.value !== '' && time_start.value !== '' && date_end.value !== '' && time_end.value !== '')
+    {
+        button_parent.removeChild(button);
+
+        button = document.createElement('a');
+        button.setAttribute('href', 'javascript:void(0)');
+        button.setAttribute('id', 'eps-titles-title-update-save-button-'+id);
+        button.setAttribute('onclick', 'epsTitleUpdateInit('+id+');');
+
+        button_parent.appendChild(button);
+
+        button.innerHTML = 'Сохранить';
+    }
+    else
+    {
+        button_parent.removeChild(button);
+
+        button = document.createElement('p');
+        button.setAttribute('id', 'eps-titles-title-update-save-button-'+id);
+
+        button_parent.appendChild(button);
+    }
+}

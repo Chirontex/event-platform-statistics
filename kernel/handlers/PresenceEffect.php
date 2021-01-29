@@ -39,35 +39,42 @@ class PresenceEffect implements WorksheetHandler
 
         $result = [];
 
-        $tokens = new Tokens($this->presence_times->wpdbGet());
+        if (isset($_REQUEST['list'])) {
 
-        $user_id = $tokens->userGetByToken($_COOKIE['eps_api_token']);
+            $tokens = new Tokens($this->presence_times->wpdbGet());
 
-        try {
+            $user_id = $tokens->userGetByToken($_COOKIE['eps_api_token']);
 
-            $add = $this->presence_times->add($user_id);
+            try {
 
-        } catch (PresenceTimesException $e) {
+                $add = $this->presence_times->add($user_id, trim($_REQUEST['list']));
 
-            $result = [
-                'code' => $e->getCode(),
-                'message' => $e->getMessage()
-            ];
+            } catch (PresenceTimesException $e) {
 
-        }
+                $result = [
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage()
+                ];
 
-        if (empty($result)) {
+            }
 
-            if ($add) $result = [
-                'code' => 0,
-                'message' => 'Success.'
-            ];
-            else $result = [
-                'code' => -33,
-                'message' => 'Presence time adding to database failure.'
-            ];
+            if (empty($result)) {
 
-        }
+                if ($add) $result = [
+                    'code' => 0,
+                    'message' => 'Success.'
+                ];
+                else $result = [
+                    'code' => -33,
+                    'message' => 'Presence time adding to database failure.'
+                ];
+
+            }
+
+        } else $result = [
+            'code' => -99,
+            'message' => 'Too few arguments for this request.'
+        ];
 
         return $result;
 
@@ -94,7 +101,8 @@ class PresenceEffect implements WorksheetHandler
 
                     $worksheet->setCellValue('A1', 'ID');
                     $worksheet->setCellValue('B1', 'ФИО');
-                    $worksheet->setCellValue('C1', 'Дата и время подтверждения');
+                    $worksheet->setCellValue('C1', 'Зал');
+                    $worksheet->setCellValue('D1', 'Дата и время подтверждения');
 
                     $i = 2;
 
@@ -109,7 +117,8 @@ class PresenceEffect implements WorksheetHandler
                                     'B'.$i,
                                     $values['Surname'].' '.$values['Name'].' '.$values['LastName']
                                 );
-                                $worksheet->setCellValue('C'.$i, $datetime);
+                                $worksheet->setCellValue('C'.$i, $datetime['list']);
+                                $worksheet->setCellValue('D'.$i, $datetime['datetime']);
 
                                 $i += 1;
 
@@ -143,7 +152,7 @@ class PresenceEffect implements WorksheetHandler
 
                             $worksheet->setCellValue(
                                 $this->getColumnName($col).$row,
-                                $title['id']
+                                'п.п. '.$title['id']
                             );
 
                             $col += 1;
@@ -172,12 +181,13 @@ class PresenceEffect implements WorksheetHandler
 
                                 if (isset($values['presence_times'])) {
 
-                                    foreach ($values['presence_times'] as $datetime) {
+                                    foreach ($values['presence_times'] as $presence_time) {
 
-                                        $datetime = strtotime($datetime);
+                                        $datetime = strtotime($presence_time['datetime']);
 
-                                        if ($datetime >= strtotime($title['datetime_start']) &&
-                                            $datetime <= strtotime($title['datetime_end'])) {
+                                        if (($datetime >= strtotime($title['datetime_start']) &&
+                                                $datetime <= strtotime($title['datetime_end'])) &&
+                                            $presence_time['list'] === $title['list_name']) {
 
                                             $confs += 1;
                                             $confs_total += 1;
