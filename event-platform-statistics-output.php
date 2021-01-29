@@ -56,7 +56,7 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
         </div>
         <div class="mb-5">
             <input type="checkbox" class="form-check-input" name="eps-download-nmo-raw" id="eps-download-nmo-raw" value="true" checked="true" onclick="epsAdminSubmitCheck();">
-            <label for="eps-download-nmo-raw" class="form-check-label">НМО (перечень)</label>
+            <label for="eps-download-nmo-raw" class="form-check-label">НМО (детализация)</label>
         </div>
         <input type="hidden" name="eps-download-init" value="true">
         <button type="submit" id="eps-admin-form-submit" class="btn btn-primary mx-auto">Скачать</button>

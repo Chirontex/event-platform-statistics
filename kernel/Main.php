@@ -161,7 +161,7 @@ final class Main
                 $spreadsheet_file->worksheetAdd(
                     $presence_effect->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
-                        'НМО (перечень)',
+                        'НМО (детализация)',
                         $presence_effect::WORKSHEET_MODE_RAW
                     )
                 );
