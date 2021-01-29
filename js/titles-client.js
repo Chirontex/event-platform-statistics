@@ -1,10 +1,10 @@
-var eps_title_default = '';
+var eps_title_default = {};
 
 function epsTitleGet(title_id, list_name)
 {
     const title = document.getElementById(title_id);
 
-    if (window.eps_title_default == '') window.eps_title_default = title.innerHTML;
+    if (window.eps_title_default[title_id] == '' || window.eps_title_default[title_id] == null || window.eps_title_default[title_id] == undefined) window.eps_title_default[title_id] = title.innerHTML;
 
     let request = $.ajax({
         url: "/wp-json/event-platform-statistics/v1/titles/get-actual-title",
@@ -19,7 +19,7 @@ function epsTitleGet(title_id, list_name)
         console.log('   message: '+answer['message']);
 
         if (answer['code'] == 0) title.innerHTML = answer['data'];
-        else if (answer['code'] > 0) title.innerHTML = window.eps_title_default;
+        else if (answer['code'] > 0) title.innerHTML = window.eps_title_default[title_id];
         else if (answer['code'] < 0) title.innerHTML = 'Ошибка, код '+answer['code']+': "'+answer['message']+'"';
 
         epsTitleTimeout(title_id, list_name);
