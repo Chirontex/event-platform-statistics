@@ -518,7 +518,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
 
                 if ($titles->titleUpdate(
                     (int)$_POST['eps-titles-title-update'],
-                    trim($_POST['eps-title-title-update-title']),
+                    trim($_POST['eps-titles-title-update-title']),
                     trim($_POST['eps-titles-title-update-list-name']),
                     $timestamp_start,
                     $timestamp_end,

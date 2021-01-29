@@ -200,3 +200,63 @@ function epsTitlesUpdateCheck(id)
         button_parent.appendChild(button);
     }
 }
+
+function epsTitleUpdateInit(id)
+{
+    const submit = document.getElementById('eps-titles-update-submit');
+    const update_trigger = document.getElementById('eps-titles-title-update');
+    const form = update_trigger.parentNode;
+
+    update_trigger.setAttribute('value', id);
+
+    let input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'eps-titles-title-update-title');
+    input.setAttribute('value', document.getElementById('eps-titles-title-update-title-'+id).value);
+
+    form.appendChild(input);
+
+    input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'eps-titles-title-update-list-name');
+    input.setAttribute('value', document.getElementById('eps-titles-title-update-list-name-'+id).value);
+
+    form.appendChild(input);
+
+    input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'eps-titles-title-update-date-start');
+    input.setAttribute('value', document.getElementById('eps-titles-title-update-date-start-'+id).value);
+
+    form.appendChild(input);
+
+    input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'eps-titles-title-update-time-start');
+    input.setAttribute('value', document.getElementById('eps-titles-title-update-time-start-'+id).value);
+
+    form.appendChild(input);
+
+    input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'eps-titles-title-update-date-end');
+    input.setAttribute('value', document.getElementById('eps-titles-title-update-date-end-'+id).value);
+
+    form.appendChild(input);
+
+    input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'eps-titles-title-update-time-end');
+    input.setAttribute('value', document.getElementById('eps-titles-title-update-time-end-'+id).value);
+
+    form.appendChild(input);
+
+    input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'eps-titles-title-update-nmo');
+    input.setAttribute('value', document.getElementById('eps-titles-title-update-nmo-'+id).value);
+
+    form.appendChild(input);
+
+    submit.click();
+}
