@@ -101,8 +101,9 @@ class PresenceEffect implements WorksheetHandler
 
                     $worksheet->setCellValue('A1', 'ID');
                     $worksheet->setCellValue('B1', 'ФИО');
-                    $worksheet->setCellValue('C1', 'Зал');
-                    $worksheet->setCellValue('D1', 'Дата и время подтверждения');
+                    $worksheet->setCellValue('C1', 'Город');
+                    $worksheet->setCellValue('D1', 'Зал');
+                    $worksheet->setCellValue('E1', 'Дата и время подтверждения');
 
                     $i = 2;
 
@@ -117,8 +118,9 @@ class PresenceEffect implements WorksheetHandler
                                     'B'.$i,
                                     $values['Surname'].' '.$values['Name'].' '.$values['LastName']
                                 );
-                                $worksheet->setCellValue('C'.$i, $datetime['list']);
-                                $worksheet->setCellValue('D'.$i, $datetime['datetime']);
+                                $worksheet->setCellValue('C'.$i, $values['town']);
+                                $worksheet->setCellValue('D'.$i, $datetime['list']);
+                                $worksheet->setCellValue('E'.$i, $datetime['datetime']);
 
                                 $i += 1;
 
@@ -142,9 +144,11 @@ class PresenceEffect implements WorksheetHandler
 
                         $worksheet->setCellValue('A'.$row, 'ID пользователя');
                         $worksheet->setCellValue('B'.$row, 'ФИО');
-                        $worksheet->setCellValue('C'.$row, 'Всего релевантных подтверждений');
+                        $worksheet->setCellValue('C'.$row, 'Город');
+                        $worksheet->setCellValue('D'.$row, 'Всего релевантных подтверждений');
 
-                        $col = 4;
+                        $col_base = 5;
+                        $col = $col_base;
 
                         foreach ($titles_selected as $title) {
 
@@ -168,8 +172,9 @@ class PresenceEffect implements WorksheetHandler
                                 'B'.$row,
                                 $values['Surname'].' '.$values['Name'].' '.$values['LastName']
                             );
+                            $worksheet->setCellValue('C'.$row, $values['town']);
 
-                            $col = 4;
+                            $col = $col_base;
 
                             $confs_total = 0;
 
@@ -207,7 +212,10 @@ class PresenceEffect implements WorksheetHandler
 
                             }
 
-                            $worksheet->setCellValue('C'.$row, $confs_total);
+                            $worksheet->setCellValue(
+                                $this->getColumnName($col_base - 1).$row,
+                                $confs_total
+                            );
 
                             $row += 1;
 
