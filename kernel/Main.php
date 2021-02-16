@@ -9,6 +9,7 @@ use EPStatistics\Handlers\Participants;
 use EPStatistics\Handlers\PresenceEffect;
 use EPStatistics\Handlers\TitlesWorksheet;
 use EPStatistics\Handlers\Demography;
+use EPStatistics\Handlers\Attendance;
 use EPStatistics\Exceptions\HandlerException;
 use EPStatistics\Exceptions\SpreadsheetFileException;
 use EPStatistics\Exceptions\TokensException;
@@ -43,6 +44,8 @@ final class Main
 
         $this->shortcodesInit();
         $this->adminMenuInit();
+
+        $this->visitWrite();
 
         if (strpos(
                 $_GET['page'],
@@ -122,6 +125,22 @@ final class Main
                     $demography->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
                         'Демография'
+                    )
+                );
+
+            }
+
+            if (isset($_POST['eps-download-visits'])) {
+
+                $attendance = new Attendance(
+                    new Visits($this->wpdb),
+                    new Users($this->wpdb)
+                );
+
+                $spreadsheet_file->worksheetAdd(
+                    $attendance->worksheetGet(
+                        $spreadsheet_file->spreadsheetGet(),
+                        'Посещения'
                     )
                 );
 
@@ -628,6 +647,35 @@ if (!jquery_loaded)
 <?php
 
         return ob_get_clean();
+
+    }
+
+    private function visitWrite() : void
+    {
+
+        add_action('wp_loaded', function() {
+
+            $user_id = get_current_user_id();
+
+            if ($user_id !== 0) {
+
+                if (strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false &&
+                    strpos($_SERVER['REQUEST_URI'], 'wp-content') === false &&
+                    strpos($_SERVER['REQUEST_URI'], 'wp-includes') === false) {
+
+                    $visits = new Visits($this->wpdb);
+
+                    if (!$visits->addVisit(
+                        (empty($_SERVER['HTTPS']) ? 'http' : 'https').
+                        '://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                        $user_id
+                    )) wp_die('Event Platform Statistics: visit writing failure.');
+
+                }
+
+            }
+
+        });
 
     }
 

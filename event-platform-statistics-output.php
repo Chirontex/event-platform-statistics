@@ -51,6 +51,10 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
             <label for="eps-download-demography" class="form-check-label">Демография</label>
         </div>
         <div class="mb-2">
+            <input type="checkbox" class="form-check-input" name="eps-download-visits" id="eps-download-visits" value="true" checked="true" onclick="epsAdminSubmitCheck();">
+            <label for="eps-download-visits" class="form-check-label">Посещения</label>
+        </div>
+        <div class="mb-2">
             <input type="checkbox" class="form-check-input" name="eps-download-nmo-titles" id="eps-download-nmo-titles" value="true" checked="true" onclick="epsAdminSubmitCheck();">
             <label for="eps-download-nmo-titles" class="form-check-label">НМО</label>
         </div>

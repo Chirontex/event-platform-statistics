@@ -35,7 +35,7 @@ class Attendance implements WorksheetHandler
         $worksheet->setCellValue('A1', 'Адрес');
         $worksheet->setCellValue('B1', 'Дата');
         $worksheet->setCellValue('C1', 'Время');
-        $worksheet->setCellValue('D1', 'ID');
+        $worksheet->setCellValue('D1', 'ID участника');
         $worksheet->setCellValue('E1', 'ФИО');
         $worksheet->setCellValue('F1', 'E-mail');
         $worksheet->setCellValue('G1', 'Номер телефона');
