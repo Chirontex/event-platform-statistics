@@ -105,7 +105,7 @@ class Visits
 
         $select = $this->wpdb->get_results(
             "SELECT t.user_id, t.page_url, t.datetime
-                FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table." AS t",
+                FROM `".$this->wpdb->prefix.$this->table."` AS t",
             ARRAY_A
         );
 

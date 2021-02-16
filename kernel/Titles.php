@@ -197,7 +197,7 @@ class Titles
 
         $select = $this->wpdb->get_results(
             "SELECT *
-                FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table.$where,
+                FROM `".$this->wpdb->prefix.$this->table."`".$where,
             ARRAY_A
         );
 

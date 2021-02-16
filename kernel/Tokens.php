@@ -81,7 +81,7 @@ class Tokens {
         $select = $this->wpdb->get_results(
             $this->wpdb->prepare(
                 "SELECT *
-                    FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table." AS t
+                    FROM `".$this->wpdb->prefix.$this->table."` AS t
                     WHERE t.user_id = %d",
                 $user_id
             ),
@@ -266,7 +266,7 @@ class Tokens {
         $select = $this->wpdb->get_results(
             $this->wpdb->prepare(
                 "SELECT *
-                    FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table." AS t
+                    FROM `".$this->wpdb->prefix.$this->table."` AS t
                     WHERE t.token = %s",
                 $token
             ),

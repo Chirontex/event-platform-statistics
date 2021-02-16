@@ -105,7 +105,7 @@ class PresenceTimes
 
         $select = $this->wpdb->get_results(
             "SELECT *
-                FROM ".$this->dbname.".".$this->wpdb->prefix.$this->table,
+                FROM `".$this->wpdb->prefix.$this->table."`",
             ARRAY_A
         );
 

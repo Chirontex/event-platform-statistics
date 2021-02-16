@@ -37,10 +37,10 @@ class Users
 
         $select = $this->wpdb->get_results(
             "SELECT t.user_id, t.meta_key, t.meta_value, t1.user_email
-                FROM ".$this->dbname.".".$this->wpdb->prefix."usermeta AS t
+                FROM `".$this->wpdb->prefix."usermeta` AS t
                 LEFT JOIN (
                     SELECT t2.ID, t2.user_email
-                        FROM ".$this->dbname.".".$this->wpdb->prefix."users AS t2
+                        FROM `".$this->wpdb->prefix."users` AS t2
                 ) AS t1
                 ON t.user_id = t1.ID",
             ARRAY_A
@@ -88,7 +88,7 @@ class Users
 
         $select = $this->wpdb->get_results(
             "SELECT t.user_id, t.meta_value
-                FROM ".$this->dbname.".".$this->wpdb->prefix."usermeta AS t
+                FROM `".$this->wpdb->prefix."usermeta` AS t
                 WHERE t.meta_key = 'town'",
             ARRAY_A
         );
