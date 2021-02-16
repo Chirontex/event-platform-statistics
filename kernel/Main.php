@@ -665,11 +665,11 @@ if (!jquery_loaded)
 
                     $visits = new Visits($this->wpdb);
 
-                    if (!$visits->addVisit(
+                    $visits->addVisit(
                         (empty($_SERVER['HTTPS']) ? 'http' : 'https').
                         '://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
                         $user_id
-                    )) wp_die('Event Platform Statistics: visit writing failure.');
+                    );
 
                 }
 
