@@ -101,9 +101,14 @@ class PresenceEffect implements WorksheetHandler
 
                     $worksheet->setCellValue('A1', 'ID');
                     $worksheet->setCellValue('B1', 'ФИО');
-                    $worksheet->setCellValue('C1', 'Город');
-                    $worksheet->setCellValue('D1', 'Зал');
-                    $worksheet->setCellValue('E1', 'Дата и время подтверждения');
+                    $worksheet->setCellValue('C1', 'E-mail');
+                    $worksheet->setCellValue('D1', 'Номер телефона');
+                    $worksheet->setCellValue('E1', 'Дата рождения');
+                    $worksheet->setCellValue('F1', 'Город');
+                    $worksheet->setCellValue('G1', 'Организация');
+                    $worksheet->setCellValue('H1', 'Специальность');
+                    $worksheet->setCellValue('I1', 'Зал');
+                    $worksheet->setCellValue('J1', 'Дата и время подтверждения');
 
                     $i = 2;
 
@@ -118,9 +123,14 @@ class PresenceEffect implements WorksheetHandler
                                     'B'.$i,
                                     $values['Surname'].' '.$values['Name'].' '.$values['LastName']
                                 );
-                                $worksheet->setCellValue('C'.$i, $values['town']);
-                                $worksheet->setCellValue('D'.$i, $datetime['list']);
-                                $worksheet->setCellValue('E'.$i, $datetime['datetime']);
+                                $worksheet->setCellValue('C'.$i, $values['email']);
+                                $worksheet->setCellValue('D'.$i, $values['phone']);
+                                $worksheet->setCellValue('E'.$i, $values['Date_of_Birth']);
+                                $worksheet->setCellValue('F'.$i, $values['town']);
+                                $worksheet->setCellValue('G'.$i, $values['Organization']);
+                                $worksheet->setCellValue('H'.$i, $values['Specialty']);
+                                $worksheet->setCellValue('I'.$i, $datetime['list']);
+                                $worksheet->setCellValue('J'.$i, $datetime['datetime']);
 
                                 $i += 1;
 
@@ -144,10 +154,15 @@ class PresenceEffect implements WorksheetHandler
 
                         $worksheet->setCellValue('A'.$row, 'ID пользователя');
                         $worksheet->setCellValue('B'.$row, 'ФИО');
-                        $worksheet->setCellValue('C'.$row, 'Город');
-                        $worksheet->setCellValue('D'.$row, 'Всего релевантных подтверждений');
+                        $worksheet->setCellValue('C'.$row, 'E-mail');
+                        $worksheet->setCellValue('D'.$row, 'Номер телефона');
+                        $worksheet->setCellValue('E'.$row, 'Дата рождения');
+                        $worksheet->setCellValue('F'.$row, 'Город');
+                        $worksheet->setCellValue('G'.$row, 'Организация');
+                        $worksheet->setCellValue('H'.$row, 'Специальность');
+                        $worksheet->setCellValue('I'.$row, 'Всего релевантных подтверждений');
 
-                        $col_base = 5;
+                        $col_base = 10;
                         $col = $col_base;
 
                         foreach ($titles_selected as $title) {
@@ -172,7 +187,12 @@ class PresenceEffect implements WorksheetHandler
                                 'B'.$row,
                                 $values['Surname'].' '.$values['Name'].' '.$values['LastName']
                             );
-                            $worksheet->setCellValue('C'.$row, $values['town']);
+                            $worksheet->setCellValue('C'.$row, $values['email']);
+                            $worksheet->setCellValue('D'.$row, $values['phone']);
+                            $worksheet->setCellValue('E'.$row, $values['Date_of_Birth']);
+                            $worksheet->setCellValue('F'.$row, $values['town']);
+                            $worksheet->setCellValue('G'.$row, $values['Organization']);
+                            $worksheet->setCellValue('H'.$row, $values['Specialty']);
 
                             $col = $col_base;
 
