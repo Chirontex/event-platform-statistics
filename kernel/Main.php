@@ -653,9 +653,11 @@ if (!jquery_loaded)
     private function visitWrite() : void
     {
 
-        add_action('wp_loaded', function() {
+        add_action('template_redirect', function() {
 
             $user_id = get_current_user_id();
+
+            $response_code = http_response_code();
 
             if ($user_id !== 0) {
 
@@ -664,7 +666,8 @@ if (!jquery_loaded)
                     strpos($_SERVER['REQUEST_URI'], 'wp-includes') === false &&
                     strpos($_SERVER['REQUEST_URI'], 'wp-json') === false &&
                     strpos($_SERVER['REQUEST_URI'], 'favicon.ico') === false &&
-                    strpos($_SERVER['REQUEST_URI'], 'preview=true') === false) {
+                    strpos($_SERVER['REQUEST_URI'], 'preview=true') === false &&
+                    (int)$response_code < 400) {
 
                     $visits = new Visits($this->wpdb);
 
