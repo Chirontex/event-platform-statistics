@@ -3,7 +3,7 @@
  * Plugin Name: Event Platform Statistics
  * Plugin URI: https://github.com/drnoisier/event-platform-statistics
  * Description: Плагин, реализующий сбор статистики на площадке мероприятий.
- * Version: 1.0.6
+ * Version: 1.0.7
  * Author: Дмитрий Шумилин
  * Author URI: mailto://ds@brandpro.ru
  */
