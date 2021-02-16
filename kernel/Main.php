@@ -661,7 +661,10 @@ if (!jquery_loaded)
 
                 if (strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false &&
                     strpos($_SERVER['REQUEST_URI'], 'wp-content') === false &&
-                    strpos($_SERVER['REQUEST_URI'], 'wp-includes') === false) {
+                    strpos($_SERVER['REQUEST_URI'], 'wp-includes') === false &&
+                    strpos($_SERVER['REQUEST_URI'], 'wp-json') === false &&
+                    strpos($_SERVER['REQUEST_URI'], 'favicon.ico') === false &&
+                    strpos($_SERVER['REQUEST_URI'], 'preview=true') === false) {
 
                     $visits = new Visits($this->wpdb);
 
