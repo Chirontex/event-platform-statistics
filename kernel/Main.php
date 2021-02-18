@@ -12,7 +12,6 @@ use EPStatistics\Handlers\Demography;
 use EPStatistics\Handlers\Attendance;
 use EPStatistics\Exceptions\HandlerException;
 use EPStatistics\Exceptions\SpreadsheetFileException;
-use EPStatistics\Exceptions\TokensException;
 use EPStatistics\Exceptions\TitlesException;
 
 final class Main
@@ -327,68 +326,51 @@ final class Main
     private function apiTokenGet() : void
     {
 
-        if (empty($_COOKIE['eps_api_token'])) {
+        add_action('wp_loaded', function() {
 
-            add_action('wp_loaded', function() {
+            $user_id = get_current_user_id();
 
-                $user_id = get_current_user_id();
-
-                if ($user_id !== 0) {
-
-                    $tokens = new Tokens($this->wpdb);
-
-                    try {
-
-                        $token = $tokens->tokenGetGenerate($user_id);
-
-                    } catch (TokensException $e) {
-
-                        wp_die('Event Platform Statistics error, '.$e->getCode().': '.$e->getMessage());
-
-                    }
-
-                    setcookie('eps_api_token', $token, 0, '/');
-
-                }
-
-            });
-
-        } else {
-
-            add_action('wp_login', function($user_login, $user) {
+            if ($user_id !== 0) {
 
                 $tokens = new Tokens($this->wpdb);
 
-                try {
+                if ($tokens->userGetByToken(
+                        (string)$_COOKIE['eps_api_token']
+                    ) === 0) {
 
-                    $token = $tokens->tokenGetGenerate($user->ID);
-
-                } catch (TokensException $e) {
-
-                    wp_die('Event Platform Statistics error, '.$e->getCode().': '.$e->getMessage());
+                    setcookie(
+                        'eps_api_token',
+                        $tokens->tokenGetGenerate($user_id),
+                        0,
+                        '/'
+                    );
 
                 }
 
-                setcookie('eps_api_token', $token, 0, '/');
+            }
 
-            }, 10, 2);
-
-        }
+        });
 
     }
 
     private function apiTokenRemove() : void
     {
 
-        add_action('wp_logout', function() {
+        add_action('clear_auth_cookie', function() {
 
             $user_id = get_current_user_id();
 
             $tokens = new Tokens($this->wpdb);
 
-            if (!$tokens->tokenDelete(
-                (string)$_COOKIE['eps_api_token']
-            ) && $user_id !== 0) $tokens->tokenDeleteByUser($user_id);
+            if (empty($_COOKIE['eps_api_token']) &&
+                $user_id !== 0) $tokens->tokenDeleteByUser($user_id);
+            else {
+                
+                $tokens->tokenDelete((string)$_COOKIE['eps_api_token']);
+
+                setcookie('eps_api_token', '', 0, '/');
+            
+            }
 
         });
 
