@@ -1,28 +1,42 @@
-function epsPresenceConfirmationSend(message_position, message_class, message_style, button_id, list_name)
+async function epsPresenceConfirmationSend(message_position, message_class, message_style, button_id, list_name)
 {
-    const button = document.getElementById(button_id);
+    const button = document.getElementById(button_id)
 
-    let button_text = button.innerHTML;
+    let button_text = button.innerHTML
 
-    button.setAttribute('disabled', 'true');
-    button.innerHTML = 'Отправка...';
+    button.setAttribute('disabled', 'true')
+    button.innerHTML = 'Отправка...'
 
-    let request = $.ajax({
-        url: "/wp-json/event-platform-statistics/v1/presence-time/add",
-        method: "POST",
-        data: {list: list_name},
-        dataType: "json"
-    });
+    const body = new FormData
+    body.append('list', list_name)
 
-    request.done(function(answer) {
-        console.log('epsPresenceConfirmationSend(), answer:');
-        console.log('   code: '+answer['code']);
-        console.log('   message: '+answer['message']);
+    await fetch(
+        '/wp-json/event-platform-statistics/v1/presence-time/add',
+        {
+            method: 'POST',
+            body: body
+        }
+    ).then(async (response) => {
 
-        let message_text;
+        const answer = response.ok ?
+            await response.json() :
+            {code: -9999, message: 'Ошибка отправки. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.'}
 
-        if (answer['code'] == 0) message_text = 'Подтверждение присутствия успешно отправлено!';
-        else message_text = 'Ошибка обработки подтверждения на сервере. Пожалуйста, обратитесь в техподдержку.';
+        let message_text
+
+        switch (await answer.code) {
+            case -9999:
+                message_text = answer.message
+                break
+        
+            case 0:
+                message_text = 'Подтверждение присутствия успешно отправлено!'
+                break
+            
+            default:
+                message_text = 'Ошибка обработки подтверждения на сервере. Пожалуйста, обратитесь в техподдержку.'
+                break
+        }
 
         epsPresenceConfirmationMessage({
             text: message_text,
@@ -31,47 +45,32 @@ function epsPresenceConfirmationSend(message_position, message_class, message_st
             position: message_position,
             timeout: 3000,
             button: button_id
-        });
+        })
 
-        button.removeAttribute('disabled');
-        button.innerHTML = button_text;
-    });
+        button.removeAttribute('disabled')
+        button.innerHTML = button_text
 
-    request.fail(function(jqXHR, textStatus) {
-        console.log('epsPresenceConfirmationSend() error:');
-        console.log('   text status: '+textStatus);
-        console.log('   jqXHR:');
-        console.log(jqXHR);
-
-        epsPresenceConfirmationMessage({
-            text: 'Ошибка отправки. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.',
-            class: message_class,
-            style: message_style,
-            position: message_position,
-            timeout: 3000,
-            button: button_id
-        });
-    });
+    })
 }
 
 function epsPresenceConfirmationMessage(atts)
 {
-    const button = document.getElementById(atts['button']);
+    const button = document.getElementById(atts['button'])
 
-    const message = document.createElement('p');
+    const message = document.createElement('p')
 
-    message.setAttribute('class', atts['class']);
-    message.setAttribute('style', atts['style']);
+    message.setAttribute('class', atts['class'])
+    message.setAttribute('style', atts['style'])
 
-    if (atts['position'] == 'before') button.parentNode.insertBefore(message, button);
-    else button.parentNode.insertBefore(message, button.nextSibling);
+    if (atts['position'] == 'before') button.parentNode.insertBefore(message, button)
+    else button.parentNode.insertBefore(message, button.nextSibling)
 
-    message.innerHTML = atts['text'];
+    message.innerHTML = atts['text']
 
-    setTimeout(epsPresenceConfirmationTimerHandler, atts['timeout'], button, message);
+    setTimeout(epsPresenceConfirmationTimerHandler, atts['timeout'], button, message)
 }
 
 function epsPresenceConfirmationTimerHandler(button_node, message_node)
 {
-    button_node.parentNode.removeChild(message_node);
+    button_node.parentNode.removeChild(message_node)
 }
