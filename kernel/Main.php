@@ -327,23 +327,53 @@ final class Main
     private function apiTokenGet() : void
     {
 
-        add_action('wp_login', function($user_login, $user) {
+        if (empty($_COOKIE['eps_api_token'])) {
 
-            $tokens = new Tokens($this->wpdb);
+            add_action('wp_loaded', function() {
 
-            try {
+                $user_id = get_current_user_id();
 
-                $token = $tokens->tokenGetGenerate($user->ID);
+                if ($user_id !== 0) {
 
-            } catch (TokensException $e) {
+                    $tokens = new Tokens($this->wpdb);
 
-                wp_die('Event Platform Statistics error, '.$e->getCode().': '.$e->getMessage());
+                    try {
 
-            }
+                        $token = $tokens->tokenGetGenerate($user_id);
 
-            setcookie('eps_api_token', $token);
+                    } catch (TokensException $e) {
 
-        }, 10, 2);
+                        wp_die('Event Platform Statistics error, '.$e->getCode().': '.$e->getMessage());
+
+                    }
+
+                    setcookie('eps_api_token', $token, 0, '/');
+
+                }
+
+            });
+
+        } else {
+
+            add_action('wp_login', function($user_login, $user) {
+
+                $tokens = new Tokens($this->wpdb);
+
+                try {
+
+                    $token = $tokens->tokenGetGenerate($user->ID);
+
+                } catch (TokensException $e) {
+
+                    wp_die('Event Platform Statistics error, '.$e->getCode().': '.$e->getMessage());
+
+                }
+
+                setcookie('eps_api_token', $token, 0, '/');
+
+            }, 10, 2);
+
+        }
 
     }
 
@@ -352,9 +382,13 @@ final class Main
 
         add_action('wp_logout', function() {
 
+            $user_id = get_current_user_id();
+
             $tokens = new Tokens($this->wpdb);
 
-            $tokens->tokenDelete($_COOKIE['eps_api_token']);
+            if (!$tokens->tokenDelete(
+                (string)$_COOKIE['eps_api_token']
+            ) && $user_id !== 0) $tokens->tokenDeleteByUser($user_id);
 
         });
 
