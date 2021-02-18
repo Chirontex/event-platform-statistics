@@ -403,7 +403,7 @@ final class Main
 <script src="<?= $this->url ?>js/presence-effect-button.js"></script>
 <?php
 
-            return ob_get_clean().$this->jqueryInitCheck($atts['id']);
+            return ob_get_clean();
 
         });
 
@@ -423,11 +423,10 @@ final class Main
 
 ?>
 <<?= htmlspecialchars($atts['tag']) ?> id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['class']) ?>" style="<?= htmlspecialchars($atts['style']) ?>"><?= htmlspecialchars($content) ?></<?= htmlspecialchars($atts['tag']) ?>>
-<script src="<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js"></script>
 <script src="<?= $this->url ?>js/titles-client.js"></script>
 <?php
 
-            $output = ob_get_clean().$this->jqueryInitCheck($atts['id']);
+            $output = ob_get_clean();
 
             ob_start();
 
@@ -618,51 +617,6 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
             );
 
         }
-
-    }
-
-    private function jqueryInitCheck(string $element_id) : string
-    {
-
-        ob_start();
-
-?>
-<script>
-(function() {
-
-let jquery_url = '<?= file_exists($this->path.'js/jquery-3.5.1.min.js') ? $this->url.'js' : 'https://code.jquery.com' ?>/jquery-3.5.1.min.js';
-
-let scripts = document.getElementsByTagName('script');
-
-let jquery_loaded = false;
-
-for (let i = 0; i < scripts.length; i++)
-{
-    if (scripts[i].hasAttribute('src'))
-    {
-        if (scripts[i].getAttribute('src') == jquery_url)
-        {
-            jquery_loaded = true;
-            break;
-        }
-    }
-}
-
-if (!jquery_loaded)
-{
-    let jquery_init = document.createElement('script');
-    jquery_init.setAttribute('src', jquery_url);
-
-    let element_node = document.getElementById('<?= $element_id ?>');
-
-    element_node.parentNode.insertBefore(jquery_init, element_node.nextSibling);
-}
-
-})
-</script>
-<?php
-
-        return ob_get_clean();
 
     }
 

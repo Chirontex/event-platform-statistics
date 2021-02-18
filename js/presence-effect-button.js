@@ -21,20 +21,23 @@ async function epsPresenceConfirmationSend(message_position, message_class, mess
         const answer = response.ok ?
             await response.json() :
             {code: -9999, message: 'Ошибка отправки. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.'}
-
+        
         let message_text
 
         switch (await answer.code) {
             case -9999:
                 message_text = answer.message
+                console.error(`epsPresenceConfirmationSend() :\n\tcode: -9999\n\tmessage: `+answer.message)
                 break
         
             case 0:
                 message_text = 'Подтверждение присутствия успешно отправлено!'
+                console.log(`epsPresenceConfirmationSend() :\n\tcode: 0\n\tmessage: `+answer.message)
                 break
             
             default:
                 message_text = 'Ошибка обработки подтверждения на сервере. Пожалуйста, обратитесь в техподдержку.'
+                console.error(`epsPresenceConfirmationSend() :\n\tcode: `+answer.code+`\n\tmessage: `+answer.message)
                 break
         }
 
