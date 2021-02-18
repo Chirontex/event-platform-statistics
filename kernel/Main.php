@@ -362,14 +362,14 @@ final class Main
 
             $tokens = new Tokens($this->wpdb);
 
-            if (empty($_COOKIE['eps_api_token']) &&
-                $user_id !== 0) $tokens->tokenDeleteByUser($user_id);
-            else {
-                
+            if ($user_id !== 0) $tokens->tokenDeleteByUser($user_id);
+
+            if (!empty($_COOKIE['eps_api_token'])) {
+
                 $tokens->tokenDelete((string)$_COOKIE['eps_api_token']);
 
                 setcookie('eps_api_token', '', 0, '/');
-            
+
             }
 
         });
