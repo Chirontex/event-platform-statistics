@@ -112,7 +112,7 @@ final class Main
                     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css'
                 ),
                 [],
-                '5.0.0-beta2'
+                '5.0.0-beta1'
             );
         
             wp_enqueue_style(
@@ -130,7 +130,7 @@ final class Main
                     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js'
                 ),
                 [],
-                '5.0.0-beta2'
+                '5.0.0-beta1'
             );
         
             wp_enqueue_script(
@@ -583,7 +583,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css'
                 ),
                 [],
-                '5.0.0-beta2'
+                '5.0.0-beta1'
             );
         
             wp_enqueue_style(
@@ -601,7 +601,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js'
                 ),
                 [],
-                '5.0.0-beta2'
+                '5.0.0-beta1'
             );
         
             wp_enqueue_script(
