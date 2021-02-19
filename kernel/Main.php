@@ -137,7 +137,7 @@ final class Main
                 'eps-output',
                 $this->url.'js/output.js',
                 [],
-                '1.0.0'
+                '1.0.1'
             );
         
         });
@@ -279,17 +279,20 @@ final class Main
     private function adminStatusSet(string $alert_type, string $text) : void
     {
 
-        ob_start();
+        if ($alert_type === 'danger') $alert_type = 'error';
+
+        $this->admin_status = [
+            'type' => $alert_type,
+            'text' => $text
+        ];
+
+        add_action('admin_notices', function() {
 
 ?>
-<div class="alert alert-<?= $alert_type ?> text-center mb-5 mx-auto eps-column"><?= $text ?></div>
+<div class="notice notice-<?= $this->admin_status['type'] ?> is-dismissible" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+    <p style="text-align: center;"><?= $this->admin_status['text'] ?></p>
+</div>
 <?php
-
-        $this->admin_status = ob_get_clean();
-
-        add_filter('eps-admin-status', function() {
-
-            return $this->admin_status;
 
         });
 

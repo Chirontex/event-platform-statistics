@@ -97,16 +97,6 @@ class PresenceEffect extends UsersWorksheetHandler
 
         if (!empty($this->users_data)) {
 
-            $fio = [];
-
-            if (!empty($values['Surname'])) $fio[] = $values['Surname'];
-            
-            if (!empty($values['Name'])) $fio[] = $values['Name'];
-            
-            if (!empty($values['LastName'])) $fio[] = $values['LastName'];
-
-            $fio = implode(" ", $fio);
-
             switch ($mode) {
 
                 case 'raw':
@@ -131,7 +121,7 @@ class PresenceEffect extends UsersWorksheetHandler
                             foreach ($values['presence_times'] as $datetime) {
 
                                 $worksheet->setCellValue('A'.$i, $user_id);
-                                $worksheet->setCellValue('B'.$i, $fio);
+                                $worksheet->setCellValue('B'.$i, $this->implodedFio($values));
                                 $worksheet->setCellValue('C'.$i, $values['email']);
 
                                 $worksheet->setCellValue(
@@ -214,7 +204,7 @@ class PresenceEffect extends UsersWorksheetHandler
                         foreach ($this->users_data as $user_id => $values) {
 
                             $worksheet->setCellValue('A'.$row, $user_id);
-                            $worksheet->setCellValue('B'.$row, $fio);
+                            $worksheet->setCellValue('B'.$row, $this->implodedFio($values));
                             $worksheet->setCellValue('C'.$row, $values['email']);
 
                             $worksheet->setCellValue(
@@ -342,6 +332,28 @@ class PresenceEffect extends UsersWorksheetHandler
         }
 
         return $name;
+
+    }
+
+    /**
+     * Get default imploded fio.
+     * 
+     * @param array $values
+     * 
+     * @return string
+     */
+    protected function implodedFio(array $values) : string
+    {
+
+        $fio = [];
+
+        if (!empty($values['Surname'])) $fio[] = $values['Surname'];
+        
+        if (!empty($values['Name'])) $fio[] = $values['Name'];
+        
+        if (!empty($values['LastName'])) $fio[] = $values['LastName'];
+
+        return implode(" ", $fio);
 
     }
 

@@ -1,7 +1,7 @@
 function epsAdminSubmitCheck()
 {
     const button = document.getElementById('eps-admin-form-submit');
-    const checks = document.getElementsByClassName('form-check-input');
+    const checks = document.getElementsByClassName('eps-admin-checkbox');
 
     let allowed = false;
 

@@ -1,42 +1,41 @@
 <div class="container-fluid">
     <h1 class="h3 text-center my-5">Титры</h1>
-    <?= apply_filters('eps-admin-status', '') ?>
     <form action="" method="post" class="eps-titles-form mx-auto">
         <h4 class="text-center mb-4">Добавить новый элемент программы:</h4>
         <div class="form-group mb-3">
-            <input type="text" class="form-control" id="eps-titles-header" name="eps-titles-header" placeholder="Введите заголовок" required="true" oninput="epsTitlesSubmitCheck();">
+            <input type="text" class="form-control form-control-sm" id="eps-titles-header" name="eps-titles-header" placeholder="Введите заголовок" required="true" oninput="epsTitlesSubmitCheck();">
         </div>
         <div class="form-group mb-3">
-            <input type="text" class="form-control" id="eps-titles-list" name="eps-titles-list" placeholder="Укажите обозначение зала" required="true" oninput="epsTitlesSubmitCheck();">
+            <input type="text" class="form-control form-control-sm" id="eps-titles-list" name="eps-titles-list" placeholder="Укажите обозначение зала" required="true" oninput="epsTitlesSubmitCheck();">
         </div>
         <p>Дата и время начала:</p>
         <div class="row mb-3">
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2">
-                <input type="date" class="form-control" id="eps-titles-start-date" name="eps-titles-start-date" required="true" oninput="epsTitlesSubmitCheck();">
+                <input type="date" class="form-control form-control-sm" id="eps-titles-start-date" name="eps-titles-start-date" required="true" oninput="epsTitlesSubmitCheck();">
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2">
-                <input type="time" class="form-control" id="eps-titles-start-time" name="eps-titles-start-time" required="true" oninput="epsTitlesSubmitCheck();">
+                <input type="time" class="form-control form-control-sm" id="eps-titles-start-time" name="eps-titles-start-time" required="true" oninput="epsTitlesSubmitCheck();">
             </div>
         </div>
         <p>Дата и время конца:</p>
         <div class="row mb-3">
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2">
-                <input type="date" class="form-control" id="eps-titles-end-date" name="eps-titles-end-date" required="true" oninput="epsTitlesSubmitCheck();">
+                <input type="date" class="form-control form-control-sm" id="eps-titles-end-date" name="eps-titles-end-date" required="true" oninput="epsTitlesSubmitCheck();">
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2">
-                <input type="time" class="form-control" id="eps-titles-end-time" name="eps-titles-end-time" required="true" oninput="epsTitlesSubmitCheck();">
+                <input type="time" class="form-control form-control-sm" id="eps-titles-end-time" name="eps-titles-end-time" required="true" oninput="epsTitlesSubmitCheck();">
             </div>
         </div>
-        <div class="form-group mb-3">
+        <p class="form-group mb-3">
             <input type="checkbox" id="eps-titles-nmo" name="eps-titles-nmo" value="true">
             <label for="eps-titles-nmo">Нужно учитывать в статистике для НМО</label>
-        </div>
+        </p>
         <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary" id="eps-titles-form-submit" disabled="true">Сохранить</button>
+            <button type="submit" class="button button-primary" id="eps-titles-form-submit" disabled="true">Сохранить</button>
         </div>
     </form>
     <h4 class="text-center my-4">Сохранённые элементы программы</h4>
-    <table class="table table-striped">
+    <table class="table table-striped table-sm">
         <thead>
             <tr>
                 <th>ID</th>
