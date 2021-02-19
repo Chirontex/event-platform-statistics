@@ -20,6 +20,10 @@ abstract class Storage
         
         $this->wpdb = $wpdb;
 
+        if (!is_array($this->fields)) $this->fields = [];
+
+        if (!is_array($this->indexes)) $this->indexes = [];
+
         $this->createTable();
 
     }
@@ -41,12 +45,11 @@ abstract class Storage
 
             foreach ($this->fields as $key => $params) {
 
-                $fields[] = "`".$this->wpdb->prepare("%s", $key)."` ".
-                    $this->wpdb->prepare("%s", $params);
+                $fields[] = "`".$key."` ".$params;
 
             }
 
-            $fields = ", ".implode(', ', $fields);
+            $fields = ", ".implode(", ", $fields);
 
         }
 
@@ -57,13 +60,11 @@ abstract class Storage
 
             foreach ($this->indexes as $key => $params) {
 
-                $indexes[] = $this->wpdb->prepare("%s", $params)." `".
-                    $this->wpdb->prepare("%s", $key)."` (`".
-                    $this->wpdb->prepare("%s", $key)."`)";
+                $indexes[] = $params." `".$key."` (`".$key."`)";
 
             }
 
-            $indexes = ", ".implode(', ', $indexes);
+            $indexes = ", ".implode(", ", $indexes);
 
         }
 

@@ -8,52 +8,25 @@ use EPStatistics\Traits\Randomizer;
 use EPStatistics\Exceptions\TokensException;
 use wpdb;
 
-class Tokens {
+class Tokens extends Storage {
 
     use Randomizer;
 
-    protected $wpdb;
-    protected $dbname;
-    protected $table;
-
-    public function __construct(wpdb $wpdb, string $dbname = '')
+    public function __construct(wpdb $wpdb)
     {
-        
-        $this->wpdb = $wpdb;
-
-        if (empty($dbname)) $this->dbname = DB_NAME;
-        else $this->dbname = $dbname;
 
         $this->table = 'epstatistics_api_tokens';
 
-        $this->createTable();
+        $this->fields = [
+            'user_id' => 'BIGINT NOT NULL',
+            'token' => 'CHAR(128) NOT NULL'
+        ];
 
-    }
+        $this->indexes = [
+            'token' => 'UNIQUE INDEX'
+        ];
 
-    /**
-     * Create a tokens table.
-     * 
-     * @return void
-     * 
-     * @throws TokensException
-     */
-    public function createTable() : void
-    {
-
-        if ($this->wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `".$this->wpdb->prefix.$this->table."` (
-                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` BIGINT NOT NULL,
-                `token` CHAR(128) NOT NULL,
-                PRIMARY KEY (`id`),
-                UNIQUE INDEX `token` (`token`)
-            )
-            COLLATE='utf8mb4_unicode_ci'
-            AUTO_INCREMENT=0"
-        ) === false) throw new TokensException(
-            'Creating table faulire.',
-            -40
-        );
+        parent::__construct($wpdb);
 
     }
 
@@ -66,7 +39,7 @@ class Tokens {
      * @return string
      * If token not exist, the method will return an empty string.
      * 
-     * @throws TokensException
+     * @throws EPStatistics\Exceptions\TokensException
      */
     public function tokenGet(int $user_id) : string
     {
@@ -74,8 +47,8 @@ class Tokens {
         $result = '';
 
         if ($user_id < 1) throw new TokensException(
-            'Invalid user ID.',
-            -41
+            TokensException::INVALID_USER_ID_MESSAGE,
+            TokensException::INVALID_USER_ID_CODE
         );
 
         $select = $this->wpdb->get_results(
@@ -102,7 +75,7 @@ class Tokens {
      * 
      * @return bool
      * 
-     * @throws TokensException
+     * @throws EPStatistics\Exceptions\TokensException
      */
     public function tokenCheckUnique(string $token) : bool
     {
@@ -119,14 +92,14 @@ class Tokens {
      * 
      * @return string
      * 
-     * @throws TokenException
+     * @throws EPStatistics\Exceptions\TokensException
      */
     public function tokenGetGenerate(int $user_id) : string
     {
 
         if ($user_id < 1) throw new TokensException(
-            'Invalid user ID.',
-            -41
+            TokensException::INVALID_USER_ID_MESSAGE,
+            TokensException::INVALID_USER_ID_CODE
         );
 
         $token = $this->tokenGet($user_id);
@@ -140,8 +113,8 @@ class Tokens {
             } while (!$this->tokenCheckUnique($token));
     
             if (!$this->tokenInsert($user_id, $token)) throw new TokensException(
-                'Inserting token into DB failure.',
-                -44
+                TokensException::INSERTING_TOKEN_FAILURE_MESSAGE,
+                TokensException::INSERTING_TOKEN_FAILURE_CODE
             );
 
         }
@@ -178,14 +151,14 @@ class Tokens {
      * 
      * @return bool
      * 
-     * @throws TokensException
+     * @throws EPStatistics\Exceptions\TokensException
      */
     public function tokenDeleteByUser(int $user_id) : bool
     {
 
         if ($user_id < 1) throw new TokensException(
-            'Invalid user ID.',
-            -41
+            TokensException::INVALID_USER_ID_MESSAGE,
+            TokensException::INVALID_USER_ID_CODE
         );
 
         $delete = $this->wpdb->delete(
@@ -226,19 +199,19 @@ class Tokens {
      * 
      * @return bool
      * 
-     * @throws TokensException
+     * @throws EPStatistics\Exceptions\TokensException
      */
     protected function tokenInsert(int $user_id, string $token) : bool
     {
 
         if ($user_id < 1) throw new TokensException(
-            'Invalid user ID.',
-            -41
+            TokensException::INVALID_USER_ID_MESSAGE,
+            TokensException::INVALID_USER_ID_CODE
         );
 
         if (empty($token)) throw new TokensException(
-            'Token cannot be empty.',
-            -43
+            TokensException::TOKEN_CANNOT_BE_EMPTY_MESSAGE,
+            TokensException::TOKEN_CANNOT_BE_EMPTY_CODE
         );
 
         if ($this->wpdb->insert(
@@ -259,6 +232,8 @@ class Tokens {
      * @param string $token
      * 
      * @return array
+     * 
+     * @throws EPStatistics\Exceptions\TokensException
      */
     protected function tokenSelect(string $token) : array
     {
@@ -275,8 +250,8 @@ class Tokens {
 
         if (is_array($select)) return $select;
         else throw new TokensException(
-            'Token selecting in DB failure.',
-            -45
+            TokensException::SELECTING_TOKEN_FAILURE_MESSAGE,
+            TokensException::SELECTING_TOKEN_FAILURE_CODE
         );
 
     }
