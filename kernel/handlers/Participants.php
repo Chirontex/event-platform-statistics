@@ -5,11 +5,11 @@
 namespace EPStatistics\Handlers;
 
 use EPStatistics\Users;
-use EPStatistics\Interfaces\WorksheetHandler;
+use EPStatistics\Handlers\UsersWorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-class Participants implements WorksheetHandler
+class Participants extends UsersWorksheetHandler
 {
 
     protected $users;
@@ -21,16 +21,15 @@ class Participants implements WorksheetHandler
 
     }
 
-    public function worksheetGet(Spreadsheet $spreadsheet, string $name) : Worksheet
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name, array $users_data = []) : Worksheet
     {
-        
-        if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
 
-        $worksheet = new Worksheet($spreadsheet, $name);
+        $worksheet = parent::worksheetGet($spreadsheet, $name);
 
-        $data = $this->users->getAllData();
+        $this->users_data = empty($users_data) ?
+            $this->users->getAllData() : $users_data;
 
-        if (!empty($data)) {
+        if (!empty($this->users_data)) {
 
             $worksheet->setCellValue('A1', 'ID');
             $worksheet->setCellValue('B1', 'Фамилия');
@@ -51,26 +50,53 @@ class Participants implements WorksheetHandler
 
             $nmo_count = 0;
 
-            foreach ($data as $user_id => $userdata) {
+            foreach ($this->users_data as $user_id => $values) {
 
                 $worksheet->setCellValue('A'.$i, $user_id);
-                $worksheet->setCellValue('B'.$i, $userdata['Surname']);
-                $worksheet->setCellValue('C'.$i, $userdata['Name']);
-                $worksheet->setCellValue('D'.$i, $userdata['LastName']);
-                $worksheet->setCellValue('E'.$i, $userdata['email']);
-                $worksheet->setCellValue('F'.$i, $userdata['phone']);
-                $worksheet->setCellValue('G'.$i, $userdata['Date_of_Birth']);
-                $worksheet->setCellValue('H'.$i, $userdata['Organization']);
-                $worksheet->setCellValue('I'.$i, $userdata['Specialty']);
-                $worksheet->setCellValue('J'.$i, $userdata['town']);
+
+                $worksheet->setCellValue(
+                    'B'.$i,
+                    empty($values['Surname'])? '' : $values['Surname']
+                );
+                $worksheet->setCellValue(
+                    'C'.$i,
+                    empty($values['Name']) ? '' : $values['Name']
+                );
+                $worksheet->setCellValue(
+                    'D'.$i,
+                    empty($values['LastName']) ? '' : $values['LastName']
+                );
+
+                $worksheet->setCellValue('E'.$i,$values['email']);
+
+                $worksheet->setCellValue(
+                    'F'.$i,
+                    empty($values['phone']) ? '' : $values['phone']
+                );
+                $worksheet->setCellValue(
+                    'G'.$i,
+                    empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
+                );
+                $worksheet->setCellValue(
+                    'H'.$i,
+                    empty($values['Organization']) ? '' : $values['Organization']
+                );
+                $worksheet->setCellValue(
+                    'I'.$i,
+                    empty($values['Specialty']) ? '' : $values['Specialty']
+                );
+                $worksheet->setCellValue(
+                    'J'.$i,
+                    empty($values['town']) ? '' : $values['town']
+                );
                 
                 if (empty(
-                    $userdata['Soglasye']
+                    $values['Soglasye']
                 )) $worksheet->setCellValue('K'.$i, 'Нет');
                 else $worksheet->setCellValue('K'.$i, 'Да');
 
-                $nmo = is_array($userdata['presence_times']) ?
-                    count($userdata['presence_times']) : 0;
+                $nmo = empty($values['presence_times']) ?
+                    0 : count($values['presence_times']);
 
                 $worksheet->setCellValue('L'.$i, $nmo);
 

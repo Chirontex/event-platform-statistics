@@ -7,11 +7,11 @@ namespace EPStatistics\Handlers;
 use EPStatistics\Users;
 use EPStatistics\Visits;
 use EPStatistics\Exceptions\VisitsException;
-use EPStatistics\Interfaces\WorksheetHandler;
+use EPStatistics\Handlers\UsersWorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class Attendance implements WorksheetHandler
+class Attendance extends UsersWorksheetHandler
 {
 
     protected $users;
@@ -25,12 +25,10 @@ class Attendance implements WorksheetHandler
 
     }
 
-    public function worksheetGet(Spreadsheet $spreadsheet, string $name): Worksheet
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name, array $users_data = []): Worksheet
     {
         
-        if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
-
-        $worksheet = new Worksheet($spreadsheet, $name);
+        $worksheet = parent::worksheetGet($spreadsheet, $name);
 
         $worksheet->setCellValue('A1', 'Адрес');
         $worksheet->setCellValue('B1', 'Дата');
@@ -46,7 +44,8 @@ class Attendance implements WorksheetHandler
 
         $i = 2;
         
-        $users_data = $this->users->getAllData();
+        $this->users_data = empty($users_data) ?
+            $this->users->getAllData() : $users_data;
 
         try {
 
@@ -67,35 +66,54 @@ class Attendance implements WorksheetHandler
                     $worksheet->setCellValue('B'.$i, $datetime[0]);
                     $worksheet->setCellValue('C'.$i, $datetime[1]);
                     $worksheet->setCellValue('D'.$i, $visit['user_id']);
-                    $worksheet->setCellValue(
-                        'E'.$i,
-                        $users_data[$visit['user_id']]['Surname'].' '.
-                        $users_data[$visit['user_id']]['Name'].' '.
-                        $users_data[$visit['user_id']]['LastName']
-                    );
+
+                    $fio = [];
+
+                    if (!empty(
+                        $this->users_data[$visit['user_id']]['Surname']
+                    )) $fio[] = $this->users_data[$visit['user_id']]['Surname'];
+
+                    if (!empty(
+                        $this->users_data[$visit['user_id']]['Name']
+                    )) $fio[] = $this->users_data[$visit['user_id']]['Name'];
+
+                    if (!empty(
+                        $this->users_data[$visit['user_id']]['LastName']
+                    )) $fio[] = $this->users_data[$visit['user_id']]['LastName'];
+
+                    $fio = implode(" ", $fio);
+
+                    $worksheet->setCellValue('E'.$i, $fio);
+
                     $worksheet->setCellValue(
                         'F'.$i,
-                        $users_data[$visit['user_id']]['email']
+                        empty($this->users_data[$visit['user_id']]['email']) ?
+                            '' : $this->users_data[$visit['user_id']]['email']
                     );
                     $worksheet->setCellValue(
                         'G'.$i,
-                        $users_data[$visit['user_id']]['phone']
+                        empty($this->users_data[$visit['user_id']]['phone']) ?
+                            '' : $this->users_data[$visit['user_id']]['phone']
                     );
                     $worksheet->setCellValue(
                         'H'.$i,
-                        $users_data[$visit['user_id']]['Date_of_Birth']
+                        empty($this->users_data[$visit['user_id']]['Date_of_Birth']) ?
+                            '' : $this->users_data[$visit['user_id']]['Date_of_Birth']
                     );
                     $worksheet->setCellValue(
                         'I'.$i,
-                        $users_data[$visit['user_id']]['town']
+                        empty($this->users_data[$visit['user_id']]['town']) ?
+                            '' : $this->users_data[$visit['user_id']]['town']
                     );
                     $worksheet->setCellValue(
                         'J'.$i,
-                        $users_data[$visit['user_id']]['Organization']
+                        empty($this->users_data[$visit['user_id']]['Organization']) ?
+                            '' : $this->users_data[$visit['user_id']]['Organization']
                     );
                     $worksheet->setCellValue(
                         'K'.$i,
-                        $users_data[$visit['user_id']]['Specialty']
+                        empty($this->users_data[$visit['user_id']]['Specialty']) ?
+                            '' : $this->users_data[$visit['user_id']]['Specialty']
                     );
 
                     $i += 1;

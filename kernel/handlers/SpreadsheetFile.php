@@ -14,6 +14,7 @@ class SpreadsheetFile extends Handler
 
     protected $spreadsheet;
     protected $worksheets_count;
+    protected $users_data;
 
     public function __construct(string $path)
     {
@@ -22,6 +23,8 @@ class SpreadsheetFile extends Handler
         $this->spreadsheet->removeSheetByIndex(0);
         
         $this->worksheets_count = 0;
+
+        $this->users_data = [];
         
         parent::__construct($path);
 
@@ -69,12 +72,38 @@ class SpreadsheetFile extends Handler
     {
 
         if (!$this->fileCreate()) throw new SpreadsheetFileException(
-            'File creation failure.',
-            -30
+            SpreadsheetFileException::FILE_CREATION_FAILURE_MESSAGE,
+            SpreadsheetFileException::FILE_CREATION_FAILURE_CODE
         );
 
         $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
         $writer->save($this->pathfile);
+
+    }
+
+    /**
+     * Set users data.
+     * 
+     * @param array $users_data
+     * 
+     * @return void
+     */
+    public function usersDataSet(array $users_data) : void
+    {
+
+        $this->users_data = $users_data;
+
+    }
+
+    /**
+     * Get users data.
+     * 
+     * @return array
+     */
+    public function usersDataGet() : array
+    {
+
+        return $this->users_data;
 
     }
 

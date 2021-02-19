@@ -153,9 +153,12 @@ final class Main
                 $spreadsheet_file->worksheetAdd(
                     $participants->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
-                        'Участники'
+                        'Участники',
+                        $spreadsheet_file->usersDataGet()
                     )
                 );
+
+                $spreadsheet_file->usersDataSet($participants->usersDataGet());
 
             }
 
@@ -182,9 +185,12 @@ final class Main
                 $spreadsheet_file->worksheetAdd(
                     $attendance->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
-                        'Посещения'
+                        'Посещения',
+                        $spreadsheet_file->usersDataGet()
                     )
                 );
+
+                $spreadsheet_file->usersDataSet($attendance->usersDataGet());
 
             }
 
@@ -207,9 +213,12 @@ final class Main
                     $presence_effect->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
                         'НМО',
+                        $spreadsheet_file->usersDataGet(),
                         $presence_effect::WORKSHEET_MODE_TITLES
                     )
                 );
+
+                $spreadsheet_file->usersDataSet($presence_effect->usersDataGet());
 
             }
 
@@ -223,9 +232,12 @@ final class Main
                     $presence_effect->worksheetGet(
                         $spreadsheet_file->spreadsheetGet(),
                         'НМО (детализация)',
+                        $spreadsheet_file->usersDataGet(),
                         $presence_effect::WORKSHEET_MODE_RAW
                     )
                 );
+
+                $spreadsheet_file->usersDataSet($presence_effect->usersDataGet());
 
             }
 

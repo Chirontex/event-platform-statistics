@@ -10,11 +10,11 @@ use EPStatistics\Titles;
 use EPStatistics\PresenceTimes;
 use EPStatistics\Exceptions\PresenceTimesException;
 use EPStatistics\Exceptions\TitlesException;
-use EPStatistics\Interfaces\WorksheetHandler;
+use EPStatistics\Handlers\UsersWorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PresenceEffect implements WorksheetHandler
+class PresenceEffect extends UsersWorksheetHandler
 {
 
     protected $presence_times;
@@ -80,20 +80,32 @@ class PresenceEffect implements WorksheetHandler
 
     }
 
-    public function worksheetGet(Spreadsheet $spreadsheet, string $name, string $mode = 'raw') : Worksheet
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name, array $users_data = [], string $mode = 'raw') : Worksheet
     {
-
-        if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
 
         if ($mode !== 'raw' && $mode !== 'titles') $mode = 'raw';
 
-        $worksheet = new Worksheet($spreadsheet, $name);
+        $worksheet = parent::worksheetGet($spreadsheet, $name);
 
-        $users = new Users($this->presence_times->wpdbGet());
+        if (empty($users_data)) {
 
-        $users_data = $users->getAllData();
+            $users = new Users($this->presence_times->wpdbGet());
 
-        if (!empty($users_data)) {
+            $this->users_data = $users->getAllData();
+
+        } else $this->users_data = $users_data;
+
+        if (!empty($this->users_data)) {
+
+            $fio = [];
+
+            if (!empty($values['Surname'])) $fio[] = $values['Surname'];
+            
+            if (!empty($values['Name'])) $fio[] = $values['Name'];
+            
+            if (!empty($values['LastName'])) $fio[] = $values['LastName'];
+
+            $fio = implode(" ", $fio);
 
             switch ($mode) {
 
@@ -112,25 +124,44 @@ class PresenceEffect implements WorksheetHandler
 
                     $i = 2;
 
-                    foreach ($users_data as $user_id => $values) {
+                    foreach ($this->users_data as $user_id => $values) {
 
                         if (isset($values['presence_times'])) {
 
                             foreach ($values['presence_times'] as $datetime) {
 
                                 $worksheet->setCellValue('A'.$i, $user_id);
-                                $worksheet->setCellValue(
-                                    'B'.$i,
-                                    $values['Surname'].' '.$values['Name'].' '.$values['LastName']
-                                );
+                                $worksheet->setCellValue('B'.$i, $fio);
                                 $worksheet->setCellValue('C'.$i, $values['email']);
-                                $worksheet->setCellValue('D'.$i, $values['phone']);
-                                $worksheet->setCellValue('E'.$i, $values['Date_of_Birth']);
-                                $worksheet->setCellValue('F'.$i, $values['town']);
-                                $worksheet->setCellValue('G'.$i, $values['Organization']);
-                                $worksheet->setCellValue('H'.$i, $values['Specialty']);
-                                $worksheet->setCellValue('I'.$i, $datetime['list']);
-                                $worksheet->setCellValue('J'.$i, $datetime['datetime']);
+
+                                $worksheet->setCellValue(
+                                    'D'.$i,
+                                    empty($values['phone']) ? '' : $values['phone']
+                                );
+                                $worksheet->setCellValue(
+                                    'E'.$i,
+                                    empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
+                                );
+                                $worksheet->setCellValue(
+                                    'F'.$i,
+                                    empty($values['town']) ? '' : $values['town']
+                                );
+                                $worksheet->setCellValue(
+                                    'G'.$i,
+                                    empty($values['Organization']) ? '' : $values['Organization']
+                                );
+                                $worksheet->setCellValue(
+                                    'H'.$i,
+                                    empty($values['Specialty']) ? '' : $values['Specialty']
+                                );
+                                $worksheet->setCellValue(
+                                    'I'.$i,
+                                    empty($datetime['list']) ? '' : $datetime['list']
+                                );
+                                $worksheet->setCellValue(
+                                    'J'.$i,
+                                    empty($datetime['datetime']) ? '' : $datetime['datetime']
+                                );
 
                                 $i += 1;
 
@@ -180,19 +211,32 @@ class PresenceEffect implements WorksheetHandler
 
                         $row += 1;
 
-                        foreach ($users_data as $user_id => $values) {
+                        foreach ($this->users_data as $user_id => $values) {
 
                             $worksheet->setCellValue('A'.$row, $user_id);
-                            $worksheet->setCellValue(
-                                'B'.$row,
-                                $values['Surname'].' '.$values['Name'].' '.$values['LastName']
-                            );
+                            $worksheet->setCellValue('B'.$row, $fio);
                             $worksheet->setCellValue('C'.$row, $values['email']);
-                            $worksheet->setCellValue('D'.$row, $values['phone']);
-                            $worksheet->setCellValue('E'.$row, $values['Date_of_Birth']);
-                            $worksheet->setCellValue('F'.$row, $values['town']);
-                            $worksheet->setCellValue('G'.$row, $values['Organization']);
-                            $worksheet->setCellValue('H'.$row, $values['Specialty']);
+
+                            $worksheet->setCellValue(
+                                'D'.$row,
+                                empty($values['phone']) ? '' : $values['phone']
+                            );
+                            $worksheet->setCellValue(
+                                'E'.$row,
+                                empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
+                            );
+                            $worksheet->setCellValue(
+                                'F'.$row,
+                                empty($values['town']) ? '' : $values['town']
+                            );
+                            $worksheet->setCellValue(
+                                'G'.$row,
+                                empty($values['Organization']) ? '' : $values['Organization']
+                            );
+                            $worksheet->setCellValue(
+                                'H'.$row,
+                                empty($values['Specialty']) ? '' : $values['Specialty']
+                            );
 
                             $col = $col_base;
 

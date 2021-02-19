@@ -23,6 +23,6 @@
             <label for="eps-download-nmo-raw" class="form-check-label">НМО (детализация)</label>
         </div>
         <input type="hidden" name="eps-download-init" value="true">
-        <button type="submit" id="eps-admin-form-submit" class="btn btn-primary mx-auto">Скачать</button>
+        <button type="submit" id="eps-admin-form-submit" class="button button-primary mx-auto">Скачать</button>
     </form>
 </div>
