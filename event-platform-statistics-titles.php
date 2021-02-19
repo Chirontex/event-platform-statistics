@@ -1,10 +1,6 @@
 <div class="container-fluid">
     <h1 class="h3 text-center my-5">Титры</h1>
-<?php
-
-if (!empty($eps_admin_status)) echo $eps_admin_status;
-
-?>
+    <?= apply_filters('eps-admin-status', '') ?>
     <form action="" method="post" class="eps-titles-form mx-auto">
         <h4 class="text-center mb-4">Добавить новый элемент программы:</h4>
         <div class="form-group mb-3">
@@ -53,7 +49,9 @@ if (!empty($eps_admin_status)) echo $eps_admin_status;
                 <th></th>
             </tr>
         </thead>
-        <tbody id="eps-titles-table"><?= $eps_titles_tbody ?></tbody>
+        <tbody id="eps-titles-table">
+        <?= apply_filters('eps-titles-tbody', '') ?>
+        </tbody>
     </table>
     <form action="" method="post" hidden="true">
         <input type="hidden" id="eps-titles-title-delete" name="eps-titles-title-delete" required="true">

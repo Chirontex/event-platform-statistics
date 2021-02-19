@@ -22,6 +22,8 @@ final class Main
     private $wpdb;
     private $output_script_file;
     private $titles_script_file;
+    private $titles_tbody;
+    private $admin_status;
 
     public function __construct(string $path, string $url)
     {
@@ -271,7 +273,13 @@ final class Main
 <div class="alert alert-<?= $alert_type ?> text-center mb-5 mx-auto eps-column"><?= $text ?></div>
 <?php
 
-        $GLOBALS['eps_admin_status'] = ob_get_clean();
+        $this->admin_status = ob_get_clean();
+
+        add_filter('eps-admin-status', function() {
+
+            return $this->admin_status;
+
+        });
 
     }
 
@@ -641,7 +649,13 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
 
             }
 
-            $GLOBALS['eps_titles_tbody'] = ob_get_clean();
+            $this->titles_tbody = ob_get_clean();
+
+            add_filter('eps-titles-tbody', function() {
+
+                return $this->titles_tbody;
+
+            });
 
         }
 

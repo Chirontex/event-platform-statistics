@@ -1,10 +1,6 @@
 <div class="container-fluid">
     <h1 class="h3 text-center my-5">Статистика</h1>
-<?php
-
-if (!empty($eps_admin_status)) echo $eps_admin_status;
-
-?>
+    <?= apply_filters('eps-admin-status', '') ?>
     <form class="eps-column mx-auto" action="" method="post">
         <div class="mb-2">
             <input type="checkbox" name="eps-download-participants" id="eps-download-participants" value="true" checked="true" onclick="epsAdminSubmitCheck();">
