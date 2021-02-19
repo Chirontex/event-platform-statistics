@@ -7,53 +7,23 @@ namespace EPStatistics;
 use EPStatistics\Exceptions\TitlesException;
 use wpdb;
 
-class Titles
+class Titles extends Storage
 {
 
-    protected $wpdb;
-    protected $dbname;
-    protected $table;
-
-    public function __construct(wpdb $wpdb, string $dbname = '')
+    public function __construct(wpdb $wpdb)
     {
-        
-        $this->wpdb = $wpdb;
-
-        if (empty($dbname)) $this->dbname = DB_NAME;
-        else $this->dbname = $dbname;
 
         $this->table = 'epstatistics_titles';
 
-        $this->tableCreate();
+        $this->fields = [
+            'title' => 'TEXT NOT NULL',
+            'list_name' => 'TEXT NOT NULL',
+            'datetime_start' => 'DATETIME NOT NULL',
+            'datetime_end' => 'DATETIME NOT NULL',
+            'nmo' => 'TINYINT UNSIGNED NOT NULL DEFAULT 0'
+        ];
 
-    }
-
-    /**
-     * Create a titles table.
-     * 
-     * @return void
-     * 
-     * @throws TitlesException
-     */
-    public function tableCreate() : void
-    {
-
-        if ($this->wpdb->query(
-                "CREATE TABLE IF NOT EXISTS `".$this->wpdb->prefix.$this->table."` (
-                    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                    `title` TEXT NOT NULL,
-                    `list_name` TEXT NOT NULL,
-                    `datetime_start` DATETIME NOT NULL,
-                    `datetime_end` DATETIME NOT NULL,
-                    `nmo` TINYINT UNSIGNED NOT NULL DEFAULT 0,
-                    PRIMARY KEY (`id`)
-                )
-                COLLATE='utf8mb4_unicode_ci'
-                AUTO_INCREMENT=0"
-            ) === false) throw new TitlesException(
-                'Creating table failure.',
-                -50
-            );
+        parent::__construct($wpdb);
 
     }
 
@@ -72,19 +42,19 @@ class Titles
      * 
      * @return bool
      * 
-     * @throws TitlesException
+     * @throws EPStatistics\Exceptions\TitlesException
      */
     public function titleAdd(string $title, string $list_name, int $timestamp_start, int $timestamp_end, int $nmo = 0) : bool
     {
 
         if (empty($title)) throw new TitlesException(
-            'Title cannot be empty.',
-            -51
+            TitlesException::EMPTY_TITLE_MESSAGE,
+            TitlesException::EMPTY_TITLE_CODE
         );
 
         if (empty($list_name)) throw new TitlesException(
-            'List name cannot be empty.',
-            -54
+            TitlesException::EMPTY_LIST_NAME_MESSAGE,
+            TitlesException::EMPTY_LIST_NAME_CODE
         );
 
         if ($nmo < 0 || $nmo > 1) $nmo = 0;
@@ -124,24 +94,24 @@ class Titles
      * 
      * @return bool
      * 
-     * @throws TitlesException
+     * @throws EPStatistics\Exceptions\TitlesException
      */
     public function titleUpdate(int $id, string $title, string $list_name, int $timestamp_start, int $timestamp_end, int $nmo = 0) : bool
     {
 
         if ($id < 1) throw new TitlesException(
-            'ID cannot be lesser than 1.',
-            -53
+            TitlesException::INVALID_ID_MESSAGE,
+            TitlesException::INVALID_ID_CODE
         );
 
         if (empty($title)) throw new TitlesException(
-            'Title cannot be empty.',
-            -51
+            TitlesException::EMPTY_TITLE_MESSAGE,
+            TitlesException::EMPTY_TITLE_CODE
         );
 
         if (empty($list_name)) throw new TitlesException(
-            'List name cannot be empty.',
-            -54
+            TitlesException::EMPTY_LIST_NAME_MESSAGE,
+            TitlesException::EMPTY_LIST_NAME_CODE
         );
 
         if ($nmo < 0 || $nmo > 1) $nmo = 0;
@@ -172,7 +142,7 @@ class Titles
      * 
      * @return array
      * 
-     * @throws TitlesException
+     * @throws EPStatistics\Exceptions\TitlesException
      */
     public function selectTitles(string $list_name = '', bool $actual = false) : array
     {
@@ -203,8 +173,8 @@ class Titles
 
         if (is_array($select)) return $select;
         else throw new TitlesException(
-            'Selecting titles from DB failure.',
-            -52
+            TitlesException::SELECT_TITLES_FAILURE_MESSAGE,
+            TitlesException::SELECT_TITLES_FAILURE_CODE
         );
 
     }
@@ -217,14 +187,14 @@ class Titles
      * 
      * @return bool
      * 
-     * @throws TitlesException
+     * @throws EPStatistics\Exceptions\TitlesException
      */
     public function titleDelete(int $id) : bool
     {
 
         if ($id < 1) throw new TitlesException(
-            'ID cannot be lesser than 1.',
-            -53
+            TitlesException::INVALID_ID_MESSAGE,
+            TitlesException::INVALID_ID_CODE
         );
 
         $delete = $this->wpdb->delete(

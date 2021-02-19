@@ -8,7 +8,8 @@ use EPStatistics\Traits\Randomizer;
 use EPStatistics\Exceptions\TokensException;
 use wpdb;
 
-class Tokens extends Storage {
+class Tokens extends Storage
+{
 
     use Randomizer;
 

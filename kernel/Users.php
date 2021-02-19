@@ -11,19 +11,15 @@ class Users
 {
 
     protected $wpdb;
-    protected $dbname;
 
     protected $presence_times;
 
-    public function __construct(wpdb $wpdb, string $dbname = '')
+    public function __construct(wpdb $wpdb)
     {
         
         $this->wpdb = $wpdb;
 
-        if (empty($dbname)) $this->dbname = DB_NAME;
-        else $this->dbname = $dbname;
-
-        $this->presence_times = new PresenceTimes($this->wpdb, $this->dbname);
+        $this->presence_times = new PresenceTimes($this->wpdb);
 
     }
 

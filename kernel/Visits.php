@@ -7,51 +7,21 @@ namespace EPStatistics;
 use EPStatistics\Exceptions\VisitsException;
 use wpdb;
 
-class Visits
+class Visits extends Storage
 {
 
-    protected $wpdb;
-    protected $dbname;
-    protected $table;
-
-    public function __construct(wpdb $wpdb, string $dbname = '')
+    public function __construct(wpdb $wpdb)
     {
-        
-        $this->wpdb = $wpdb;
-
-        if (empty($dbname)) $this->dbname = DB_NAME;
-        else $this->dbname = $dbname;
 
         $this->table = 'epstatistics_visits';
 
-        $this->tableCreate();
+        $this->fields = [
+            'user_id' => 'BIGINT UNSIGNED NOT NULL',
+            'page_url' => 'TEXT NOT NULL',
+            'datetime' => 'DATETIME NOT NULL'
+        ];
 
-    }
-
-    /**
-     * Create a table.
-     * 
-     * @return void
-     * 
-     * @throws EPStatistics\Exceptions\VisitsException
-     */
-    public function tableCreate() : void
-    {
-
-        if ($this->wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `".$this->wpdb->prefix.$this->table."` (
-                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` BIGINT UNSIGNED NOT NULL,
-                `page_url` TEXT NOT NULL,
-                `datetime` DATETIME NOT NULL,
-                PRIMARY KEY (`id`)
-            )
-            COLLATE='utf8mb4_unicode_ci'
-            AUTO_INCREMENT=0"
-        ) === false) throw new VisitsException(
-            'Creating table failure.',
-            -50
-        );
+        parent::__construct($wpdb);
 
     }
 
@@ -72,8 +42,8 @@ class Visits
     {
 
         if ($user_id < 1) throw new VisitsException(
-            'User ID cannot be less than 1.',
-            -51
+            VisitsException::INVALID_USER_ID_MESSAGE,
+            VisitsException::INVALID_USER_ID_CODE
         );
 
         date_default_timezone_set('Europe/Moscow');
@@ -114,8 +84,8 @@ class Visits
             if (!empty($select)) $result = $select;
 
         } else throw new VisitsException(
-            'Getting visits failure.',
-            -52
+            VisitsException::GET_VISITS_FAILURE_MESSAGE,
+            VisitsException::GET_VISITS_FAILURE_CODE
         );
 
         return $result;

@@ -7,51 +7,21 @@ namespace EPStatistics;
 use EPStatistics\Exceptions\PresenceTimesException;
 use wpdb;
 
-class PresenceTimes
+class PresenceTimes extends Storage
 {
 
-    protected $wpdb;
-    protected $dbname;
-    protected $table;
-
-    public function __construct(wpdb $wpdb, string $dbname = '')
+    public function __construct(wpdb $wpdb)
     {
-        
-        $this->wpdb = $wpdb;
-
-        if (empty($dbname)) $this->dbname = DB_NAME;
-        else $this->dbname = $dbname;
 
         $this->table = 'epstatistics_presence_times';
 
-        $this->createTable();
+        $this->fields = [
+            'user_id' => 'BIGINT UNSIGNED NOT NULL',
+            'presence_datetime' => 'DATETIME NOT NULL',
+            'titles_list_name' => 'TEXT NOT NULL'
+        ];
 
-    }
-
-    /**
-     * Create DB table to store the presence times.
-     * 
-     * @return void
-     * 
-     * @throws PresenceTimesException
-     */
-    public function createTable() : void
-    {
-
-        if (!$this->wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `".$this->wpdb->prefix.$this->table."` (
-                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` BIGINT UNSIGNED NOT NULL,
-                `presence_datetime` DATETIME NOT NULL,
-                `titles_list_name` TEXT NOT NULL,
-                PRIMARY KEY (`id`)
-            )
-            COLLATE='utf8mb4_unicode_ci'
-            AUTO_INCREMENT=0"
-        )) throw new PresenceTimesException(
-            'Cannot create presence table.',
-            -30
-        );
+        parent::__construct($wpdb);
 
     }
 
@@ -63,7 +33,7 @@ class PresenceTimes
      * 
      * @return bool
      * 
-     * @throws PresenceTimesException
+     * @throws EPStatistics\Exceptions\PresenceTimesException
      */
     public function add(int $user_id, string $list_name) : bool
     {
@@ -71,13 +41,13 @@ class PresenceTimes
         date_default_timezone_set('Europe/Moscow');
 
         if ($user_id < 1) throw new PresenceTimesException(
-            'Invalid user ID.',
-            -31
+            PresenceTimesException::INVALID_USER_ID_MESSAGE,
+            PresenceTimesException::INVALID_USER_ID_CODE
         );
 
         if (empty($list_name)) throw new PresenceTimesException(
-            'List name cannot be empty.',
-            -33
+            PresenceTimesException::EMPTY_LIST_NAME_MESSAGE,
+            PresenceTimesException::EMPTY_LIST_NAME_CODE
         );
 
         if ($this->wpdb->insert(
@@ -98,7 +68,7 @@ class PresenceTimes
      * 
      * @return array
      * 
-     * @throws PresenceTimesException
+     * @throws EPStatistics\Exceptions\PresenceTimesException
      */
     public function getAll() : array
     {
@@ -111,8 +81,8 @@ class PresenceTimes
 
         if (is_array($select)) return $select;
         else throw new PresenceTimesException(
-            'Getting presence times failure.',
-            -32
+            PresenceTimesException::GET_PRESENCE_TIMES_FAILURE_MESSAGE,
+            PresenceTimesException::GET_PRESENCE_TIMES_FAILURE_CODE
         );
 
     }
@@ -122,7 +92,7 @@ class PresenceTimes
      * 
      * @return array
      * 
-     * @throws PresenceTimesException
+     * @throws EPStatistics\Exceptions\PresenceTimesException
      */
     public function getOrderedByUsers() : array
     {
