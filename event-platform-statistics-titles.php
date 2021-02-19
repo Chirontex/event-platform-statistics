@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <h1 class="h3 text-center my-5">Титры</h1>
     <form action="" method="post" class="eps-titles-form mx-auto">
-        <h4 class="text-center mb-4">Добавить новый элемент программы:</h4>
+        <h5 class="text-center mb-4">Добавить новый элемент программы:</h5>
         <div class="form-group mb-3">
             <input type="text" class="form-control form-control-sm" id="eps-titles-header" name="eps-titles-header" placeholder="Введите заголовок" required="true" oninput="epsTitlesSubmitCheck();">
         </div>
@@ -34,7 +34,7 @@
             <button type="submit" class="button button-primary" id="eps-titles-form-submit" disabled="true">Сохранить</button>
         </div>
     </form>
-    <h4 class="text-center my-4">Сохранённые элементы программы</h4>
+    <h5 class="text-center my-4">Сохранённые элементы программы</h5>
     <table class="table table-striped table-sm">
         <thead>
             <tr>
