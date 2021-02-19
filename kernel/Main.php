@@ -99,6 +99,46 @@ final class Main
     private function downloadInit() : void
     {
 
+        add_action('admin_enqueue_scripts', function() {
+
+            wp_enqueue_style(
+                'bootstrap-min',
+                (
+                    file_exists($this->path.'css/bootstrap.min.css') ?
+                    $this->url.'css/bootstrap.min.css' :
+                    'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css'
+                ),
+                [],
+                '5.0.0-beta2'
+            );
+        
+            wp_enqueue_style(
+                'eps-output',
+                $this->url.'css/output.css',
+                [],
+                '1.0.0'
+            );
+        
+            wp_enqueue_script(
+                'bootstrap-bundle-min',
+                (
+                    file_exists($this->path.'js/bootstrap.bundle.min.js') ?
+                    $this->url.'js/bootstrap.bundle.min.js' :
+                    'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js'
+                ),
+                [],
+                '5.0.0-beta2'
+            );
+        
+            wp_enqueue_script(
+                'eps-output',
+                $this->url.'js/output.js',
+                [],
+                '1.0.0'
+            );
+        
+        });
+
         if (isset($_POST['eps-download-init'])) {
 
             $spreadsheet_file = new SpreadsheetFile($this->path.'temp');
@@ -500,6 +540,46 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
 
     private function titlesOutput() : void
     {
+
+        add_action('admin_enqueue_scripts', function() {
+
+            wp_enqueue_style(
+                'bootstrap-min',
+                (
+                    file_exists($this->path.'css/bootstrap.min.css') ?
+                    $this->url.'css/bootstrap.min.css' :
+                    'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css'
+                ),
+                [],
+                '5.0.0-beta2'
+            );
+        
+            wp_enqueue_style(
+                'eps-titles',
+                $this->url.'css/titles.css',
+                [],
+                '1.0.0'
+            );
+        
+            wp_enqueue_script(
+                'bootstrap-bundle-min',
+                (
+                    file_exists($this->path.'js/bootstrap.bundle.min.js') ?
+                    $this->url.'js/bootstrap.bundle.min.js' :
+                    'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js'
+                ),
+                [],
+                '5.0.0-beta2'
+            );
+        
+            wp_enqueue_script(
+                'eps-titles',
+                $this->url.'js/titles.js',
+                [],
+                '1.0.0'
+            );
+        
+        });
 
         $titles = new Titles($this->wpdb);
 
