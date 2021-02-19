@@ -3,7 +3,7 @@
  * Plugin Name: Event Platform Statistics
  * Plugin URI: https://github.com/infernusophiuchus/event-platform-statistics
  * Description: Плагин, реализующий сбор статистики на площадке мероприятий.
- * Version: 1.5.6
+ * Version: 1.5.7
  * Author: Дмитрий Шумилин
  * Author URI: mailto://ds@brandpro.ru
  */

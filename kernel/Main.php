@@ -521,8 +521,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 'eps-titles-client',
                 $this->url.'js/titles-client.js',
                 [],
-                '2.0.0',
-                true
+                '2.0.0'
             );
 
         });
