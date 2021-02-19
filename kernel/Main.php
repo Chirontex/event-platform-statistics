@@ -41,6 +41,7 @@ final class Main
         $this->apiTokenGet();
         $this->apiTokenRemove();
 
+        $this->clientJSInit();
         $this->shortcodesInit();
         $this->adminMenuInit();
 
@@ -440,7 +441,6 @@ final class Main
 
 ?>
 <button type="button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
-<script src="<?= $this->url ?>js/presence-effect-button.js"></script>
 <?php
 
             return ob_get_clean();
@@ -463,7 +463,6 @@ final class Main
 
 ?>
 <<?= htmlspecialchars($atts['tag']) ?> id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['class']) ?>" style="<?= htmlspecialchars($atts['style']) ?>"><?= htmlspecialchars($content) ?></<?= htmlspecialchars($atts['tag']) ?>>
-<script src="<?= $this->url ?>js/titles-client.js"></script>
 <?php
 
             $output = ob_get_clean();
@@ -477,6 +476,31 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
 <?php
 
             return $output.ob_get_clean();
+
+        });
+
+    }
+
+    private function clientJSInit() : void
+    {
+
+        add_action('wp_enqueue_scripts', function() {
+
+            wp_enqueue_script(
+                'eps-presence-effect',
+                $this->url.'js/presence-effect-button.js',
+                [],
+                '2.0.0',
+                true
+            );
+
+            wp_enqueue_script(
+                'eps-titles-client',
+                $this->url.'js/titles-client.js',
+                [],
+                '2.0.0',
+                true
+            );
 
         });
 
