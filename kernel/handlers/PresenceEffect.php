@@ -9,8 +9,6 @@ use EPStatistics\Tokens;
 use EPStatistics\Titles;
 use EPStatistics\PresenceTimes;
 use EPStatistics\Exceptions\PresenceTimesException;
-use EPStatistics\Exceptions\TitlesException;
-use EPStatistics\Handlers\UsersWorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -100,183 +98,11 @@ class PresenceEffect extends UsersWorksheetHandler
             switch ($mode) {
 
                 case 'raw':
-
-                    $worksheet->setCellValue('A1', 'ID');
-                    $worksheet->setCellValue('B1', 'ФИО');
-                    $worksheet->setCellValue('C1', 'E-mail');
-                    $worksheet->setCellValue('D1', 'Номер телефона');
-                    $worksheet->setCellValue('E1', 'Дата рождения');
-                    $worksheet->setCellValue('F1', 'Город');
-                    $worksheet->setCellValue('G1', 'Организация');
-                    $worksheet->setCellValue('H1', 'Специальность');
-                    $worksheet->setCellValue('I1', 'Зал');
-                    $worksheet->setCellValue('J1', 'Дата и время подтверждения');
-
-                    $i = 2;
-
-                    foreach ($this->users_data as $user_id => $values) {
-
-                        if (isset($values['presence_times'])) {
-
-                            foreach ($values['presence_times'] as $datetime) {
-
-                                $worksheet->setCellValue('A'.$i, $user_id);
-                                $worksheet->setCellValue('B'.$i, $this->implodedFio($values));
-                                $worksheet->setCellValue('C'.$i, $values['email']);
-
-                                $worksheet->setCellValue(
-                                    'D'.$i,
-                                    empty($values['phone']) ? '' : $values['phone']
-                                );
-                                $worksheet->setCellValue(
-                                    'E'.$i,
-                                    empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
-                                );
-                                $worksheet->setCellValue(
-                                    'F'.$i,
-                                    empty($values['town']) ? '' : $values['town']
-                                );
-                                $worksheet->setCellValue(
-                                    'G'.$i,
-                                    empty($values['Organization']) ? '' : $values['Organization']
-                                );
-                                $worksheet->setCellValue(
-                                    'H'.$i,
-                                    empty($values['Specialty']) ? '' : $values['Specialty']
-                                );
-                                $worksheet->setCellValue(
-                                    'I'.$i,
-                                    empty($datetime['list']) ? '' : $datetime['list']
-                                );
-                                $worksheet->setCellValue(
-                                    'J'.$i,
-                                    empty($datetime['datetime']) ? '' : $datetime['datetime']
-                                );
-
-                                $i += 1;
-
-                            }
-
-                        }
-
-                    }
-
+                    $worksheet = $this->worksheetRaw($worksheet);
                     break;
 
                 case 'titles':
-
-                    $titles = new Titles($this->presence_times->wpdbGet());
-
-                    try {
-
-                        $titles_selected = $titles->selectTitles();
-
-                        $row = 1;
-
-                        $worksheet->setCellValue('A'.$row, 'ID пользователя');
-                        $worksheet->setCellValue('B'.$row, 'ФИО');
-                        $worksheet->setCellValue('C'.$row, 'E-mail');
-                        $worksheet->setCellValue('D'.$row, 'Номер телефона');
-                        $worksheet->setCellValue('E'.$row, 'Дата рождения');
-                        $worksheet->setCellValue('F'.$row, 'Город');
-                        $worksheet->setCellValue('G'.$row, 'Организация');
-                        $worksheet->setCellValue('H'.$row, 'Специальность');
-                        $worksheet->setCellValue('I'.$row, 'Всего релевантных подтверждений');
-
-                        $col_base = 10;
-                        $col = $col_base;
-
-                        foreach ($titles_selected as $title) {
-
-                            if ($title['nmo'] !== '1') continue;
-
-                            $worksheet->setCellValue(
-                                $this->getColumnName($col).$row,
-                                'Лекция ID '.$title['id']
-                            );
-
-                            $col += 1;
-
-                        }
-
-                        $row += 1;
-
-                        foreach ($this->users_data as $user_id => $values) {
-
-                            $worksheet->setCellValue('A'.$row, $user_id);
-                            $worksheet->setCellValue('B'.$row, $this->implodedFio($values));
-                            $worksheet->setCellValue('C'.$row, $values['email']);
-
-                            $worksheet->setCellValue(
-                                'D'.$row,
-                                empty($values['phone']) ? '' : $values['phone']
-                            );
-                            $worksheet->setCellValue(
-                                'E'.$row,
-                                empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
-                            );
-                            $worksheet->setCellValue(
-                                'F'.$row,
-                                empty($values['town']) ? '' : $values['town']
-                            );
-                            $worksheet->setCellValue(
-                                'G'.$row,
-                                empty($values['Organization']) ? '' : $values['Organization']
-                            );
-                            $worksheet->setCellValue(
-                                'H'.$row,
-                                empty($values['Specialty']) ? '' : $values['Specialty']
-                            );
-
-                            $col = $col_base;
-
-                            $confs_total = 0;
-
-                            foreach ($titles_selected as $title) {
-
-                                if ($title['nmo'] !== '1') continue;
-
-                                $confs = 0;
-
-                                if (isset($values['presence_times'])) {
-
-                                    foreach ($values['presence_times'] as $presence_time) {
-
-                                        $datetime = strtotime($presence_time['datetime']);
-
-                                        if (($datetime >= strtotime($title['datetime_start']) &&
-                                                $datetime <= strtotime($title['datetime_end'])) &&
-                                            $presence_time['list'] === $title['list_name']) {
-
-                                            $confs += 1;
-                                            $confs_total += 1;
-
-                                        }
-
-                                    }
-
-                                }
-
-                                $worksheet->setCellValue(
-                                    $this->getColumnName($col).$row,
-                                    $confs
-                                );
-
-                                $col += 1;
-
-                            }
-
-                            $worksheet->setCellValue(
-                                $this->getColumnName($col_base - 1).$row,
-                                $confs_total
-                            );
-
-                            $row += 1;
-
-                        }
-
-                    } catch (TitlesException $e) {}
-
+                    $worksheet = $this->worksheetTitles($worksheet);
                     break;
 
             }
@@ -288,42 +114,68 @@ class PresenceEffect extends UsersWorksheetHandler
     }
 
     /**
-     * Calculates a column name by it's periodic number.
+     * Add raw data to worksheet.
      * 
-     * @param int $number
-     * If $number lesser than 1 or bigger than 650,
-     * the method will return an empty string.
+     * @param PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $worksheet
      * 
-     * @return string
+     * @return PhpOffice\PhpSpreadsheet\Worksheet\Worksheet
      */
-    protected function getColumnName(int $number) : string
+    protected function worksheetRaw(Worksheet $worksheet) : Worksheet
     {
 
-        $name = '';
+        $worksheet->setCellValue('A1', 'ID');
+        $worksheet->setCellValue('B1', 'ФИО');
+        $worksheet->setCellValue('C1', 'E-mail');
+        $worksheet->setCellValue('D1', 'Номер телефона');
+        $worksheet->setCellValue('E1', 'Дата рождения');
+        $worksheet->setCellValue('F1', 'Город');
+        $worksheet->setCellValue('G1', 'Организация');
+        $worksheet->setCellValue('H1', 'Специальность');
+        $worksheet->setCellValue('I1', 'Зал');
+        $worksheet->setCellValue('J1', 'Дата и время подтверждения');
 
-        if ($number > 0) {
+        $i = 2;
 
-            $alphabet = range('A', 'Z');
+        foreach ($this->users_data as $user_id => $values) {
 
-            if ($number <= count($alphabet)) $name = $alphabet[$number - 1];
-            else {
+            if (isset($values['presence_times'])) {
 
-                $fi = 0;
+                foreach ($values['presence_times'] as $datetime) {
 
-                $dif = $number - count($alphabet);
+                    $worksheet->setCellValue('A'.$i, $user_id);
+                    $worksheet->setCellValue('B'.$i, $this->implodedFio($values));
+                    $worksheet->setCellValue('C'.$i, $values['email']);
 
-                while ($dif > count($alphabet)) {
+                    $worksheet->setCellValue(
+                        'D'.$i,
+                        empty($values['phone']) ? '' : $values['phone']
+                    );
+                    $worksheet->setCellValue(
+                        'E'.$i,
+                        empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
+                    );
+                    $worksheet->setCellValue(
+                        'F'.$i,
+                        empty($values['town']) ? '' : $values['town']
+                    );
+                    $worksheet->setCellValue(
+                        'G'.$i,
+                        empty($values['Organization']) ? '' : $values['Organization']
+                    );
+                    $worksheet->setCellValue(
+                        'H'.$i,
+                        empty($values['Specialty']) ? '' : $values['Specialty']
+                    );
+                    $worksheet->setCellValue(
+                        'I'.$i,
+                        empty($datetime['list']) ? '' : $datetime['list']
+                    );
+                    $worksheet->setCellValue(
+                        'J'.$i,
+                        empty($datetime['datetime']) ? '' : $datetime['datetime']
+                    );
 
-                    $fi += 1;
-
-                    $dif = $dif - count($alphabet);
-
-                }
-
-                if ($fi <= count($alphabet)) {
-
-                    $name .= $alphabet[$fi];
-                    $name .= $alphabet[$dif - 1];
+                    $i += 1;
 
                 }
 
@@ -331,7 +183,129 @@ class PresenceEffect extends UsersWorksheetHandler
 
         }
 
-        return $name;
+        return $worksheet;
+
+    }
+
+    /**
+     * Add data with titles to worksheet.
+     * 
+     * @param PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $worksheet
+     * 
+     * @return PhpOffice\PhpSpreadsheet\Worksheet\Worksheet
+     */
+    protected function worksheetTitles(Worksheet $worksheet) : Worksheet
+    {
+
+        $titles = new Titles($this->presence_times->wpdbGet());
+
+        $titles_selected = $titles->selectTitles();
+
+        $row = 1;
+
+        $worksheet->setCellValue('A'.$row, 'ID пользователя');
+        $worksheet->setCellValue('B'.$row, 'ФИО');
+        $worksheet->setCellValue('C'.$row, 'E-mail');
+        $worksheet->setCellValue('D'.$row, 'Номер телефона');
+        $worksheet->setCellValue('E'.$row, 'Дата рождения');
+        $worksheet->setCellValue('F'.$row, 'Город');
+        $worksheet->setCellValue('G'.$row, 'Организация');
+        $worksheet->setCellValue('H'.$row, 'Специальность');
+        $worksheet->setCellValue('I'.$row, 'Всего релевантных подтверждений');
+
+        $col_base = 10;
+        $col = $col_base;
+
+        foreach ($titles_selected as $title) {
+
+            if ($title['nmo'] !== '1') continue;
+
+            $worksheet->setCellValue(
+                $this->getColumnName($col).$row,
+                'Лекция ID '.$title['id']
+            );
+
+            $col += 1;
+
+        }
+
+        $row += 1;
+
+        foreach ($this->users_data as $user_id => $values) {
+
+            $worksheet->setCellValue('A'.$row, $user_id);
+            $worksheet->setCellValue('B'.$row, $this->implodedFio($values));
+            $worksheet->setCellValue('C'.$row, $values['email']);
+
+            $worksheet->setCellValue(
+                'D'.$row,
+                empty($values['phone']) ? '' : $values['phone']
+            );
+            $worksheet->setCellValue(
+                'E'.$row,
+                empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
+            );
+            $worksheet->setCellValue(
+                'F'.$row,
+                empty($values['town']) ? '' : $values['town']
+            );
+            $worksheet->setCellValue(
+                'G'.$row,
+                empty($values['Organization']) ? '' : $values['Organization']
+            );
+            $worksheet->setCellValue(
+                'H'.$row,
+                empty($values['Specialty']) ? '' : $values['Specialty']
+            );
+
+            $col = $col_base;
+
+            $confs_total = 0;
+
+            foreach ($titles_selected as $title) {
+
+                if ($title['nmo'] !== '1') continue;
+
+                $confs = 0;
+
+                if (isset($values['presence_times'])) {
+
+                    foreach ($values['presence_times'] as $presence_time) {
+
+                        $datetime = strtotime($presence_time['datetime']);
+
+                        if (($datetime >= strtotime($title['datetime_start']) &&
+                                $datetime <= strtotime($title['datetime_end'])) &&
+                            $presence_time['list'] === $title['list_name']) {
+
+                            $confs += 1;
+                            $confs_total += 1;
+
+                        }
+
+                    }
+
+                }
+
+                $worksheet->setCellValue(
+                    $this->getColumnName($col).$row,
+                    $confs
+                );
+
+                $col += 1;
+
+            }
+
+            $worksheet->setCellValue(
+                $this->getColumnName($col_base - 1).$row,
+                $confs_total
+            );
+
+            $row += 1;
+
+        }
+
+        return $worksheet;
 
     }
 

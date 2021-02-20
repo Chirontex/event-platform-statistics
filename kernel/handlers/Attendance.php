@@ -7,7 +7,6 @@ namespace EPStatistics\Handlers;
 use EPStatistics\Users;
 use EPStatistics\Visits;
 use EPStatistics\Exceptions\VisitsException;
-use EPStatistics\Handlers\UsersWorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 

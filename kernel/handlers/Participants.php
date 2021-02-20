@@ -5,7 +5,6 @@
 namespace EPStatistics\Handlers;
 
 use EPStatistics\Users;
-use EPStatistics\Handlers\UsersWorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
