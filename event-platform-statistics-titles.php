@@ -1,3 +1,10 @@
+<?php
+/**
+ * Event Platform Statistics
+ */
+if (!defined('ABSPATH')) die;
+
+?>
 <div class="container-fluid">
     <h1 class="h3 text-center my-5">Титры</h1>
     <form action="" method="post" class="eps-titles-form mx-auto">

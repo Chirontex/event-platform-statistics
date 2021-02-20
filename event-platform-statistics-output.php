@@ -1,3 +1,10 @@
+<?php
+/**
+ * Event Platform Statistics
+ */
+if (!defined('ABSPATH')) die;
+
+?>
 <div class="container-fluid">
     <h1 class="h3 text-center my-5">Статистика</h1>
     <form class="eps-column mx-auto" action="" method="post">
