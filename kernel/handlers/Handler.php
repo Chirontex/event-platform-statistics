@@ -22,8 +22,8 @@ class Handler
         if (!file_exists($path)) {
 
             if (!mkdir($path)) throw new HandlerException(
-                'Directory doesn\'t exist and cannot be created.',
-                -20
+                HandlerException::DIRECTORY_NOT_EXIST_MESSAGE,
+                HandlerException::DIRECTORY_NOT_EXIST_CODE
             );
 
         }
@@ -83,8 +83,8 @@ class Handler
 
         if (is_string($file)) $result = $file;
         else throw new HandlerException(
-            'Cannot read a saved file.',
-            -21
+            HandlerException::FILE_READING_FAILURE_MESSAGE,
+            HandlerException::FILE_READING_FAILURE_CODE
         );
 
         return $result;

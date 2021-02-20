@@ -148,4 +148,30 @@ class MetadataMatching extends Storage
 
     }
 
+    /**
+     * Getting all existing keys.
+     * 
+     * @return array
+     * 
+     * @throws EPStatistics\Exceptions\MetadataMatchingException
+     */
+    public function keysAll() : array
+    {
+
+        $keys = $this->wpdb->get_results(
+            "SELECT t.meta_key
+                FROM `".$this->wpdb->prefix.$this->table."` AS t
+                GROUP BY t.meta_key",
+            ARRAY_A
+        );
+
+        if (!is_array($keys)) throw new MetadataMatchingException(
+            MetadataMatchingException::KEYS_GETTING_FAILURE_MESSAGE,
+            MetadataMatchingException::KEYS_GETTING_FAILURE_CODE
+        );
+
+        return $keys;
+
+    }
+
 }

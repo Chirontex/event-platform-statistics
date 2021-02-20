@@ -27,4 +27,7 @@ class MetadataMatchingException extends Exception
     const MATCH_DELETE_FAILURE_CODE = -75;
     const MATCH_DELETE_FAILURE_MESSAGE = 'Match deleting failure.';
 
+    const KEYS_GETTING_FAILURE_CODE = -76;
+    const KEYS_GETTING_FAILURE_MESSAGE = 'Keys getting failure.';
+
 }
