@@ -1,5 +1,3 @@
-vendor
-composer.lock
-js/jquery-3.5.1.min.js
-js/bootstrap.bundle.min.js
-css/bootstrap.min.css
+/vendor
+/js/bootstrap.bundle.min.js
+/css/bootstrap.min.css
