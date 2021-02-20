@@ -146,6 +146,28 @@ final class Main
         
         });
 
+        add_filter('eps-metadata-datalist', function($content) {
+
+            $metadata = new MetadataMatching($this->wpdb);
+
+            $keys = $metadata->keysAll();
+
+            ob_start();
+
+            foreach ($keys as $key) {
+
+?>
+<option value="<?= htmlspecialchars($key) ?>">
+<?php
+
+            }
+
+            $content = ob_get_clean();
+
+            return $content;
+
+        });
+
         if (isset($_POST['eps-download-init'])) {
 
             add_action('plugins_loaded', function() {

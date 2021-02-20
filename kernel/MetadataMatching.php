@@ -158,9 +158,11 @@ class MetadataMatching extends Storage
     public function keysAll() : array
     {
 
+        $result = [];
+
         $keys = $this->wpdb->get_results(
             "SELECT t.meta_key
-                FROM `".$this->wpdb->prefix.$this->table."` AS t
+                FROM `".$this->wpdb->prefix."usermeta` AS t
                 GROUP BY t.meta_key",
             ARRAY_A
         );
@@ -170,7 +172,17 @@ class MetadataMatching extends Storage
             MetadataMatchingException::KEYS_GETTING_FAILURE_CODE
         );
 
-        return $keys;
+        if (!empty($keys)) {
+
+            foreach ($keys as $values) {
+
+                $result[] = $values['meta_key'];
+
+            }
+
+        }
+
+        return $result;
 
     }
 
