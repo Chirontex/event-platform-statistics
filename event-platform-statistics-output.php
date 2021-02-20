@@ -29,6 +29,7 @@ if (!defined('ABSPATH')) die;
             <label for="eps-download-nmo-raw" class="form-check-label">НМО (детализация)</label>
         </p>
         <input type="hidden" name="eps-download-init" value="true">
+        <?php wp_nonce_field('eps-download-nonce', 'eps-download-wpnp') ?>
         <button type="submit" id="eps-admin-form-submit" class="button button-primary mx-auto">Скачать</button>
     </form>
 </div>

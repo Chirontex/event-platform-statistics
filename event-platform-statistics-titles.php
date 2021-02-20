@@ -37,6 +37,7 @@ if (!defined('ABSPATH')) die;
             <input type="checkbox" id="eps-titles-nmo" name="eps-titles-nmo" value="true">
             <label for="eps-titles-nmo">Нужно учитывать в статистике для НМО</label>
         </p>
+        <?php wp_nonce_field('eps-titles-add', 'eps-titles-wpnp') ?>
         <div class="form-group text-center">
             <button type="submit" class="button button-primary" id="eps-titles-form-submit" disabled="true">Сохранить</button>
         </div>
@@ -55,16 +56,18 @@ if (!defined('ABSPATH')) die;
                 <th></th>
             </tr>
         </thead>
-        <tbody id="eps-titles-table">
+        <tbody>
         <?= apply_filters('eps-titles-tbody', '') ?>
         </tbody>
     </table>
     <form action="" method="post" hidden="true">
         <input type="hidden" id="eps-titles-title-delete" name="eps-titles-title-delete" required="true">
+        <?php wp_nonce_field('eps-titles-delete', 'eps-title-delete-wpnp') ?>
         <button type="submit" id="eps-titles-delete-submit"></button>
     </form>
     <form action="" method="post" hidden="true">
         <input type="hidden" id="eps-titles-title-update" name="eps-titles-title-update" required="true">
+        <?php wp_nonce_field('eps-titles-update', 'eps-titles-update-wpnp') ?>
         <button type="submit" id="eps-titles-update-submit"></button>
     </form>
 </div>

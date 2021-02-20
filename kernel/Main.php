@@ -70,7 +70,11 @@ final class Main
 
             if (isset($_POST['eps-titles-title-delete'])) $this->titleDelete();
 
-            $this->titlesOutput();
+            add_action('init', function() {
+
+                $this->titlesOutput();
+
+            });
 
         }
 
@@ -144,133 +148,148 @@ final class Main
 
         if (isset($_POST['eps-download-init'])) {
 
-            $spreadsheet_file = new SpreadsheetFile($this->path.'temp');
+            add_action('plugins_loaded', function() {
 
-            if (isset($_POST['eps-download-participants'])) {
-
-                $participants = new Participants(new Users($this->wpdb));
-
-                $spreadsheet_file->worksheetAdd(
-                    $participants->worksheetGet(
-                        $spreadsheet_file->spreadsheetGet(),
-                        'Участники',
-                        $spreadsheet_file->usersDataGet()
-                    )
-                );
-
-                $spreadsheet_file->usersDataSet($participants->usersDataGet());
-
-            }
-
-            if (isset($_POST['eps-download-demography'])) {
-
-                $demography = new Demography(new Users($this->wpdb));
-
-                $spreadsheet_file->worksheetAdd(
-                    $demography->worksheetGet(
-                        $spreadsheet_file->spreadsheetGet(),
-                        'Демография'
-                    )
-                );
-
-            }
-
-            if (isset($_POST['eps-download-visits'])) {
-
-                $attendance = new Attendance(
-                    new Visits($this->wpdb),
-                    new Users($this->wpdb)
-                );
-
-                $spreadsheet_file->worksheetAdd(
-                    $attendance->worksheetGet(
-                        $spreadsheet_file->spreadsheetGet(),
-                        'Посещения',
-                        $spreadsheet_file->usersDataGet()
-                    )
-                );
-
-                $spreadsheet_file->usersDataSet($attendance->usersDataGet());
-
-            }
-
-            if (isset($_POST['eps-download-nmo-titles'])) {
-
-                $titles_worksheet = new TitlesWorksheet(new Titles($this->wpdb));
-
-                $spreadsheet_file->worksheetAdd(
-                    $titles_worksheet->worksheetGet(
-                        $spreadsheet_file->spreadsheetGet(),
-                        'Программа'
-                    )
-                );
-
-                $presence_effect = new PresenceEffect(
-                    new PresenceTimes($this->wpdb)
-                );
-
-                $spreadsheet_file->worksheetAdd(
-                    $presence_effect->worksheetGet(
-                        $spreadsheet_file->spreadsheetGet(),
-                        'НМО',
-                        $spreadsheet_file->usersDataGet(),
-                        $presence_effect::WORKSHEET_MODE_TITLES
-                    )
-                );
-
-                $spreadsheet_file->usersDataSet($presence_effect->usersDataGet());
-
-            }
-
-            if (isset($_POST['eps-download-nmo-raw'])) {
-
-                if (!($presence_effect instanceof PresenceEffect)) $presence_effect = new PresenceEffect(
-                    new PresenceTimes($this->wpdb)
-                );
-
-                $spreadsheet_file->worksheetAdd(
-                    $presence_effect->worksheetGet(
-                        $spreadsheet_file->spreadsheetGet(),
-                        'НМО (детализация)',
-                        $spreadsheet_file->usersDataGet(),
-                        $presence_effect::WORKSHEET_MODE_RAW
-                    )
-                );
-
-                $spreadsheet_file->usersDataSet($presence_effect->usersDataGet());
-
-            }
-
-            try {
-
-                $spreadsheet_file->spreadsheetSave();
-
-                $filedata = $spreadsheet_file->fileGetUnlink();
-
-                if (empty($filedata)) $this->adminStatusSet(
+                if (wp_verify_nonce(
+                    $_POST['eps-download-wpnp'],
+                    'eps-download-nonce'
+                ) === false) $this->adminStatusSet(
                     'danger',
-                    'Произошла неизвестная ошибка.'
+                    'Произошла ошибка при отправке формы.'
                 );
                 else {
 
-                    date_default_timezone_set('Europe/Moscow');
+                    $spreadsheet_file = new SpreadsheetFile($this->path.'temp');
 
-                    header('Content-type: application; charset=utf-8');
-                    header('Content-disposition: attachment; filename=Statistics_'.date("Y-m-d_H-i-s").'.xlsx');
+                    if (isset($_POST['eps-download-participants'])) {
 
-                    echo $filedata;
+                        $participants = new Participants(new Users($this->wpdb));
 
-                    die;
+                        $spreadsheet_file->worksheetAdd(
+                            $participants->worksheetGet(
+                                $spreadsheet_file->spreadsheetGet(),
+                                'Участники',
+                                $spreadsheet_file->usersDataGet()
+                            )
+                        );
+
+                        $spreadsheet_file->usersDataSet($participants->usersDataGet());
+
+                    }
+
+                    if (isset($_POST['eps-download-demography'])) {
+
+                        $demography = new Demography(new Users($this->wpdb));
+
+                        $spreadsheet_file->worksheetAdd(
+                            $demography->worksheetGet(
+                                $spreadsheet_file->spreadsheetGet(),
+                                'Демография'
+                            )
+                        );
+
+                    }
+
+                    if (isset($_POST['eps-download-visits'])) {
+
+                        $attendance = new Attendance(
+                            new Visits($this->wpdb),
+                            new Users($this->wpdb)
+                        );
+
+                        $spreadsheet_file->worksheetAdd(
+                            $attendance->worksheetGet(
+                                $spreadsheet_file->spreadsheetGet(),
+                                'Посещения',
+                                $spreadsheet_file->usersDataGet()
+                            )
+                        );
+
+                        $spreadsheet_file->usersDataSet($attendance->usersDataGet());
+
+                    }
+
+                    if (isset($_POST['eps-download-nmo-titles'])) {
+
+                        $titles_worksheet = new TitlesWorksheet(new Titles($this->wpdb));
+
+                        $spreadsheet_file->worksheetAdd(
+                            $titles_worksheet->worksheetGet(
+                                $spreadsheet_file->spreadsheetGet(),
+                                'Программа'
+                            )
+                        );
+
+                        $presence_effect = new PresenceEffect(
+                            new PresenceTimes($this->wpdb)
+                        );
+
+                        $spreadsheet_file->worksheetAdd(
+                            $presence_effect->worksheetGet(
+                                $spreadsheet_file->spreadsheetGet(),
+                                'НМО',
+                                $spreadsheet_file->usersDataGet(),
+                                $presence_effect::WORKSHEET_MODE_TITLES
+                            )
+                        );
+
+                        $spreadsheet_file->usersDataSet($presence_effect->usersDataGet());
+
+                    }
+
+                    if (isset($_POST['eps-download-nmo-raw'])) {
+
+                        if (!($presence_effect instanceof PresenceEffect)) $presence_effect = new PresenceEffect(
+                            new PresenceTimes($this->wpdb)
+                        );
+
+                        $spreadsheet_file->worksheetAdd(
+                            $presence_effect->worksheetGet(
+                                $spreadsheet_file->spreadsheetGet(),
+                                'НМО (детализация)',
+                                $spreadsheet_file->usersDataGet(),
+                                $presence_effect::WORKSHEET_MODE_RAW
+                            )
+                        );
+
+                        $spreadsheet_file->usersDataSet($presence_effect->usersDataGet());
+
+                    }
+
+                    try {
+
+                        $spreadsheet_file->spreadsheetSave();
+
+                        $filedata = $spreadsheet_file->fileGetUnlink();
+
+                        if (empty($filedata)) $this->adminStatusSet(
+                            'danger',
+                            'Произошла неизвестная ошибка.'
+                        );
+                        else {
+
+                            date_default_timezone_set('Europe/Moscow');
+
+                            header('Content-type: application; charset=utf-8');
+                            header('Content-disposition: attachment; filename=Statistics_'.date("Y-m-d_H-i-s").'.xlsx');
+
+                            echo $filedata;
+
+                            die;
+
+                        }
+
+                    } catch (HandlerException $e) {}
+                    catch (SpreadsheetFileException $e) {}
+
+                    if (isset($e)) $this->adminStatusSet(
+                        'danger',
+                        'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
+                    );
 
                 }
 
-            } catch (HandlerException $e) {}
-            catch (SpreadsheetFileException $e) {}
-
-            if (isset($e)) $this->adminStatusSet(
-                'danger',
-                'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
-            );
+            });
 
         }
 
@@ -531,56 +550,71 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
     private function titleAdd() : void
     {
 
-        $timestamp_start = strtotime(
-            $_POST['eps-titles-start-date'].' '.$_POST['eps-titles-start-time']
-        );
+        add_action('plugins_loaded', function() {
 
-        $timestamp_end = strtotime(
-            $_POST['eps-titles-end-date'].' '.$_POST['eps-titles-end-time']
-        );
-
-        if (isset($_POST['eps-titles-nmo'])) $nmo = 1;
-        else $nmo = 0;
-
-        if ($timestamp_start === false ||
-            $timestamp_end === false ||
-            $timestamp_start >= $timestamp_end) $this->adminStatusSet(
+            if (wp_verify_nonce(
+                $_POST['eps-titles-wpnp'],
+                'eps-titles-add'
+            ) === false) $this->adminStatusSet(
                 'danger',
-                'Дата и время были указаны некорректно.'
+                'Произошла ошибка отправки формы.'
             );
-        else {
+            else {
 
-            $titles = new Titles($this->wpdb);
-
-            try {
-
-                $add = $titles->titleAdd(
-                    trim($_POST['eps-titles-header']),
-                    trim($_POST['eps-titles-list']),
-                    $timestamp_start,
-                    $timestamp_end,
-                    $nmo
+                $timestamp_start = strtotime(
+                    $_POST['eps-titles-start-date'].' '.$_POST['eps-titles-start-time']
                 );
 
-                if ($add) $this->adminStatusSet(
-                    'success',
-                    'Элемент программы успешно сохранён!'
-                );
-                else $this->adminStatusSet(
-                    'danger',
-                    'Не удалось сохранить элемент программы.'
+                $timestamp_end = strtotime(
+                    $_POST['eps-titles-end-date'].' '.$_POST['eps-titles-end-time']
                 );
 
-            } catch (TitlesException $e) {
+                if (isset($_POST['eps-titles-nmo'])) $nmo = 1;
+                else $nmo = 0;
 
-                $this->adminStatusSet(
-                    'danger',
-                    'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
-                );
+                if ($timestamp_start === false ||
+                    $timestamp_end === false ||
+                    $timestamp_start >= $timestamp_end) $this->adminStatusSet(
+                        'danger',
+                        'Дата и время были указаны некорректно.'
+                    );
+                else {
+
+                    $titles = new Titles($this->wpdb);
+
+                    try {
+
+                        $add = $titles->titleAdd(
+                            trim($_POST['eps-titles-header']),
+                            trim($_POST['eps-titles-list']),
+                            $timestamp_start,
+                            $timestamp_end,
+                            $nmo
+                        );
+
+                        if ($add) $this->adminStatusSet(
+                            'success',
+                            'Элемент программы успешно сохранён!'
+                        );
+                        else $this->adminStatusSet(
+                            'danger',
+                            'Не удалось сохранить элемент программы.'
+                        );
+
+                    } catch (TitlesException $e) {
+
+                        $this->adminStatusSet(
+                            'danger',
+                            'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
+                        );
+
+                    }
+
+                }
 
             }
 
-        }
+        });
 
     }
 
@@ -678,77 +712,107 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
     private function titleUpdate() : void
     {
 
-        $titles = new Titles($this->wpdb);
+        add_action('plugins_loaded', function() {
 
-        $timestamp_start = strtotime(
-            $_POST['eps-titles-title-update-date-start'].' '.$_POST['eps-titles-title-update-time-start']
-        );
+            if (wp_verify_nonce(
+                $_POST['eps-titles-update-wpnp'],
+                'eps-titles-update'
+            ) === false) $this->adminStatusSet(
+                'danger',
+                'Произошла ошибка при отправке формы.'
+            );
+            else {
 
-        $timestamp_end = strtotime(
-            $_POST['eps-titles-title-update-date-end'].' '.$_POST['eps-titles-title-update-time-end']
-        );
+                $titles = new Titles($this->wpdb);
 
-        if ($timestamp_start >= $timestamp_end) $this->adminStatusSet(
-            'danger',
-            'Дата и время были указаны некорректно.'
-        );
-        else {
-
-            try {
-
-                if ($titles->titleUpdate(
-                    (int)$_POST['eps-titles-title-update'],
-                    trim($_POST['eps-titles-title-update-title']),
-                    trim($_POST['eps-titles-title-update-list-name']),
-                    $timestamp_start,
-                    $timestamp_end,
-                    (int)$_POST['eps-titles-title-update-nmo']
-                )) $this->adminStatusSet('success', 'Элемент программы успешно отредактирован!');
-                else $this->adminStatusSet('danger', 'Не удалось отредактировать элемент программы.');
-
-            } catch (TitlesException $e) {
-
-                $this->adminStatusSet(
-                    'danger',
-                    'Ошибка редактирования, код '.$e->getCode().': "'.$e->getMessage().'"'
+                $timestamp_start = strtotime(
+                    $_POST['eps-titles-title-update-date-start'].' '.$_POST['eps-titles-title-update-time-start']
                 );
+
+                $timestamp_end = strtotime(
+                    $_POST['eps-titles-title-update-date-end'].' '.$_POST['eps-titles-title-update-time-end']
+                );
+
+                if ($timestamp_start >= $timestamp_end) $this->adminStatusSet(
+                    'danger',
+                    'Дата и время были указаны некорректно.'
+                );
+                else {
+
+                    try {
+
+                        if ($titles->titleUpdate(
+                            (int)$_POST['eps-titles-title-update'],
+                            trim($_POST['eps-titles-title-update-title']),
+                            trim($_POST['eps-titles-title-update-list-name']),
+                            $timestamp_start,
+                            $timestamp_end,
+                            (int)$_POST['eps-titles-title-update-nmo']
+                        )) $this->adminStatusSet('success', 'Элемент программы успешно отредактирован!');
+                        else $this->adminStatusSet('danger', 'Не удалось отредактировать элемент программы.');
+
+                    } catch (TitlesException $e) {
+
+                        $this->adminStatusSet(
+                            'danger',
+                            'Ошибка редактирования, код '.$e->getCode().': "'.$e->getMessage().'"'
+                        );
+
+                    }
+
+                }
 
             }
 
-        }
+        });
 
     }
 
     private function titleDelete() : void
     {
 
-        $titles = new Titles($this->wpdb);
+        add_action('plugins_loaded', function() {
 
-        try {
-
-            $delete = $titles->titleDelete((int)$_POST['eps-titles-title-delete']);
-
-        } catch (TitlesException $e) {
-
-            $this->adminStatusSet(
+            if (wp_verify_nonce(
+                $_POST['eps-title-delete-wpnp'],
+                'eps-titles-delete'
+            ) === false) $this->adminStatusSet(
                 'danger',
-                'Ошибка удаления элемента программы, код '.$e->getCode().': "'.$e->getMessage().'"'
+                'Произошла ошибка при отправке формы.'
             );
+            else {
 
-        }
+                $titles = new Titles($this->wpdb);
 
-        if (!isset($e)) {
+                try {
 
-            if ($delete) $this->adminStatusSet(
-                'success',
-                'Элемент программы успешно удалён!'
-            );
-            else $this->adminStatusSet(
-                'danger',
-                'Не удалось удалить элемент программы'
-            );
+                    $delete = $titles->titleDelete((int)$_POST['eps-titles-title-delete']);
 
-        }
+                } catch (TitlesException $e) {
+
+                    $this->adminStatusSet(
+                        'danger',
+                        'Ошибка удаления элемента программы, код '.$e->getCode().': "'.$e->getMessage().'"'
+                    );
+
+                }
+
+                if (!isset($e)) {
+
+                    if ($delete) $this->adminStatusSet(
+                        'success',
+                        'Элемент программы успешно удалён!'
+                    );
+                    else $this->adminStatusSet(
+                        'danger',
+                        'Не удалось удалить элемент программы'
+                    );
+
+                }
+
+            }
+
+        });
 
     }
 
