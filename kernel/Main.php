@@ -12,8 +12,6 @@ final class Main extends MainCluster
 
     private $output_script_file;
     private $titles_script_file;
-    private $titles_tbody;
-    private $admin_status;
 
     public function __construct(string $path, string $url)
     {
@@ -25,8 +23,10 @@ final class Main extends MainCluster
 
         $this->apiRoutesInit();
 
-        $this->apiTokenGet();
-        $this->apiTokenRemove();
+        $main_api_token = new MainApiToken($this->path, $this->url);
+
+        $main_api_token->apiTokenGet();
+        $main_api_token->apiTokenRemove();
 
         $this->clientJSInit();
         $this->shortcodesInit();
@@ -50,22 +50,20 @@ final class Main extends MainCluster
                 $this->titles_script_file
             ) !== false) {
 
+            $main_titles = new MainTitles($this->path, $this->url);
+
             if (isset($_POST['eps-titles-header']) &&
                 isset($_POST['eps-titles-list']) &&
                 isset($_POST['eps-titles-start-date']) &&
                 isset($_POST['eps-titles-start-time']) &&
                 isset($_POST['eps-titles-end-date']) &&
-                isset($_POST['eps-titles-end-time'])) $this->titleAdd();
+                isset($_POST['eps-titles-end-time'])) $main_titles->titleAdd();
 
-            if (isset($_POST['eps-titles-title-update'])) $this->titleUpdate();
+            if (isset($_POST['eps-titles-title-update'])) $main_titles->titleUpdate();
 
-            if (isset($_POST['eps-titles-title-delete'])) $this->titleDelete();
+            if (isset($_POST['eps-titles-title-delete'])) $main_titles->titleDelete();
 
-            add_action('init', function() {
-
-                $this->titlesOutput();
-
-            });
+            $main_titles->titlesOutput();
 
         }
 
@@ -89,28 +87,6 @@ final class Main extends MainCluster
                 8,
                 $this->path.$this->titles_script_file
             );
-
-        });
-
-    }
-
-    private function adminStatusSet(string $alert_type, string $text) : void
-    {
-
-        if ($alert_type === 'danger') $alert_type = 'error';
-
-        $this->admin_status = [
-            'type' => $alert_type,
-            'text' => $text
-        ];
-
-        add_action('admin_notices', function() {
-
-?>
-<div class="notice notice-<?= $this->admin_status['type'] ?> is-dismissible" style="max-width: 500px; margin-left: auto; margin-right: auto;">
-    <p style="text-align: center;"><?= $this->admin_status['text'] ?></p>
-</div>
-<?php
 
         });
 
@@ -205,59 +181,6 @@ final class Main extends MainCluster
 
     }
 
-    private function apiTokenGet() : void
-    {
-
-        add_action('wp_loaded', function() {
-
-            $user_id = get_current_user_id();
-
-            if ($user_id !== 0) {
-
-                $tokens = new Tokens($this->wpdb);
-
-                if ($tokens->userGetByToken(
-                        (string)$_COOKIE['eps_api_token']
-                    ) === 0) {
-
-                    setcookie(
-                        'eps_api_token',
-                        $tokens->tokenGetGenerate($user_id),
-                        0,
-                        '/'
-                    );
-
-                }
-
-            }
-
-        });
-
-    }
-
-    private function apiTokenRemove() : void
-    {
-
-        add_action('clear_auth_cookie', function() {
-
-            $user_id = get_current_user_id();
-
-            $tokens = new Tokens($this->wpdb);
-
-            if ($user_id !== 0) $tokens->tokenDeleteByUser($user_id);
-
-            if (!empty($_COOKIE['eps_api_token'])) {
-
-                $tokens->tokenDelete((string)$_COOKIE['eps_api_token']);
-
-                setcookie('eps_api_token', '', 0, '/');
-
-            }
-
-        });
-
-    }
-
     private function shortcodesInit() : void
     {
 
@@ -341,275 +264,6 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 [],
                 '2.0.0'
             );
-
-        });
-
-    }
-
-    private function titleAdd() : void
-    {
-
-        add_action('plugins_loaded', function() {
-
-            if (wp_verify_nonce(
-                $_POST['eps-titles-wpnp'],
-                'eps-titles-add'
-            ) === false) $this->adminStatusSet(
-                'danger',
-                'Произошла ошибка отправки формы.'
-            );
-            else {
-
-                $timestamp_start = strtotime(
-                    $_POST['eps-titles-start-date'].' '.$_POST['eps-titles-start-time']
-                );
-
-                $timestamp_end = strtotime(
-                    $_POST['eps-titles-end-date'].' '.$_POST['eps-titles-end-time']
-                );
-
-                if (isset($_POST['eps-titles-nmo'])) $nmo = 1;
-                else $nmo = 0;
-
-                if ($timestamp_start === false ||
-                    $timestamp_end === false ||
-                    $timestamp_start >= $timestamp_end) $this->adminStatusSet(
-                        'danger',
-                        'Дата и время были указаны некорректно.'
-                    );
-                else {
-
-                    $titles = new Titles($this->wpdb);
-
-                    try {
-
-                        $add = $titles->titleAdd(
-                            trim($_POST['eps-titles-header']),
-                            trim($_POST['eps-titles-list']),
-                            $timestamp_start,
-                            $timestamp_end,
-                            $nmo
-                        );
-
-                        if ($add) $this->adminStatusSet(
-                            'success',
-                            'Элемент программы успешно сохранён!'
-                        );
-                        else $this->adminStatusSet(
-                            'danger',
-                            'Не удалось сохранить элемент программы.'
-                        );
-
-                    } catch (TitlesException $e) {
-
-                        $this->adminStatusSet(
-                            'danger',
-                            'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
-                        );
-
-                    }
-
-                }
-
-            }
-
-        });
-
-    }
-
-    private function titlesOutput() : void
-    {
-
-        add_action('admin_enqueue_scripts', function() {
-
-            wp_enqueue_style(
-                'bootstrap-min',
-                (
-                    file_exists($this->path.'css/bootstrap.min.css') ?
-                    $this->url.'css/bootstrap.min.css' :
-                    'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css'
-                ),
-                [],
-                '5.0.0-beta1'
-            );
-        
-            wp_enqueue_style(
-                'eps-titles',
-                $this->url.'css/titles.css',
-                [],
-                '1.0.0'
-            );
-        
-            wp_enqueue_script(
-                'bootstrap-bundle-min',
-                (
-                    file_exists($this->path.'js/bootstrap.bundle.min.js') ?
-                    $this->url.'js/bootstrap.bundle.min.js' :
-                    'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js'
-                ),
-                [],
-                '5.0.0-beta1'
-            );
-        
-            wp_enqueue_script(
-                'eps-titles',
-                $this->url.'js/titles.js',
-                [],
-                '1.0.0'
-            );
-        
-        });
-
-        $titles = new Titles($this->wpdb);
-
-        try {
-
-            $select = $titles->selectTitles();
-
-        } catch (TitlesException $e) {
-
-            $this->adminStatusSet(
-                'danger',
-                'Ошибка загрузки титров, '.$e->getCode().': "'.$e->getMessage().'"'
-            );
-
-        }
-
-        if (!isset($e) && !empty($select)) {
-
-            ob_start();
-
-            foreach ($select as $title) {
-
-?>
-<tr id="eps-title-<?= $title['id'] ?>">
-    <td><?= $title['id'] ?></td>
-    <td id="eps-title-title-<?= $title['id'] ?>"><?= htmlspecialchars($title['title']) ?></td>
-    <td id="eps-title-list-name-<?= $title['id'] ?>"><?= htmlspecialchars($title['list_name']) ?></td>
-    <td id="eps-title-datetime-start-<?= $title['id'] ?>"><?= date("d.m.Y H:i", strtotime($title['datetime_start'])) ?></td>
-    <td id="eps-title-datetime-end-<?= $title['id'] ?>"><?= date("d.m.Y H:i", strtotime($title['datetime_end'])) ?></td>
-    <td id="eps-title-nmo-<?= $title['id'] ?>"><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>
-    <td id="eps-title-update-button-<?= $title['id'] ?>"><a href="javascript:void(0)" onclick="epsTitlesUpdate(<?= $title['id'] ?>);">Редактировать</a></td>
-    <td><a href="javascript:void(0)" onclick="epsTitlesDelete(<?= $title['id'] ?>);">Удалить</a></td>
-</tr>
-<?php
-
-            }
-
-            $this->titles_tbody = ob_get_clean();
-
-            add_filter('eps-titles-tbody', function() {
-
-                return $this->titles_tbody;
-
-            });
-
-        }
-
-    }
-
-    private function titleUpdate() : void
-    {
-
-        add_action('plugins_loaded', function() {
-
-            if (wp_verify_nonce(
-                $_POST['eps-titles-update-wpnp'],
-                'eps-titles-update'
-            ) === false) $this->adminStatusSet(
-                'danger',
-                'Произошла ошибка при отправке формы.'
-            );
-            else {
-
-                $titles = new Titles($this->wpdb);
-
-                $timestamp_start = strtotime(
-                    $_POST['eps-titles-title-update-date-start'].' '.$_POST['eps-titles-title-update-time-start']
-                );
-
-                $timestamp_end = strtotime(
-                    $_POST['eps-titles-title-update-date-end'].' '.$_POST['eps-titles-title-update-time-end']
-                );
-
-                if ($timestamp_start >= $timestamp_end) $this->adminStatusSet(
-                    'danger',
-                    'Дата и время были указаны некорректно.'
-                );
-                else {
-
-                    try {
-
-                        if ($titles->titleUpdate(
-                            (int)$_POST['eps-titles-title-update'],
-                            trim($_POST['eps-titles-title-update-title']),
-                            trim($_POST['eps-titles-title-update-list-name']),
-                            $timestamp_start,
-                            $timestamp_end,
-                            (int)$_POST['eps-titles-title-update-nmo']
-                        )) $this->adminStatusSet('success', 'Элемент программы успешно отредактирован!');
-                        else $this->adminStatusSet('danger', 'Не удалось отредактировать элемент программы.');
-
-                    } catch (TitlesException $e) {
-
-                        $this->adminStatusSet(
-                            'danger',
-                            'Ошибка редактирования, код '.$e->getCode().': "'.$e->getMessage().'"'
-                        );
-
-                    }
-
-                }
-
-            }
-
-        });
-
-    }
-
-    private function titleDelete() : void
-    {
-
-        add_action('plugins_loaded', function() {
-
-            if (wp_verify_nonce(
-                $_POST['eps-title-delete-wpnp'],
-                'eps-titles-delete'
-            ) === false) $this->adminStatusSet(
-                'danger',
-                'Произошла ошибка при отправке формы.'
-            );
-            else {
-
-                $titles = new Titles($this->wpdb);
-
-                try {
-
-                    $delete = $titles->titleDelete((int)$_POST['eps-titles-title-delete']);
-
-                } catch (TitlesException $e) {
-
-                    $this->adminStatusSet(
-                        'danger',
-                        'Ошибка удаления элемента программы, код '.$e->getCode().': "'.$e->getMessage().'"'
-                    );
-
-                }
-
-                if (!isset($e)) {
-
-                    if ($delete) $this->adminStatusSet(
-                        'success',
-                        'Элемент программы успешно удалён!'
-                    );
-                    else $this->adminStatusSet(
-                        'danger',
-                        'Не удалось удалить элемент программы'
-                    );
-
-                }
-
-            }
 
         });
 
