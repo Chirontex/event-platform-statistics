@@ -149,6 +149,30 @@ class MetadataMatching extends Storage
     }
 
     /**
+     * Get all existing matches.
+     * 
+     * @return array
+     * 
+     * @throws EPStatistics\Exceptions\MetadataMatchingException
+     */
+    public function matchesAll() : array
+    {
+
+        $select = $this->wpdb->get_results(
+            "SELECT *
+                FROM `".$this->wpdb->prefix.$this->table."`",
+            ARRAY_A
+        );
+
+        if (is_array($select)) return $select;
+        else throw new MetadataMatchingException(
+            MetadataMatchingException::MATCHES_SELECT_FAILURE_MESSAGE,
+            MetadataMatchingException::MATCHES_SELECT_FAILURE_CODE
+        );
+
+    }
+
+    /**
      * Getting all existing keys.
      * 
      * @return array

@@ -30,4 +30,7 @@ class MetadataMatchingException extends Exception
     const KEYS_GETTING_FAILURE_CODE = -76;
     const KEYS_GETTING_FAILURE_MESSAGE = 'Keys getting failure.';
 
+    const MATCHES_SELECT_FAILURE_CODE = -77;
+    const MATCHES_SELECT_FAILURE_MESSAGE = 'Getting matches failure.';
+
 }

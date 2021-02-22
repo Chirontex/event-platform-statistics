@@ -12,9 +12,12 @@ use EPStatistics\Handlers\TitlesWorksheet;
 use EPStatistics\Handlers\PresenceEffect;
 use EPStatistics\Exceptions\HandlerException;
 use EPStatistics\Exceptions\SpreadsheetFileException;
+use EPStatistics\Exceptions\MetadataMatchingException;
 
 class MainDownload extends AdminPage
 {
+
+    protected $metadata;
 
     public function downloadInit() : void
     {
@@ -54,32 +57,12 @@ class MainDownload extends AdminPage
                 'eps-output',
                 $this->url.'js/output.js',
                 [],
-                '1.0.1'
+                '1.1.5'
             );
         
         });
 
-        add_filter('eps-metadata-datalist', function($content) {
-
-            $metadata = new MetadataMatching($this->wpdb);
-
-            $keys = $metadata->keysAll();
-
-            ob_start();
-
-            foreach ($keys as $key) {
-
-?>
-<option value="<?= htmlspecialchars($key) ?>">
-<?php
-
-            }
-
-            $content = ob_get_clean();
-
-            return $content;
-
-        });
+        $this->metadata = new MetadataMatching($this->wpdb);
 
         if (isset($_POST['eps-download-init'])) {
 
@@ -226,7 +209,168 @@ class MainDownload extends AdminPage
 
             });
 
+        } elseif (isset($_POST['eps-metadata-add-name']) &&
+                    isset($_POST['eps-metadata-add-key'])) {
+
+            add_action('plugins_loaded', function() {
+
+                if (wp_verify_nonce(
+                    $_POST['eps-metadata-wpnp'],
+                    'eps-metadata-add'
+                ) === false) $this->adminStatusSet(
+                    'danger',
+                    'Произошла ошибка отправки формы.'
+                );
+                else {
+
+                    try {
+
+                        $this->metadata->matchAdd(
+                            (string)$_POST['eps-metadata-add-name'],
+                            (string)$_POST['eps-metadata-add-key']
+                        );
+
+                        $this->adminStatusSet(
+                            'success',
+                            'Сопоставление метаданных успешно добавлено!'
+                        );
+
+                    } catch (MetadataMatchingException $e) {
+
+                        $this->adminStatusSet(
+                            'danger',
+                            'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
+                        );
+
+                    }
+
+                }
+
+            });
+
+        } elseif (isset($_POST['eps-metadata-update'])) {
+
+            add_action('plugins_loaded', function() {
+
+                if (wp_verify_nonce(
+                    $_POST['eps-metadata-update-wpnp'],
+                    'eps-metadata-update'
+                ) === false) $this->adminStatusSet(
+                    'danger',
+                    'Произошла ошибка при отправке формы.'
+                );
+                else {
+
+                    try {
+
+                        $this->metadata->matchUpdate(
+                            (int)$_POST['eps-metadata-update'],
+                            (string)$_POST['eps-metadata-update-name'],
+                            (string)$_POST['eps-metadata-update-key']
+                        );
+
+                        $this->adminStatusSet(
+                            'success',
+                            'Сопоставление метаданных успешно изменено!'
+                        );
+
+                    } catch (MetadataMatchingException $e) {
+
+                        $this->adminStatusSet(
+                            'danger',
+                            'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
+                        );
+
+                    }
+
+                }
+
+            });
+
+        } elseif (isset($_POST['eps-metadata-delete'])) {
+
+            add_action('plugins_loaded', function() {
+
+                if (wp_verify_nonce(
+                    $_POST['eps-metadata-delete-wpnp'],
+                    'eps-metadata-delete'
+                ) === false) $this->adminStatusSet(
+                    'danger',
+                    'Произошла ошибка при отправке формы.'
+                );
+                else {
+
+                    try {
+
+                        $this->metadata->matchDelete(
+                            (int)$_POST['eps-metadata-delete']
+                        );
+
+                        $this->adminStatusSet(
+                            'success',
+                            'Сопоставление метаданных успешно удалено!'
+                        );
+
+                    } catch (MetadataMatchingException $e) {
+
+                        $this->adminStatusSet(
+                            'danger',
+                            'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
+                        );
+
+                    }
+
+                }
+
+            });
+
         }
+
+        add_filter('eps-metadata-datalist', function($content) {
+
+            $keys = $this->metadata->keysAll();
+
+            ob_start();
+
+            foreach ($keys as $key) {
+
+?>
+<option value="<?= htmlspecialchars($key) ?>">
+<?php
+
+            }
+
+            $content = ob_get_clean();
+
+            return $content;
+
+        });
+
+        add_filter('eps-metadata-tbody', function($content) {
+
+            $matches = $this->metadata->matchesAll();
+
+            ob_start();
+
+            foreach ($matches as $match) {
+
+?>
+<tr id="eps-metadata-match-<?= $match['id'] ?>">
+    <td id="eps-metadata-match-id-<?= $match['id'] ?>"><?= $match['id'] ?></td>
+    <td id="eps-metadata-match-name-<?= $match['id'] ?>"><?= htmlspecialchars($match['name']) ?></td>
+    <td id="eps-metadata-match-key-<?= $match['id'] ?>"><?= htmlspecialchars($match['key']) ?></td>
+    <td id="eps-metadata-match-update-<?= $match['id'] ?>"><a href="javascript:void(0)" onclick="epsMetadataMatchUpdate(<?= $match['id'] ?>);">Изменить</a></td>
+    <td id="eps-metadata-match-delete-<?= $match['id'] ?>"><a href="javascript:void(0)" onclick="epsMetadataMatchDelete(<?= $match['id'] ?>);">Удалить</a></td>
+</tr>
+<?php
+
+            }
+
+            $content = ob_get_clean();
+
+            return $content;
+
+        });
 
     }
 
