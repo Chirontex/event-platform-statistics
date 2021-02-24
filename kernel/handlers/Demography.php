@@ -21,30 +21,56 @@ class Demography implements WorksheetHandler
 
     }
 
-    public function worksheetGet(Spreadsheet $spreadsheet, string $name): Worksheet
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name) : Worksheet
     {
         
         if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
 
         $worksheet = new Worksheet($spreadsheet, $name);
 
-        $worksheet->setCellValue('A1', 'Город');
-        $worksheet->setCellValue('B1', 'Кол-во участников');
+        $users_countries = $this->users->getUsersCountries();
 
-        $users_towns = $this->users->getUsersTowns();
+        if (empty($users_countries)) {
 
-        if (!empty($users_towns)) {
+            $worksheet->setCellValue('A1', 'Город');
+            $worksheet->setCellValue('B1', 'Кол-во участников');
+
+            $users_towns = $this->users->getUsersTowns();
+
+            if (!empty($users_towns)) {
+
+                $i = 2;
+
+                foreach ($users_towns as $town => $ids) {
+
+                    $worksheet->setCellValue('A'.$i, $town);
+                    $worksheet->setCellValue('B'.$i, count($ids));
+
+                    $i += 1;
+
+                }
+
+            }
+
+        } else {
+
+            $worksheet->setCellValue('A1', 'Страна');
+            $worksheet->setCellValue('B1', 'Город');
+            $worksheet->setCellValue('C1', 'Кол-во участников');
 
             $i = 2;
 
-            foreach ($users_towns as $town => $ids) {
+            foreach ($users_countries as $country => $cities) {
 
-                if ($town === 'not_specified') $town = 'Не указано';
+                foreach ($cities as $city => $ids) {
 
-                $worksheet->setCellValue('A'.$i, $town);
-                $worksheet->setCellValue('B'.$i, count($ids));
+                    $worksheet->setCellValue('A'.$i, $country);
+                    $worksheet->setCellValue('B'.$i, $city);
+                    $worksheet->setCellValue('C'.$i, count($ids));
 
-                $i += 1;
+                    $i += 1;
+
+                }
 
             }
 
