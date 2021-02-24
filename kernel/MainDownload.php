@@ -362,7 +362,7 @@ class MainDownload extends AdminPage
     <td id="eps-metadata-match-key-<?= $match['id'] ?>" style="text-align: center;"><?= htmlspecialchars($match['key']) ?></td>
     <td id="eps-metadata-match-pn-<?= $match['id'] ?>" style="text-align: center;"><?= $match['periodic_number'] ?></td>
     <td id="eps-metadata-match-include-<?= $match['id'] ?>" style="text-align: center;"><?= (int)$match['include'] === 1 ? 'Да' : 'Нет' ?></td>
-    <td id="eps-metadata-match-update-<?= $match['id'] ?>" style="text-align: center;"><a href="javascript:void(0)" onclick="epsMetadataMatchUpdate(<?= $match['id'] ?>);">Изменить</a></td>
+    <td id="eps-metadata-match-update-<?= $match['id'] ?>" style="text-align: center;"><a href="javascript:void(0)" onclick="epsMetadataMatchUpdate(<?= $match['id'] ?>);">Редактировать</a></td>
     <td id="eps-metadata-match-delete-<?= $match['id'] ?>" style="text-align: center;"><a href="javascript:void(0)" onclick="epsMetadataMatchDelete(<?= $match['id'] ?>);">Удалить</a></td>
 </tr>
 <?php

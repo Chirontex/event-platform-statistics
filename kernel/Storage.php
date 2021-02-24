@@ -83,4 +83,16 @@ abstract class Storage
 
     }
 
+    /**
+     * Return wpdb object which object of this class was associated with.
+     * 
+     * @return wpdb
+     */
+    public function wpdbGet() : wpdb
+    {
+
+        return $this->wpdb;
+
+    }
+
 }

@@ -8,6 +8,7 @@ use EPStatistics\Users;
 use EPStatistics\Tokens;
 use EPStatistics\Titles;
 use EPStatistics\PresenceTimes;
+use EPStatistics\MetadataMatching;
 use EPStatistics\Exceptions\PresenceTimesException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -124,17 +125,37 @@ class PresenceEffect extends UsersWorksheetHandler
     {
 
         $worksheet->setCellValue('A1', 'ID');
-        $worksheet->setCellValue('B1', 'ФИО');
-        $worksheet->setCellValue('C1', 'E-mail');
-        $worksheet->setCellValue('D1', 'Номер телефона');
-        $worksheet->setCellValue('E1', 'Дата рождения');
-        $worksheet->setCellValue('F1', 'Город');
-        $worksheet->setCellValue('G1', 'Организация');
-        $worksheet->setCellValue('H1', 'Специальность');
-        $worksheet->setCellValue('I1', 'Зал');
-        $worksheet->setCellValue('J1', 'Дата и время подтверждения');
+        $worksheet->setCellValue('B1', 'E-mail');
 
-        $i = 2;
+        $metadata_matching = new MetadataMatching($this->presence_times->wpdbGet());
+
+        $matches = $metadata_matching->matchesAll('ASC', true);
+
+        $col_base = 3;
+        $col = $col_base;
+
+        foreach ($matches as $match) {
+
+            $worksheet->setCellValue(
+                $this->getColumnName($col).'1',
+                $match['name']
+            );
+
+            $col += 1;
+
+        }
+
+        $worksheet->setCellValue(
+            $this->getColumnName($col).'1',
+            'Зал'
+        );
+
+        $worksheet->setCellValue(
+            $this->getColumnName($col + 1).'1',
+            'Дата и время подтверждения'
+        );
+
+        $row = 2;
 
         foreach ($this->users_data as $user_id => $values) {
 
@@ -142,40 +163,32 @@ class PresenceEffect extends UsersWorksheetHandler
 
                 foreach ($values['presence_times'] as $datetime) {
 
-                    $worksheet->setCellValue('A'.$i, $user_id);
-                    $worksheet->setCellValue('B'.$i, $this->implodedFio($values));
-                    $worksheet->setCellValue('C'.$i, $values['email']);
+                    $worksheet->setCellValue('A'.$row, $user_id);
+                    $worksheet->setCellValue('B'.$row, $values['email']);
 
-                    $worksheet->setCellValue(
-                        'D'.$i,
-                        empty($values['phone']) ? '' : $values['phone']
-                    );
-                    $worksheet->setCellValue(
-                        'E'.$i,
-                        empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
-                    );
-                    $worksheet->setCellValue(
-                        'F'.$i,
-                        empty($values['town']) ? '' : $values['town']
-                    );
-                    $worksheet->setCellValue(
-                        'G'.$i,
-                        empty($values['Organization']) ? '' : $values['Organization']
-                    );
-                    $worksheet->setCellValue(
-                        'H'.$i,
-                        empty($values['Specialty']) ? '' : $values['Specialty']
-                    );
-                    $worksheet->setCellValue(
-                        'I'.$i,
-                        empty($datetime['list']) ? '' : $datetime['list']
-                    );
-                    $worksheet->setCellValue(
-                        'J'.$i,
-                        empty($datetime['datetime']) ? '' : $datetime['datetime']
+                    $col = $col_base;
+
+                    foreach ($matches as $match) {
+
+                        if (isset($values[$match['key']])) $worksheet->setCellValue(
+                            $this->getColumnName($col).$row, $values[$match['key']]
+                        );
+
+                        $col += 1;
+
+                    }
+
+                    if (isset($datetime['list'])) $worksheet->setCellValue(
+                        $this->getColumnName($col).$row,
+                        $datetime['list']
                     );
 
-                    $i += 1;
+                    if (isset($datetime['datetime'])) $worksheet->setCellValue(
+                        $this->getColumnName($col + 1).$row,
+                        $datetime['datetime']
+                    );
+
+                    $row += 1;
 
                 }
 
@@ -201,104 +214,115 @@ class PresenceEffect extends UsersWorksheetHandler
 
         $titles_selected = $titles->selectTitles();
 
-        $row = 1;
+        $worksheet->setCellValue('A1', 'ID пользователя');
+        $worksheet->setCellValue('B1', 'E-mail');
 
-        $worksheet->setCellValue('A'.$row, 'ID пользователя');
-        $worksheet->setCellValue('B'.$row, 'ФИО');
-        $worksheet->setCellValue('C'.$row, 'E-mail');
-        $worksheet->setCellValue('D'.$row, 'Номер телефона');
-        $worksheet->setCellValue('E'.$row, 'Дата рождения');
-        $worksheet->setCellValue('F'.$row, 'Город');
-        $worksheet->setCellValue('G'.$row, 'Организация');
-        $worksheet->setCellValue('H'.$row, 'Специальность');
-        $worksheet->setCellValue('I'.$row, 'Всего релевантных подтверждений');
+        $metadata_matching = new MetadataMatching($this->presence_times->wpdbGet());
 
-        $col_base = 10;
+        $matches = $metadata_matching->matchesAll('ASC', true);
+
+        $col_base = 3;
         $col = $col_base;
 
-        foreach ($titles_selected as $title) {
-
-            if ($title['nmo'] !== '1') continue;
+        foreach ($matches as $match) {
 
             $worksheet->setCellValue(
-                $this->getColumnName($col).$row,
-                'Лекция ID '.$title['id']
+                $this->getColumnName($col).'1',
+                $match['name']
             );
 
             $col += 1;
 
         }
 
-        $row += 1;
+        $worksheet->setCellValue(
+            $this->getColumnName($col).'1',
+            'Всего релевантных подтверждений'
+        );
+
+        $titles_col_base = $col + 1;
+        $titles_col = $titles_col_base;
+
+        foreach ($titles_selected as $title) {
+
+            if ((int)$title['nmo'] === 1) {
+
+                $worksheet->setCellValue(
+                    $this->getColumnName($titles_col).'1',
+                    'Лекция ID '.$title['id']
+                );
+
+                $titles_col += 1;
+
+            }
+
+        }
+
+        $row = 2;
 
         foreach ($this->users_data as $user_id => $values) {
 
             $worksheet->setCellValue('A'.$row, $user_id);
-            $worksheet->setCellValue('B'.$row, $this->implodedFio($values));
-            $worksheet->setCellValue('C'.$row, $values['email']);
-
-            $worksheet->setCellValue(
-                'D'.$row,
-                empty($values['phone']) ? '' : $values['phone']
-            );
-            $worksheet->setCellValue(
-                'E'.$row,
-                empty($values['Date_of_Birth']) ? '' : $values['Date_of_Birth']
-            );
-            $worksheet->setCellValue(
-                'F'.$row,
-                empty($values['town']) ? '' : $values['town']
-            );
-            $worksheet->setCellValue(
-                'G'.$row,
-                empty($values['Organization']) ? '' : $values['Organization']
-            );
-            $worksheet->setCellValue(
-                'H'.$row,
-                empty($values['Specialty']) ? '' : $values['Specialty']
-            );
+            $worksheet->setCellValue('B'.$row, $values['email']);
 
             $col = $col_base;
 
-            $confs_total = 0;
+            foreach ($matches as $match) {
 
-            foreach ($titles_selected as $title) {
-
-                if ($title['nmo'] !== '1') continue;
-
-                $confs = 0;
-
-                if (isset($values['presence_times'])) {
-
-                    foreach ($values['presence_times'] as $presence_time) {
-
-                        $datetime = strtotime($presence_time['datetime']);
-
-                        if (($datetime >= strtotime($title['datetime_start']) &&
-                                $datetime <= strtotime($title['datetime_end'])) &&
-                            $presence_time['list'] === $title['list_name']) {
-
-                            $confs += 1;
-                            $confs_total += 1;
-
-                        }
-
-                    }
-
-                }
-
-                $worksheet->setCellValue(
+                if (isset($values[$match['key']])) $worksheet->setCellValue(
                     $this->getColumnName($col).$row,
-                    $confs
+                    $values[$match['key']]
                 );
 
                 $col += 1;
 
             }
 
+            $presence_total_cell = $this->getColumnName($col).$row;
+
+            $presence_total = 0;
+
+            $titles_col = $titles_col_base;
+
+            foreach ($titles_selected as $title) {
+
+                if ((int)$title['nmo'] === 1) {
+
+                    $presence = 0;
+
+                    if (isset($values['presence_times'])) {
+
+                        foreach ($values['presence_times'] as $presence_time) {
+
+                            $datetime = strtotime($presence_time['datetime']);
+
+                            if (($datetime >= strtotime($title['datetime_start']) &&
+                                    $datetime <= strtotime($title['datetime_end'])) &&
+                                $presence_time['list'] === $title['list_name']) {
+
+                                $presence += 1;
+                                $presence_total += 1;
+
+                            }
+
+                        }
+
+                    }
+
+                    $worksheet->setCellValue(
+                        $this->getColumnName($titles_col).$row,
+                        $presence
+                    );
+
+                    $titles_col += 1;
+
+                }
+
+            }
+
             $worksheet->setCellValue(
-                $this->getColumnName($col_base - 1).$row,
-                $confs_total
+                $presence_total_cell,
+                $presence_total
             );
 
             $row += 1;

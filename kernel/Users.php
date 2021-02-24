@@ -7,7 +7,7 @@ namespace EPStatistics;
 use EPStatistics\PresenceTimes;
 use wpdb;
 
-class Users
+class Users extends Storage
 {
 
     protected $wpdb;

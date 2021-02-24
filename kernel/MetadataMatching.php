@@ -179,11 +179,17 @@ class MetadataMatching extends Storage
     /**
      * Get all existing matches.
      * 
+     * @param string $pn_order
+     * Periodic numbers order mode, ASC or DESC.
+     * 
+     * @param bool $includes_only
+     * If true, the method will return matches with enable including only.
+     * 
      * @return array
      * 
      * @throws EPStatistics\Exceptions\MetadataMatchingException
      */
-    public function matchesAll(string $pn_order = 'ASC') : array
+    public function matchesAll(string $pn_order = 'ASC', bool $includes_only = false) : array
     {
 
         if ($pn_order === 'asc') $pn_order = 'ASC';
@@ -191,9 +197,12 @@ class MetadataMatching extends Storage
         else if ($pn_order !== 'ASC' &&
                 $pn_order !== 'DESC') $pn_order = 'ASC';
 
+        if ($includes_only) $where = " WHERE t.include = '1' ";
+        else $where = "";
+
         $select = $this->wpdb->get_results(
             "SELECT *
-                FROM `".$this->wpdb->prefix.$this->table."` AS t
+                FROM `".$this->wpdb->prefix.$this->table."` AS t".$where."
                 ORDER BY t.periodic_number ".$pn_order,
             ARRAY_A
         );
