@@ -59,11 +59,12 @@ if (!defined('ABSPATH')) die;
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Название</th>
-                <th>Ключ</th>
-                <th></th>
-                <th></th>
+                <th style="text-align: center;">Название</th>
+                <th style="text-align: center;">Ключ</th>
+                <th style="text-align: center;">Порядковый номер</th>
+                <th style="text-align: center;">Включать в отчёт</th>
+                <th style="text-align: center;"></th>
+                <th style="text-align: center;"></th>
             </tr>
         </thead>
         <tbody>

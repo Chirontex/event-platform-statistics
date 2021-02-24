@@ -57,7 +57,7 @@ class MainDownload extends AdminPage
                 'eps-output',
                 $this->url.'js/output.js',
                 [],
-                '1.1.5'
+                '1.2.1'
             );
         
         });
@@ -266,7 +266,9 @@ class MainDownload extends AdminPage
                         $this->metadata->matchUpdate(
                             (int)$_POST['eps-metadata-update'],
                             (string)$_POST['eps-metadata-update-name'],
-                            (string)$_POST['eps-metadata-update-key']
+                            (string)$_POST['eps-metadata-update-key'],
+                            (int)$_POST['eps-metadata-update-pn'],
+                            (int)$_POST['eps-metadata-update-include']
                         );
 
                         $this->adminStatusSet(
@@ -356,11 +358,12 @@ class MainDownload extends AdminPage
 
 ?>
 <tr id="eps-metadata-match-<?= $match['id'] ?>">
-    <td id="eps-metadata-match-id-<?= $match['id'] ?>"><?= $match['id'] ?></td>
-    <td id="eps-metadata-match-name-<?= $match['id'] ?>"><?= htmlspecialchars($match['name']) ?></td>
-    <td id="eps-metadata-match-key-<?= $match['id'] ?>"><?= htmlspecialchars($match['key']) ?></td>
-    <td id="eps-metadata-match-update-<?= $match['id'] ?>"><a href="javascript:void(0)" onclick="epsMetadataMatchUpdate(<?= $match['id'] ?>);">Изменить</a></td>
-    <td id="eps-metadata-match-delete-<?= $match['id'] ?>"><a href="javascript:void(0)" onclick="epsMetadataMatchDelete(<?= $match['id'] ?>);">Удалить</a></td>
+    <td id="eps-metadata-match-name-<?= $match['id'] ?>" style="text-align: center;"><?= htmlspecialchars($match['name']) ?></td>
+    <td id="eps-metadata-match-key-<?= $match['id'] ?>" style="text-align: center;"><?= htmlspecialchars($match['key']) ?></td>
+    <td id="eps-metadata-match-pn-<?= $match['id'] ?>" style="text-align: center;"><?= $match['periodic_number'] ?></td>
+    <td id="eps-metadata-match-include-<?= $match['id'] ?>" style="text-align: center;"><?= (int)$match['include'] === 1 ? 'Да' : 'Нет' ?></td>
+    <td id="eps-metadata-match-update-<?= $match['id'] ?>" style="text-align: center;"><a href="javascript:void(0)" onclick="epsMetadataMatchUpdate(<?= $match['id'] ?>);">Изменить</a></td>
+    <td id="eps-metadata-match-delete-<?= $match['id'] ?>" style="text-align: center;"><a href="javascript:void(0)" onclick="epsMetadataMatchDelete(<?= $match['id'] ?>);">Удалить</a></td>
 </tr>
 <?php
 

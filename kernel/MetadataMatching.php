@@ -17,7 +17,9 @@ class MetadataMatching extends Storage
 
         $this->fields = [
             'name' => 'CHAR(64) NOT NULL',
-            'key' => 'CHAR(64) NOT NULL'
+            'key' => 'CHAR(64) NOT NULL',
+            'periodic_number' => 'BIGINT NOT NULL',
+            'include' => 'TINYINT UNSIGNED NOT NULL DEFAULT 1'
         ];
         
         parent::__construct($wpdb);
@@ -51,13 +53,26 @@ class MetadataMatching extends Storage
             MetadataMatchingException::EMPTY_KEY_CODE
         );
 
+        $select = $this->matchesAll('DESC');
+
+        if (empty($select)) $periodic_number = 0;
+        else {
+
+            $periodic_number = $select[0]['periodic_number'] + 1;
+
+            if ($periodic_number > 650) $periodic_number = 650;
+
+        }
+
         if ($this->wpdb->insert(
             $this->wpdb->prefix.$this->table,
             [
                 'name' => $name,
-                'key' => $key
+                'key' => $key,
+                'periodic_number' => $periodic_number,
+                'include' => 1
             ],
-            ['%s', '%s']
+            ['%s', '%s', '%d', '%d']
         ) === false) throw new MetadataMatchingException(
             MetadataMatchingException::MATCH_INSERT_FAILURE_MESSAGE,
             MetadataMatchingException::MATCH_INSERT_FAILURE_CODE
@@ -78,11 +93,17 @@ class MetadataMatching extends Storage
      * @param string $key
      * Metadata table key. Cannot be empty.
      * 
+     * @param int $periodic_number
+     * May be from -650 to 650.
+     * 
+     * @param int $include
+     * May be 0 or 1. Default value is 1.
+     * 
      * @return void
      * 
      * @throws EPStatistics\Exceptions\MetadataMatchingException
      */
-    public function matchUpdate(int $id, string $name, string $key) : void
+    public function matchUpdate(int $id, string $name, string $key, int $periodic_number, int $include) : void
     {
 
         if ($id < 1) throw new MetadataMatchingException(
@@ -100,14 +121,21 @@ class MetadataMatching extends Storage
             MetadataMatchingException::EMPTY_KEY_CODE
         );
 
+        if ($periodic_number > 650) $periodic_number = 650;
+        elseif ($periodic_number < -650) $periodic_number = -650;
+
+        if ($include !== 0 && $include !== 1) $include = 1;
+
         if ($this->wpdb->update(
             $this->wpdb->prefix.$this->table,
             [
                 'name' => $name,
-                'key' => $key
+                'key' => $key,
+                'periodic_number' => $periodic_number,
+                'include' => $include
             ],
             ['id' => $id],
-            ['%s', '%s'],
+            ['%s', '%s', '%d', '%d'],
             ['%d']
         ) === false) throw new MetadataMatchingException(
             MetadataMatchingException::MATCH_UPDATE_FAILURE_MESSAGE,
@@ -155,12 +183,18 @@ class MetadataMatching extends Storage
      * 
      * @throws EPStatistics\Exceptions\MetadataMatchingException
      */
-    public function matchesAll() : array
+    public function matchesAll(string $pn_order = 'ASC') : array
     {
+
+        if ($pn_order === 'asc') $pn_order = 'ASC';
+        elseif ($pn_order === 'desc') $pn_order = 'DESC';
+        else if ($pn_order !== 'ASC' &&
+                $pn_order !== 'DESC') $pn_order = 'ASC';
 
         $select = $this->wpdb->get_results(
             "SELECT *
-                FROM `".$this->wpdb->prefix.$this->table."`",
+                FROM `".$this->wpdb->prefix.$this->table."` AS t
+                ORDER BY t.periodic_number ".$pn_order,
             ARRAY_A
         );
 
