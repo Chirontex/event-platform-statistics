@@ -57,7 +57,7 @@ class MainDownload extends AdminPage
                 'eps-output',
                 $this->url.'js/output.js',
                 [],
-                '1.2.1'
+                '1.2.2'
             );
         
         });

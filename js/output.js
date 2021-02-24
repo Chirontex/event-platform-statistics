@@ -72,7 +72,7 @@ function epsMetadataMatchUpdate(id)
     elem = document.createElement('input')
     elem.setAttribute('type', 'number')
     elem.setAttribute('id', 'eps-metadata-match-update-pn-'+id)
-    elem.setAttribute('placeholder', 'Введите порядковый номер')
+    elem.setAttribute('placeholder', 'Введите пор. номер')
     elem.setAttribute('value', pn_cell.innerHTML)
     elem.setAttribute('oninput', 'epsMetadataMatchUpdateSubmitCheck('+id+')')
 
