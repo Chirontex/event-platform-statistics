@@ -340,7 +340,7 @@ class PresenceEffect extends UsersWorksheetHandler
      * 
      * @return string
      */
-    protected function implodedFio(array $values) : string
+    /*protected function implodedFio(array $values) : string
     {
 
         $fio = [];
@@ -353,6 +353,6 @@ class PresenceEffect extends UsersWorksheetHandler
 
         return implode(" ", $fio);
 
-    }
+    }*/
 
 }

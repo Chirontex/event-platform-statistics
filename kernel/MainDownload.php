@@ -226,8 +226,8 @@ class MainDownload extends AdminPage
                     try {
 
                         $this->metadata->matchAdd(
-                            (string)$_POST['eps-metadata-add-name'],
-                            (string)$_POST['eps-metadata-add-key']
+                            trim($_POST['eps-metadata-add-name']),
+                            trim($_POST['eps-metadata-add-key'])
                         );
 
                         $this->adminStatusSet(
@@ -265,8 +265,8 @@ class MainDownload extends AdminPage
 
                         $this->metadata->matchUpdate(
                             (int)$_POST['eps-metadata-update'],
-                            (string)$_POST['eps-metadata-update-name'],
-                            (string)$_POST['eps-metadata-update-key'],
+                            trim($_POST['eps-metadata-update-name']),
+                            trim($_POST['eps-metadata-update-key']),
                             (int)$_POST['eps-metadata-update-pn'],
                             (int)$_POST['eps-metadata-update-include']
                         );

@@ -82,10 +82,30 @@ class Users extends Storage
 
         $result = [];
 
+        $metadata_matching = new MetadataMatching($this->wpdb);
+
+        $matches = $metadata_matching->getMatchByName('Город');
+
+        if (empty($matches)) $matches = $metadata_matching->getMatchByName('город');
+
+        $key = '';
+
+        foreach ($matches as $match) {
+
+            if ((int)$match['include'] === 1) {
+
+                $key = $match['key'];
+                
+                break;
+
+            }
+
+        }
+
         $select = $this->wpdb->get_results(
             "SELECT t.user_id, t.meta_value
                 FROM `".$this->wpdb->prefix."usermeta` AS t
-                WHERE t.meta_key = 'town'",
+                WHERE t.meta_key = '".$key."'",
             ARRAY_A
         );
 

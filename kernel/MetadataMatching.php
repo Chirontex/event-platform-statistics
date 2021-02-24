@@ -216,6 +216,80 @@ class MetadataMatching extends Storage
     }
 
     /**
+     * Get match by name.
+     * 
+     * @param string $name
+     * The name cannot be empty.
+     * 
+     * @return array
+     * 
+     * @throws EPStatistics\Exceptions\MetadataMatchingException
+     */
+    public function getMatchByName(string $name) : array
+    {
+
+        if (empty($name)) throw new MetadataMatchingException(
+            MetadataMatchingException::EMPTY_NAME_MESSAGE,
+            MetadataMatchingException::EMPTY_NAME_CODE
+        );
+
+        $select = $this->wpdb->get_results(
+            $this->wpdb->prepare(
+                "SELECT *
+                    FROM `".$this->wpdb->prefix.$this->table."` AS t
+                    WHERE t.name = %s",
+                $name
+            ),
+            ARRAY_A
+        );
+
+        if (!is_array($select)) throw new MetadataMatchingException(
+            MetadataMatchingException::MATCHES_SELECT_FAILURE_MESSAGE,
+            MetadataMatchingException::MATCHES_SELECT_FAILURE_CODE
+        );
+
+        return $select;
+
+    }
+
+    /**
+     * Get match by key.
+     * 
+     * @param string $key
+     * The key cannot be empty.
+     * 
+     * @return array
+     * 
+     * @throws EPStatistics\Exceptions\MetadataMatchingException
+     */
+    public function getMatchByKey(string $key) : array
+    {
+
+        if (empty($key)) throw new MetadataMatchingException(
+            MetadataMatchingException::EMPTY_KEY_MESSAGE,
+            MetadataMatchingException::EMPTY_KEY_CODE
+        );
+
+        $select = $this->wpdb->get_results(
+            $this->wpdb->prepare(
+                "SELECT *
+                    FROM `".$this->wpdb->prefix.$this->table."` AS t
+                    WHERE t.key = %s",
+                $key
+            ),
+            ARRAY_A
+        );
+
+        if (!is_array($select)) throw new MetadataMatchingException(
+            MetadataMatchingException::MATCHES_SELECT_FAILURE_MESSAGE,
+            MetadataMatchingException::MATCHES_SELECT_FAILURE_CODE
+        );
+
+        return $select;
+
+    }
+
+    /**
      * Getting all existing keys.
      * 
      * @return array
