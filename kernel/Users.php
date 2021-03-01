@@ -159,12 +159,13 @@ class Users extends Storage
                 $city = trim($values['city']);
 
                 if (!empty($country) &&
+                    !empty($region) &&
                     !empty($city)) $result[$country][$region][$city][] = $values['user_id'];
 
             }
 
         }
-        
+
         return $result;
 
     }
