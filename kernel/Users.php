@@ -135,45 +135,11 @@ class Users extends Storage
 
         $result = [];
 
-        $metadata_matching = new MetadataMatching($this->wpdb);
-
-        $matches = $metadata_matching->getMatchByName('Страна');
-        $matches = empty($matches) ?
-            $metadata_matching->getMatchByName('страна') : $matches;
-
-        $country_key = '';
-
-        foreach ($matches as $match) {
-
-            if ((int)$match['include'] === 1) {
-
-                $country_key = $match['key'];
-
-                break;
-
-            }
-
-        }
+        $country_key = $this->getFirstKey(['Страна', 'страна']);
 
         if (!empty($country_key)) {
 
-            $matches = $metadata_matching->getMatchByName('Город');
-            $matches = empty($matches) ?
-                $metadata_matching->getMatchByName('город') : $matches;
-
-            $city_key = '';
-
-            foreach ($matches as $match) {
-
-                if ((int)$match['include'] === 1) {
-
-                    $city_key = $match['key'];
-
-                    break;
-
-                }
-
-            }
+            $city_key = $this->getFirstKey(['Город', 'город']);
 
             $select = $this->wpdb->get_results(
                 "SELECT t.user_id, t.meta_value AS country, t1.meta_value AS city
@@ -197,6 +163,48 @@ class Users extends Storage
                         !empty($city)) $result[$country][$city][] = $values['user_id'];
 
                 }
+
+            }
+
+        }
+
+        return $result;
+
+    }
+
+    /**
+     * Handle MetadataMatching::getMatchByName() results
+     * to get the first key.
+     * 
+     * @param array $names
+     * 
+     * @return string
+     */
+    protected function getFirstKey(array $names) : string
+    {
+
+        $result = '';
+
+        $metadata_matching = new MetadataMatching($this->wpdb);
+
+        $matches = [];
+
+        foreach ($names as $name) {
+
+            if (empty(
+                $matches
+            )) $matches = $metadata_matching->getMatchByName((string)$name);
+            else break;
+
+        }
+
+        foreach ($matches as $match) {
+
+            if ((int)$match['include'] === 1) {
+
+                $result = $match['key'];
+
+                break;
 
             }
 
