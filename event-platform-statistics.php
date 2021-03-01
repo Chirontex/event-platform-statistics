@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Event Platform Statistics
- * Plugin URI: https://github.com/infernusophiuchus/event-platform-statistics
+ * Plugin URI: https://github.com/chirontex/event-platform-statistics
  * Description: Плагин, реализующий сбор статистики на площадке мероприятий.
  * Version: 1.7.2
  * Author: Дмитрий Шумилин
