@@ -55,20 +55,27 @@ class Demography implements WorksheetHandler
         } else {
 
             $worksheet->setCellValue('A1', 'Страна');
-            $worksheet->setCellValue('B1', 'Город');
-            $worksheet->setCellValue('C1', 'Кол-во участников');
+            $worksheet->setCellValue('B1', 'Регион');
+            $worksheet->setCellValue('C1', 'Город');
+            $worksheet->setCellValue('D1', 'Кол-во участников');
 
             $i = 2;
 
-            foreach ($users_countries as $country => $cities) {
+            foreach ($users_countries as $country => $regions) {
 
-                foreach ($cities as $city => $ids) {
+                foreach ($regions as $region => $cities) {
 
-                    $worksheet->setCellValue('A'.$i, $country);
-                    $worksheet->setCellValue('B'.$i, $city);
-                    $worksheet->setCellValue('C'.$i, count($ids));
+                    foreach ($cities as $city => $users) {
 
-                    $i += 1;
+                        $worksheet->setCellValue('A'.$i, $country);
+                        $worksheet->setCellValue('B'.$i, $region);
+                        $worksheet->setCellValue('C'.$i, $city);
+                        $worksheet->setCellValue(
+                            'D'.$i,
+                            is_array($users) ? count($users) : 0
+                        );
+
+                    }
 
                 }
 

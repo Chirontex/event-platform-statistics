@@ -82,25 +82,7 @@ class Users extends Storage
 
         $result = [];
 
-        $metadata_matching = new MetadataMatching($this->wpdb);
-
-        $matches = $metadata_matching->getMatchByName('Город');
-        $matches = empty($matches) ?
-            $metadata_matching->getMatchByName('город') : $matches;
-
-        $key = '';
-
-        foreach ($matches as $match) {
-
-            if ((int)$match['include'] === 1) {
-
-                $key = $match['key'];
-                
-                break;
-
-            }
-
-        }
+        $key = $this->getFirstKey(['Город', 'город']);
 
         $select = $this->wpdb->get_results(
             "SELECT t.user_id, t.meta_value
@@ -136,38 +118,53 @@ class Users extends Storage
         $result = [];
 
         $country_key = $this->getFirstKey(['Страна', 'страна']);
+        $country_key = empty($country_key) ?
+            "''" : $this->wpdb->prepare("%s", $country_key);
 
-        if (!empty($country_key)) {
+        $region_key = $this->getFirstKey([
+            'Регион', 'регион',
+            'Субъект', 'субъект',
+            'Субъект РФ', 'субъект РФ',
+            'Область', 'область'
+        ]);
+        $region_key = empty($region_key) ?
+            "''" : $this->wpdb->prepare("%s", $region_key);
 
-            $city_key = $this->getFirstKey(['Город', 'город']);
+        $city_key = $this->getFirstKey(['Город', 'город']);
+        $city_key = empty($city_key) ?
+            "''" : $this->wpdb->prepare("%s", $city_key);
 
-            $select = $this->wpdb->get_results(
-                "SELECT t.user_id, t.meta_value AS country, t1.meta_value AS city
-                    FROM `".$this->wpdb->prefix."usermeta` AS t
-                    LEFT JOIN `".$this->wpdb->prefix."usermeta` AS t1
-                    ON t.user_id = t1.user_id
-                    WHERE t.meta_key = '".$country_key."'
-                    AND t1.meta_key = '".$city_key."'",
-                ARRAY_A
-            );
+        $select = $this->wpdb->get_results(
+            "SELECT t.user_id, t.meta_value AS country,
+                    t1.meta_value AS region, t2.meta_value AS city
+                FROM `".$this->wpdb->prefix."usermeta` AS t
+                LEFT JOIN `".$this->wpdb->prefix."usermeta` AS t1
+                ON t.user_id = t1.user_id
+                LEFT JOIN `".$this->wpdb->prefix."usermeta` AS t2
+                ON t.user_id = t2.user_id
+                WHERE t.meta_key = ".$country_key."
+                AND t1.meta_key = ".$region_key."
+                AND t2.meta_key = ".$city_key,
+            ARRAY_A
+        );
 
-            if (is_array($select) && !empty($select)) {
+        if (is_array($select) && !empty($select)) {
 
-                foreach ($select as $values) {
+            foreach ($select as $values) {
 
-                    $country = trim($values['country']);
+                $country = trim($values['country']);
 
-                    $city = trim($values['city']);
+                $region = trim($values['region']);
 
-                    if (!empty($country) &&
-                        !empty($city)) $result[$country][$city][] = $values['user_id'];
+                $city = trim($values['city']);
 
-                }
+                if (!empty($country) &&
+                    !empty($city)) $result[$country][$region][$city][] = $values['user_id'];
 
             }
 
         }
-
+        
         return $result;
 
     }
