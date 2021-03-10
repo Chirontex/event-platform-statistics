@@ -33,12 +33,31 @@ function epsTitlesUpdate(id)
     const nmo_cell = document.getElementById('eps-title-nmo-'+id);
     const button_cell = document.getElementById('eps-title-update-button-'+id);
 
+    const htmlEntities = [
+        '&amp;', '&quot;', '&#039;', '&apos;',
+        '&lt;', '&gt;'
+    ]
+
+    const symbols = [
+        '&', '"', '\'', '\'',
+        '<', '>'
+    ]
+
     let element = document.createElement('input');
     element.setAttribute('type', 'text');
     element.setAttribute('id', 'eps-titles-title-update-title-'+id);
     element.setAttribute('class', 'form-control');
     element.setAttribute('placeholder', 'Введите заголовок');
-    element.setAttribute('value', title_cell.innerHTML);
+
+    let titleContent = title_cell.innerHTML
+
+    for (let i = 0; i < htmlEntities.length; i++)
+    {
+        titleContent = titleContent.split(htmlEntities[i])
+        titleContent = titleContent.join(symbols[i])
+    }
+
+    element.setAttribute('value', titleContent);
     element.setAttribute('oninput', 'epsTitlesUpdateCheck('+id+');');
 
     title_cell.innerHTML = '';

@@ -23,6 +23,22 @@ async function epsTitleGet(title_id, list_name)
             await response.json() :
             {code: -9999, message: 'Не удалось обновить заголовок. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.'}
 
+        const placeholders = [
+            '!!%EPS_PH_BR1%!!', '!!%EPS_PH_BR2%!!', '!!%EPS_PH_BR_3%!!',
+            '!!%EPS_B_OPEN%!!', '!!%EPS_B_CLOSE%!!',
+            '!!%EPS_I_OPEN%!!', '!!%EPS_I_CLOSE%!!',
+            '!!%EPS_U_OPEN%!!', '!!%EPS_U_CLOSE%!!'
+        ]
+
+        const tags = [
+            '<br>', '<br />', '<br/>',
+            '<b>', '</b>',
+            '<i>', '</i>',
+            '<u>', '</u>'
+        ]
+
+        let actualTitle
+
         switch (await answer.code) {
             case -9999:
                 console.error(`epsTitleGet() :\n\tcode: -9999\n\tmessage: `+answer.message)
@@ -31,7 +47,17 @@ async function epsTitleGet(title_id, list_name)
 
             case 0:
                 console.log(`epsTitleGet() :\n\tcode: 0\n\tmessage: `+answer.message)
-                title.innerHTML = answer.data
+                
+                actualTitle = answer.data
+
+                for (let i = 0; i < placeholders.length; i++)
+                {
+                    actualTitle = actualTitle.split(placeholders[i])
+                    actualTitle = actualTitle.join(tags[i])
+                }
+
+                title.innerHTML = actualTitle
+
                 break
         
             default:

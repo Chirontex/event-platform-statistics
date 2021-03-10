@@ -153,11 +153,39 @@ final class Main extends MainCluster
                                     'code' => 1,
                                     'message' => 'The answer is empty.'
                                 ];
-                                else $result = [
-                                    'code' => 0,
-                                    'message' => 'Success.',
-                                    'data' => htmlspecialchars($select[0]['title'])
-                                ];
+                                else {
+
+                                    $title = $select[0]['title'];
+
+                                    $tags = [
+                                        '<br>', '<br />', '<br/>',
+                                        '<b>', '</b>',
+                                        '<i>', '</i>',
+                                        '<u>', '</u>'
+                                    ];
+                    
+                                    $placeholders = [
+                                        '!!%EPS_PH_BR1%!!', '!!%EPS_PH_BR2%!!', '!!%EPS_PH_BR_3%!!',
+                                        '!!%EPS_B_OPEN%!!', '!!%EPS_B_CLOSE%!!',
+                                        '!!%EPS_I_OPEN%!!', '!!%EPS_I_CLOSE%!!',
+                                        '!!%EPS_U_OPEN%!!', '!!%EPS_U_CLOSE%!!'
+                                    ];
+
+                                    $title = str_replace(
+                                        $tags,
+                                        $placeholders,
+                                        $title
+                                    );
+
+                                    $title = htmlspecialchars($title);
+                                    
+                                    $result = [
+                                        'code' => 0,
+                                        'message' => 'Success.',
+                                        'data' => $title
+                                    ];
+                            
+                                }
 
                             }
 
@@ -262,7 +290,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 'eps-titles-client',
                 $this->url.'js/titles-client.js',
                 [],
-                '2.0.0'
+                '2.0.2'
             );
 
         });

@@ -56,7 +56,7 @@ class MainTitles extends AdminPage
                 'eps-titles',
                 $this->url.'js/titles.js',
                 [],
-                '1.0.0'
+                '1.0.1'
             );
         
         });
