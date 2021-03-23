@@ -182,7 +182,10 @@ final class Main extends MainCluster
                                     $result = [
                                         'code' => 0,
                                         'message' => 'Success.',
-                                        'data' => $title
+                                        'data' => [
+                                            'title' => $title,
+                                            'nmo' => (int)$select[0]['nmo']
+                                        ]
                                     ];
                             
                                 }
@@ -232,7 +235,7 @@ final class Main extends MainCluster
             ob_start();
 
 ?>
-<button type="button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
+<button type="button" eps-peb-list="<?= htmlspecialchars($atts['list']) ?>" name="eps-presence-effect-button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
 <?php
 
             return ob_get_clean();
@@ -290,7 +293,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 'eps-titles-client',
                 $this->url.'js/titles-client.js',
                 [],
-                '2.0.2'
+                '2.0.5'
             );
 
         });

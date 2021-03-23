@@ -48,7 +48,7 @@ async function epsTitleGet(title_id, list_name)
             case 0:
                 console.log(`epsTitleGet() :\n\tcode: 0\n\tmessage: `+answer.message)
                 
-                actualTitle = answer.data
+                actualTitle = answer.data.title
 
                 for (let i = 0; i < placeholders.length; i++)
                 {
@@ -57,6 +57,9 @@ async function epsTitleGet(title_id, list_name)
                 }
 
                 title.innerHTML = actualTitle
+
+                if (answer.data.nmo == 0) epsButtonHide(list_name)
+                else epsButtonOpen(list_name)
 
                 break
         
@@ -70,6 +73,8 @@ async function epsTitleGet(title_id, list_name)
                 {
                     console.log(`epsTitleGet() :\n\tcode: `+answer.code+`\n\tmessage: `+answer.message)
                     title.innerHTML = window.eps_title_default[title_id]
+
+                    epsButtonOpen(list_name)
                 }
                 break
         }
@@ -82,4 +87,30 @@ async function epsTitleGet(title_id, list_name)
 function epsTitleTimeout(title_id, list_name)
 {
     setTimeout(epsTitleGet, 5000, title_id, list_name)
+}
+
+function epsButtonHide(list_name)
+{
+    const buttons = document.getElementsByName('eps-presence-effect-button')
+
+    for (let i = 0; i < buttons.length; i++)
+    {
+        if (buttons[i].getAttribute('eps-peb-list') == list_name)
+        {
+            if (!buttons[i].hasAttribute('hidden')) buttons[i].setAttribute('hidden', 'true')
+        }
+    }
+}
+
+function epsButtonOpen(list_name)
+{
+    const buttons = document.getElementsByName('eps-presence-effect-button')
+
+    for (let i = 0; i < buttons.length; i++)
+    {
+        if (buttons[i].getAttribute('eps-peb-list') == list_name)
+        {
+            if (buttons[i].hasAttribute('hidden')) buttons[i].removeAttribute('hidden')
+        }
+    }
 }
