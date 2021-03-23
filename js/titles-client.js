@@ -97,7 +97,10 @@ function epsButtonHide(list_name)
     {
         if (buttons[i].getAttribute('eps-peb-list') == list_name)
         {
-            if (!buttons[i].hasAttribute('hidden')) buttons[i].setAttribute('hidden', 'true')
+            if (buttons[i].hasAttribute('style')) buttons[i].setAttribute('style', buttons[i].getAttribute('style')+' display: none;')
+            else buttons[i].setAttribute('style', 'display: none;')
+
+            break
         }
     }
 }
@@ -110,7 +113,37 @@ function epsButtonOpen(list_name)
     {
         if (buttons[i].getAttribute('eps-peb-list') == list_name)
         {
-            if (buttons[i].hasAttribute('hidden')) buttons[i].removeAttribute('hidden')
+            if (buttons[i].hasAttribute('style'))
+            {
+                const stylesArr = buttons[i].getAttribute('style').split(';')
+
+                let stylesStr = ''
+
+                let style = ''
+                let entity
+
+                for (let c = 0; c < stylesArr.length; c++)
+                {
+                    style = stylesArr[i].trim()
+
+                    entity = style.split(':')
+
+                    if (entity.length == 2)
+                    {
+
+                        if (entity[0].trim() != 'display' &&
+                            entity[1].trim() != 'none')
+                        {
+                            if (stylesStr == '') stylesStr = style+';'
+                            else stylesStr = stylesStr+' '+style+';'
+                        }
+                    }
+                }
+
+                buttons[i].setAttribute('style', stylesStr)
+            }
+
+            break
         }
     }
 }
