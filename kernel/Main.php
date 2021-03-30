@@ -219,6 +219,7 @@ final class Main extends MainCluster
 
             $atts = shortcode_atts([
                 'list' => 'Общий',
+                'titles-detach' => 'no',
                 'button-class' => '',
                 'button-style' => '',
                 'message-position' => 'after',
@@ -235,7 +236,10 @@ final class Main extends MainCluster
             ob_start();
 
 ?>
-<button type="button" eps-peb-list="<?= htmlspecialchars($atts['list']) ?>" name="eps-presence-effect-button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
+<button type="button" eps-peb-list="<?= $atts['titles-detach'] === 'yes' ? htmlspecialchars($atts['list']) : '' ?>" name="eps-presence-effect-button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
+<script>
+window.eps_button_text_default['<?= htmlspecialchars($atts['id']) ?>'] = '<?= htmlspecialchars($content) ?>'
+</script>
 <?php
 
             return ob_get_clean();
@@ -285,7 +289,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 'eps-presence-effect',
                 $this->url.'js/presence-effect-button.js',
                 [],
-                '2.0.0',
+                '2.0.2',
                 true
             );
 
@@ -293,7 +297,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 'eps-titles-client',
                 $this->url.'js/titles-client.js',
                 [],
-                '2.1.0'
+                '2.1.4'
             );
 
         });

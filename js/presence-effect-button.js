@@ -1,8 +1,8 @@
+if (eps_button_text_default == undefined) var eps_button_text_default = {}
+
 async function epsPresenceConfirmationSend(message_position, message_class, message_style, button_id, list_name)
 {
     const button = document.getElementById(button_id)
-
-    let button_text = button.innerHTML
 
     button.setAttribute('disabled', 'true')
     button.innerHTML = 'Отправка...'
@@ -51,7 +51,7 @@ async function epsPresenceConfirmationSend(message_position, message_class, mess
         })
 
         button.removeAttribute('disabled')
-        button.innerHTML = button_text
+        button.innerHTML = window.eps_button_text_default[button_id]
 
     })
 }

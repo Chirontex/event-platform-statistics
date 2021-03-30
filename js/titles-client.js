@@ -21,7 +21,10 @@ async function epsTitleGet(title_id, list_name)
 
         const answer = response.ok ?
             await response.json() :
-            {code: -9999, message: 'Не удалось обновить заголовок. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.'}
+            {
+                code: -9999,
+                message: 'Не удалось обновить заголовок. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.'
+            }
 
         const placeholders = [
             '!!%EPS_PH_BR1%!!', '!!%EPS_PH_BR2%!!', '!!%EPS_PH_BR_3%!!',
@@ -97,11 +100,14 @@ function epsButtonHide(list_name)
     {
         if (buttons[i].getAttribute('eps-peb-list') == list_name)
         {
-            if (buttons[i].hasAttribute('style')) buttons[i].setAttribute(
-                'style',
-                epsDisplayNoneSanitizer(buttons[i].getAttribute('style'))+' display: none;'
-            )
-            else buttons[i].setAttribute('style', 'display: none;')
+            if (!buttons[i].hasAttribute(
+                'disabled'
+            )) buttons[i].setAttribute('disabled', 'true')
+
+            if (window.eps_button_text_default[buttons[i].getAttribute('id')] ==
+                undefined) window.eps_button_text_default[buttons[i].getAttribute('id')] = buttons[i].innerHTML
+
+            buttons[i].innerHTML = 'Подтверждение не требуется'
 
             break
         }
@@ -116,42 +122,13 @@ function epsButtonOpen(list_name)
     {
         if (buttons[i].getAttribute('eps-peb-list') == list_name)
         {
-            if (buttons[i].hasAttribute('style')) buttons[i].setAttribute(
-                'style',
-                epsDisplayNoneSanitizer(buttons[i].getAttribute('style'))
-            )
+            if (buttons[i].hasAttribute(
+                'disabled'
+            )) buttons[i].removeAttribute('disabled')
+
+            buttons[i].innerHTML = window.eps_button_text_default[buttons[i].getAttribute('id')]
 
             break
         }
     }
-}
-
-function epsDisplayNoneSanitizer(styles)
-{
-    const stylesArr = styles.split(';')
-
-    let stylesStr = ''
-
-    let style = ''
-    let entity
-
-    for (let i = 0; i < stylesArr.length; i++)
-    {
-        style = stylesArr[i].trim()
-
-        entity = style.split(':')
-
-        if (entity.length == 2)
-        {
-
-            if (entity[0].trim() != 'display' &&
-                entity[1].trim() != 'none')
-            {
-                if (stylesStr == '') stylesStr = style+';'
-                else stylesStr = stylesStr+' '+style+';'
-            }
-        }
-    }
-
-    return stylesStr
 }
