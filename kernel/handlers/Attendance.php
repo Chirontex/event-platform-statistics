@@ -45,11 +45,6 @@ class Attendance extends UsersWorksheetHandler
 
         foreach ($matches as $match) {
 
-            /*$worksheet->setCellValue(
-                $this->getColumnName($col).'1',
-                $match['name']
-            );*/
-
             $worksheet
                 ->getCell($this->getColumnName($col).'1')
                     ->setValueExplicit(
@@ -72,8 +67,6 @@ class Attendance extends UsersWorksheetHandler
 
             foreach ($visits_data as $visit) {
 
-                /*$worksheet->setCellValue('A'.$row, $visit['page_url']);*/
-
                 $worksheet
                     ->getCell('A'.$row)
                         ->setValueExplicit(
@@ -86,14 +79,6 @@ class Attendance extends UsersWorksheetHandler
                     strtotime($visit['datetime'])
                 );
                 $datetime = explode(' ', $datetime);
-
-                /*$worksheet->setCellValue('B'.$row, $datetime[0]);
-                $worksheet->setCellValue('C'.$row, $datetime[1]);
-                $worksheet->setCellValue('D'.$row, $visit['user_id']);
-                $worksheet->setCellValue(
-                    'E'.$row,
-                    $this->users_data[$visit['user_id']]['email']
-                );*/
 
                 $worksheet
                     ->getCell('B'.$row)
@@ -119,13 +104,6 @@ class Attendance extends UsersWorksheetHandler
                 $col = $col_base;
 
                 foreach ($matches as $match) {
-
-                    /*if (isset(
-                        $this->users_data[$visit['user_id']][$match['key']]
-                    )) $worksheet->setCellValue(
-                        $this->getColumnName($col).$row,
-                        $this->users_data[$visit['user_id']][$match['key']]
-                    );*/
 
                     if (isset(
                         $this->users_data[$visit['user_id']][$match['key']]
