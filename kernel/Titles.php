@@ -47,6 +47,8 @@ class Titles extends Storage
     public function titleAdd(string $title, string $list_name, int $timestamp_start, int $timestamp_end, int $nmo = 0) : bool
     {
 
+        date_default_timezone_set('Europe/Moscow');
+
         if (empty($title)) throw new TitlesException(
             TitlesException::EMPTY_TITLE_MESSAGE,
             TitlesException::EMPTY_TITLE_CODE
@@ -99,6 +101,8 @@ class Titles extends Storage
     public function titleUpdate(int $id, string $title, string $list_name, int $timestamp_start, int $timestamp_end, int $nmo = 0) : bool
     {
 
+        date_default_timezone_set('Europe/Moscow');
+
         if ($id < 1) throw new TitlesException(
             TitlesException::INVALID_ID_MESSAGE,
             TitlesException::INVALID_ID_CODE
@@ -146,6 +150,8 @@ class Titles extends Storage
      */
     public function selectTitles(string $list_name = '', bool $actual = false) : array
     {
+
+        date_default_timezone_set('Europe/Moscow');
 
         $where = "";
 
