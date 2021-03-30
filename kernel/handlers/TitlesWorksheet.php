@@ -42,18 +42,6 @@ class TitlesWorksheet implements WorksheetHandler
 
         foreach ($titles_selected as $title) {
 
-            /*$worksheet->setCellValue('A'.$i, $title['id']);
-            $worksheet->setCellValue('B'.$i, $title['title']);
-            $worksheet->setCellValue('C'.$i, $title['list_name']);
-            $worksheet->setCellValue('D'.$i, $title['datetime_start']);
-            $worksheet->setCellValue('E'.$i, $title['datetime_end']);
-            $worksheet->setCellValue(
-                'F'.$i,
-                $title['nmo'] === '1' ?
-                'Да' :
-                'Нет'
-            );*/
-
             $worksheet
                 ->getCell('A'.$i)
                     ->setValueExplicit(
@@ -88,6 +76,13 @@ class TitlesWorksheet implements WorksheetHandler
                         $title['datetime_end'],
                         DataType::TYPE_STRING
                     );
+
+            $worksheet->setCellValue(
+                'F'.$i,
+                $title['nmo'] === '1' ?
+                'Да' :
+                'Нет'
+            );
 
             $i += 1;
 
