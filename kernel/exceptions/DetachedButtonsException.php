@@ -15,4 +15,7 @@ class DetachedButtonsException extends Exception
     const SELECTING_FAILURE_MESSAGE = 'Data selecting failure.';
     const SELECTING_FAILURE_CODE = -71;
 
+    const INVALID_ID_MESSAGE = 'Entry ID cannot be lesser than 1.';
+    const INVALID_ID_CODE = -72;
+
 }

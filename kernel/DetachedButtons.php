@@ -28,6 +28,7 @@ class DetachedButtons extends Storage
      * Add detached button enabling datetime.
      * 
      * @param string $button_id
+     * Cannot be empty.
      * 
      * @param int $enable_timestamp
      * 
@@ -61,9 +62,10 @@ class DetachedButtons extends Storage
      * Update detached button datetime.
      * 
      * @param int $id
-     * Entry ID.
+     * Entry ID. Cannot be lesser than 1.
      * 
      * @param string $button_id
+     * Cannot be empty.
      * 
      * @param int $enable_timestamp
      * 
@@ -75,6 +77,11 @@ class DetachedButtons extends Storage
     {
 
         date_default_timezone_set('Europe/Moscow');
+
+        if ($id < 1) throw new DetachedButtonsException(
+            DetachedButtonsException::INVALID_ID_MESSAGE,
+            DetachedButtonsException::INVALID_ID_CODE
+        );
 
         if (empty($button_id)) throw new DetachedButtonsException(
             DetachedButtonsException::EMPTY_BUTTON_ID_MESSAGE,
@@ -96,7 +103,14 @@ class DetachedButtons extends Storage
     }
 
     /**
+     * Select all datetimes.
      * 
+     * @param bool $order_by_datetime
+     * If true, order datetimes ASC.
+     * 
+     * @return array
+     * 
+     * @throws EPStatistics\Exceptions\DetachedButtonsException
      */
     public function selectAll(bool $order_by_datetime = true) : array
     {
