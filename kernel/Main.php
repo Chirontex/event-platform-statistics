@@ -236,7 +236,7 @@ final class Main extends MainCluster
             ob_start();
 
 ?>
-<button type="button" eps-peb-list="<?= $atts['titles-detach'] === 'yes' ? htmlspecialchars($atts['list']) : '' ?>" name="eps-presence-effect-button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
+<button type="button" eps-peb-list="<?= $atts['titles-detach'] === 'no' ? htmlspecialchars($atts['list']) : '' ?>" name="eps-presence-effect-button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
 <script>
 window.eps_button_text_default['<?= htmlspecialchars($atts['id']) ?>'] = '<?= htmlspecialchars($content) ?>'
 </script>
@@ -289,8 +289,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 'eps-presence-effect',
                 $this->url.'js/presence-effect-button.js',
                 [],
-                '2.0.2',
-                true
+                '2.0.2'
             );
 
             wp_enqueue_script(
