@@ -12,6 +12,7 @@ use EPStatistics\MetadataMatching;
 use EPStatistics\Exceptions\PresenceTimesException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 class PresenceEffect extends UsersWorksheetHandler
 {
@@ -136,10 +137,12 @@ class PresenceEffect extends UsersWorksheetHandler
 
         foreach ($matches as $match) {
 
-            $worksheet->setCellValue(
-                $this->getColumnName($col).'1',
-                $match['name']
-            );
+            $worksheet
+                ->getCell($this->getColumnName($col).'1')
+                    ->setValueExplicit(
+                        $match['name'],
+                        DataType::TYPE_STRING
+                    );
 
             $col += 1;
 
@@ -163,30 +166,48 @@ class PresenceEffect extends UsersWorksheetHandler
 
                 foreach ($values['presence_times'] as $datetime) {
 
-                    $worksheet->setCellValue('A'.$row, $user_id);
-                    $worksheet->setCellValue('B'.$row, $values['email']);
+                    $worksheet
+                        ->getCell('A'.$row)
+                            ->setValueExplicit(
+                                $user_id,
+                                DataType::TYPE_STRING
+                            );
+
+                    $worksheet
+                            ->getCell('B'.$row)
+                                ->setValueExplicit(
+                                    $values['email'],
+                                    DataType::TYPE_STRING
+                                );
 
                     $col = $col_base;
 
                     foreach ($matches as $match) {
 
-                        if (isset($values[$match['key']])) $worksheet->setCellValue(
-                            $this->getColumnName($col).$row, $values[$match['key']]
-                        );
+                        if (isset($values[$match['key']])) $worksheet
+                            ->getCell($this->getColumnName($col).$row)
+                                ->setValueExplicit(
+                                    $values[$match['key']],
+                                    DataType::TYPE_STRING
+                                );
 
                         $col += 1;
 
                     }
 
-                    if (isset($datetime['list'])) $worksheet->setCellValue(
-                        $this->getColumnName($col).$row,
-                        $datetime['list']
-                    );
+                    if (isset($datetime['list'])) $worksheet
+                        ->getCell($this->getColumnName($col).$row)
+                            ->setValueExplicit(
+                                $datetime['list'],
+                                DataType::TYPE_STRING
+                            );
 
-                    if (isset($datetime['datetime'])) $worksheet->setCellValue(
-                        $this->getColumnName($col + 1).$row,
-                        $datetime['datetime']
-                    );
+                    if (isset($datetime['datetime'])) $worksheet
+                        ->getCell($this->getColumnName($col + 1).$row)
+                            ->setValueExplicit(
+                                $datetime['datetime'],
+                                DataType::TYPE_STRING
+                            );
 
                     $row += 1;
 
@@ -226,10 +247,12 @@ class PresenceEffect extends UsersWorksheetHandler
 
         foreach ($matches as $match) {
 
-            $worksheet->setCellValue(
-                $this->getColumnName($col).'1',
-                $match['name']
-            );
+            $worksheet
+                ->getCell($this->getColumnName($col).'1')
+                    ->setValueExplicit(
+                        $match['name'],
+                        DataType::TYPE_STRING
+                    );
 
             $col += 1;
 
@@ -247,10 +270,12 @@ class PresenceEffect extends UsersWorksheetHandler
 
             if ((int)$title['nmo'] === 1) {
 
-                $worksheet->setCellValue(
-                    $this->getColumnName($titles_col).'1',
-                    'Лекция ID '.$title['id']
-                );
+                $worksheet
+                    ->getCell($this->getColumnName($titles_col).'1')
+                        ->setValueExplicit(
+                            'Лекция ID '.$title['id'],
+                            DataType::TYPE_STRING
+                        );
 
                 $titles_col += 1;
 
@@ -262,17 +287,30 @@ class PresenceEffect extends UsersWorksheetHandler
 
         foreach ($this->users_data as $user_id => $values) {
 
-            $worksheet->setCellValue('A'.$row, $user_id);
-            $worksheet->setCellValue('B'.$row, $values['email']);
+            $worksheet
+                ->getCell('A'.$row)
+                    ->setValueExplicit(
+                        $user_id,
+                        DataType::TYPE_STRING
+                    );
+
+            $worksheet
+                    ->getCell('B'.$row)
+                        ->setValueExplicit(
+                            $values['email'],
+                            DataType::TYPE_STRING
+                        );
 
             $col = $col_base;
 
             foreach ($matches as $match) {
 
-                if (isset($values[$match['key']])) $worksheet->setCellValue(
-                    $this->getColumnName($col).$row,
-                    $values[$match['key']]
-                );
+                if (isset($values[$match['key']])) $worksheet
+                    ->getCell($this->getColumnName($col).$row)
+                        ->setValueExplicit(
+                            $values[$match['key']],
+                            DataType::TYPE_STRING
+                        );
 
                 $col += 1;
 
@@ -309,10 +347,12 @@ class PresenceEffect extends UsersWorksheetHandler
 
                     }
 
-                    $worksheet->setCellValue(
-                        $this->getColumnName($titles_col).$row,
-                        $presence
-                    );
+                    $worksheet
+                        ->getCell($this->getColumnName($titles_col).$row)
+                            ->setValueExplicit(
+                                $presence,
+                                DataType::TYPE_STRING
+                            );
 
                     $titles_col += 1;
 
@@ -320,10 +360,12 @@ class PresenceEffect extends UsersWorksheetHandler
 
             }
 
-            $worksheet->setCellValue(
-                $presence_total_cell,
-                $presence_total
-            );
+            $worksheet
+                ->getCell($presence_total_cell)
+                    ->setValueExplicit(
+                        $presence_total,
+                        DataType::TYPE_STRING
+                    );
 
             $row += 1;
 
@@ -332,27 +374,5 @@ class PresenceEffect extends UsersWorksheetHandler
         return $worksheet;
 
     }
-
-    /**
-     * Get default imploded fio.
-     * 
-     * @param array $values
-     * 
-     * @return string
-     */
-    /*protected function implodedFio(array $values) : string
-    {
-
-        $fio = [];
-
-        if (!empty($values['Surname'])) $fio[] = $values['Surname'];
-        
-        if (!empty($values['Name'])) $fio[] = $values['Name'];
-        
-        if (!empty($values['LastName'])) $fio[] = $values['LastName'];
-
-        return implode(" ", $fio);
-
-    }*/
 
 }

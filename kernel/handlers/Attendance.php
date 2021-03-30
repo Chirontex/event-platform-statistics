@@ -9,6 +9,7 @@ use EPStatistics\Visits;
 use EPStatistics\MetadataMatching;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 class Attendance extends UsersWorksheetHandler
 {
@@ -44,10 +45,17 @@ class Attendance extends UsersWorksheetHandler
 
         foreach ($matches as $match) {
 
-            $worksheet->setCellValue(
+            /*$worksheet->setCellValue(
                 $this->getColumnName($col).'1',
                 $match['name']
-            );
+            );*/
+
+            $worksheet
+                ->getCell($this->getColumnName($col).'1')
+                    ->setValueExplicit(
+                        $match['name'],
+                        DataType::TYPE_STRING
+                    );
 
             $col += 1;
 
@@ -64,7 +72,14 @@ class Attendance extends UsersWorksheetHandler
 
             foreach ($visits_data as $visit) {
 
-                $worksheet->setCellValue('A'.$row, $visit['page_url']);
+                /*$worksheet->setCellValue('A'.$row, $visit['page_url']);*/
+
+                $worksheet
+                    ->getCell('A'.$row)
+                        ->setValueExplicit(
+                            $visit['page_url'],
+                            DataType::TYPE_STRING
+                        );
                 
                 $datetime = date(
                     "d.m.Y H:i:s",
@@ -72,24 +87,54 @@ class Attendance extends UsersWorksheetHandler
                 );
                 $datetime = explode(' ', $datetime);
 
-                $worksheet->setCellValue('B'.$row, $datetime[0]);
+                /*$worksheet->setCellValue('B'.$row, $datetime[0]);
                 $worksheet->setCellValue('C'.$row, $datetime[1]);
                 $worksheet->setCellValue('D'.$row, $visit['user_id']);
                 $worksheet->setCellValue(
                     'E'.$row,
                     $this->users_data[$visit['user_id']]['email']
-                );
+                );*/
+
+                $worksheet
+                    ->getCell('B'.$row)
+                        ->setValueExplicit(
+                            $datetime[0],
+                            DataType::TYPE_STRING
+                        );
+
+                $worksheet
+                        ->getCell('C'.$row)
+                            ->setValueExplicit(
+                                $datetime[1],
+                                DataType::TYPE_STRING
+                            );
+
+                $worksheet
+                        ->getCell('D'.$row)
+                            ->setValueExplicit(
+                                $visit['user_id'],
+                                DataType::TYPE_STRING
+                            );
 
                 $col = $col_base;
 
                 foreach ($matches as $match) {
 
-                    if (isset(
+                    /*if (isset(
                         $this->users_data[$visit['user_id']][$match['key']]
                     )) $worksheet->setCellValue(
                         $this->getColumnName($col).$row,
                         $this->users_data[$visit['user_id']][$match['key']]
-                    );
+                    );*/
+
+                    if (isset(
+                        $this->users_data[$visit['user_id']][$match['key']]
+                    )) $worksheet
+                        ->getCell($this->getColumnName($col).$row)
+                            ->setValueExplicit(
+                                $this->users_data[$visit['user_id']][$match['key']],
+                                DataType::TYPE_STRING
+                            );
 
                     $col += 1;
 

@@ -8,6 +8,7 @@ use EPStatistics\MetadataMatching;
 use EPStatistics\Users;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 class Participants extends UsersWorksheetHandler
 {
@@ -43,8 +44,12 @@ class Participants extends UsersWorksheetHandler
 
             foreach ($matches as $match) {
 
-                $worksheet->setCellValue(
-                    $this->getColumnName($col).'1', $match['name']);
+                $worksheet
+                    ->getCell($this->getColumnName($col).'1')
+                        ->setValueExplicit(
+                            $match['name'],
+                            DataType::TYPE_STRING
+                        );
 
                 $col += 1;
 
@@ -70,15 +75,28 @@ class Participants extends UsersWorksheetHandler
 
                 $col = $col_base;
 
-                $worksheet->setCellValue('A'.$row, $user_id);
-                $worksheet->setCellValue('B'.$row, $values['email']);
+                $worksheet
+                    ->getCell('A'.$row)
+                        ->setValueExplicit(
+                            $user_id,
+                            DataType::TYPE_STRING
+                        );
+
+                $worksheet
+                    ->getCell('B'.$row)
+                        ->setValueExplicit(
+                            $values['email'],
+                            DataType::TYPE_STRING
+                        );
 
                 foreach ($matches as $match) {
 
-                    if (isset($values[$match['key']])) $worksheet->setCellValue(
-                        $this->getColumnName($col).$row,
-                        $values[$match['key']]
-                    );
+                    if (isset($values[$match['key']])) $worksheet
+                        ->getCell($this->getColumnName($col).$row)
+                            ->setValueExplicit(
+                                $values[$match['key']],
+                                DataType::TYPE_STRING
+                            );
 
                     $col += 1;
 
@@ -87,10 +105,12 @@ class Participants extends UsersWorksheetHandler
                 $presence = empty($values['presence_times']) ?
                     0 : count($values['presence_times']);
 
-                $worksheet->setCellValue(
-                    $this->getColumnName($col).$row,
-                    $presence
-                );
+                $worksheet
+                    ->getCell($this->getColumnName($col).$row)
+                        ->setValueExplicit(
+                            $presence,
+                            DataType::TYPE_STRING
+                        );
 
                 $presence_count += $presence;
 
@@ -98,7 +118,12 @@ class Participants extends UsersWorksheetHandler
 
             }
 
-            $worksheet->setCellValue($presence_count_cell, $presence_count);
+            $worksheet
+                ->getCell($presence_count_cell)
+                    ->setValueExplicit(
+                        $presence_count,
+                        DataType::TYPE_STRING
+                    );
 
         }
 

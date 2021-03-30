@@ -8,6 +8,7 @@ use EPStatistics\Titles;
 use EPStatistics\Interfaces\WorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 class TitlesWorksheet implements WorksheetHandler
 {
@@ -41,7 +42,7 @@ class TitlesWorksheet implements WorksheetHandler
 
         foreach ($titles_selected as $title) {
 
-            $worksheet->setCellValue('A'.$i, $title['id']);
+            /*$worksheet->setCellValue('A'.$i, $title['id']);
             $worksheet->setCellValue('B'.$i, $title['title']);
             $worksheet->setCellValue('C'.$i, $title['list_name']);
             $worksheet->setCellValue('D'.$i, $title['datetime_start']);
@@ -51,7 +52,42 @@ class TitlesWorksheet implements WorksheetHandler
                 $title['nmo'] === '1' ?
                 'Да' :
                 'Нет'
-            );
+            );*/
+
+            $worksheet
+                ->getCell('A'.$i)
+                    ->setValueExplicit(
+                        $title['id'],
+                        DataType::TYPE_STRING
+                    );
+
+            $worksheet
+                ->getCell('B'.$i)
+                    ->setValueExplicit(
+                        $title['title'],
+                        DataType::TYPE_STRING
+                    );
+
+            $worksheet
+                ->getCell('C'.$i)
+                    ->setValueExplicit(
+                        $title['list_name'],
+                        DataType::TYPE_STRING
+                    );
+
+            $worksheet
+                ->getCell('D'.$i)
+                    ->setValueExplicit(
+                        $title['datetime_start'],
+                        DataType::TYPE_STRING
+                    );
+
+            $worksheet
+                ->getCell('E'.$i)
+                    ->setValueExplicit(
+                        $title['datetime_end'],
+                        DataType::TYPE_STRING
+                    );
 
             $i += 1;
 

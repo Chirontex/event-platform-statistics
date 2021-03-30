@@ -8,6 +8,7 @@ use EPStatistics\Users;
 use EPStatistics\Interfaces\WorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 class Demography implements WorksheetHandler
 {
@@ -43,7 +44,11 @@ class Demography implements WorksheetHandler
 
                 foreach ($users_towns as $town => $ids) {
 
-                    $worksheet->setCellValue('A'.$i, $town);
+                    $worksheet
+                        ->getCell('A'.$i)
+                            ->setDataType(DataType::TYPE_STRING)
+                            ->setValue($town);
+
                     $worksheet->setCellValue('B'.$i, count($ids));
 
                     $i += 1;
@@ -69,9 +74,27 @@ class Demography implements WorksheetHandler
 
                         if (is_array($users)) {
 
-                            $worksheet->setCellValue('A'.$i, $country);
-                            $worksheet->setCellValue('B'.$i, $region);
-                            $worksheet->setCellValue('C'.$i, $city);
+                            $worksheet
+                                ->getCell('A'.$i)
+                                    ->setValueExplicit(
+                                        $country,
+                                        DataType::TYPE_STRING
+                                    );
+
+                            $worksheet
+                                ->getCell('B'.$i)
+                                    ->setValueExplicit(
+                                        $region,
+                                        DataType::TYPE_STRING
+                                    );
+
+                            $worksheet
+                                ->getCell('C'.$i)
+                                    ->setValueExplicit(
+                                        $city,
+                                        DataType::TYPE_STRING
+                                    );
+
                             $worksheet->setCellValue('D'.$i, count($users));
 
                             $i += 1;
