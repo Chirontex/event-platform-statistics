@@ -32,6 +32,13 @@ class MainDetachedButtons extends AdminPage
                 '5.0.0-beta1'
             );
 
+            wp_enqueue_style(
+                'detached-buttons',
+                $this->url.'css/detached-buttons.css',
+                [],
+                '1.0.0'
+            );
+
             wp_enqueue_script(
                 'bootstrap-bundle-min',
                 (
@@ -41,6 +48,13 @@ class MainDetachedButtons extends AdminPage
                 ),
                 [],
                 '5.0.0-beta1'
+            );
+
+            wp_enqueue_script(
+                'detached-buttons',
+                $this->url.'js/detached-buttons.js',
+                [],
+                '1.0.0'
             );
 
         });
