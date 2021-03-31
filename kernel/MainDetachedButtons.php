@@ -54,7 +54,7 @@ class MainDetachedButtons extends AdminPage
                 'detached-buttons',
                 $this->url.'js/detached-buttons.js',
                 [],
-                '1.0.0'
+                '1.0.6'
             );
 
         });

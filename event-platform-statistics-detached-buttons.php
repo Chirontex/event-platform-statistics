@@ -46,7 +46,7 @@ foreach (apply_filters('eps-detached-buttons-tbody', []) as $row) {
             <tr id="eps-detached-button-entry-<?= $row['id'] ?>">
                 <td id="eps-detached-button-entry-<?= $row['id'] ?>-button-id"><?= htmlspecialchars($row['button_id']) ?></td>
                 <td id="eps-detached-button-entry-<?= $row['id'] ?>-enable-datetime"><?= date("d.m.Y H:i", strtotime($row['enable_datetime'])) ?></td>
-                <td id="eps-detached-button-entry-<?= $row['id'] ?>-update">Редактировать</td>
+                <td id="eps-detached-button-entry-<?= $row['id'] ?>-update"><a href="javascript:void(0)" onclick="EPSDetachedButtons.updateOpen(<?= $row['id'] ?>);">Редактировать</a></td>
                 <td id="eps-detached-button-entry-<?= $row['id'] ?>-delete">Удалить</td>
             </tr>
 <?php
