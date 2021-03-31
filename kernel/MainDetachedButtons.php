@@ -54,7 +54,7 @@ class MainDetachedButtons extends AdminPage
                 'detached-buttons',
                 $this->url.'js/detached-buttons.js',
                 [],
-                '1.1.0'
+                '1.1.1'
             );
 
         });
@@ -136,6 +136,41 @@ class MainDetachedButtons extends AdminPage
                 else $this->adminStatusSet(
                     'danger',
                     'Не удалось сохранить изменения.'
+                );
+
+            }
+
+        });
+
+        return $this;
+
+    }
+
+    public function entryDelete() : self
+    {
+
+        add_action('plugins_loaded', function() {
+
+            if (wp_verify_nonce(
+                $_POST['eps-detached-button-delete-wpnp'],
+                'eps-detached-button-delete'
+            ) === false) $this->adminStatusSet(
+                'danger',
+                'Произошла ошибка при отправке формы. Пожалуйста, попробуйте ещё раз.'
+            );
+            else {
+
+                $detached_buttons = new DetachedButtons($this->wpdb);
+
+                if ($detached_buttons->deleteEntry(
+                    (int)$_POST['eps-detached-button-delete-entry-id']
+                )) $this->adminStatusSet(
+                    'success',
+                    'Удаление успешно произведено.'
+                );
+                else $this->adminStatusSet(
+                    'danger',
+                    'Удаление не было произведено.'
                 );
 
             }

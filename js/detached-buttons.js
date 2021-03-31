@@ -177,5 +177,20 @@ const EPSDetachedButtons = {
         form.appendChild(input);
 
         form.submit();
+    },
+    delete: (id) => {
+        const form = document
+            .getElementById('eps-detached-button-entry-delete-form');
+
+        const input = document.createElement('input');
+
+        input.setAttribute('type', 'hidden');
+        input.setAttribute('name', 'eps-detached-button-delete-entry-id');
+        input.setAttribute('value', id);
+        input.setAttribute('required', 'true');
+
+        form.appendChild(input);
+
+        form.submit();
     }
 }
