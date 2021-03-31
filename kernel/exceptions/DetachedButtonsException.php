@@ -18,4 +18,7 @@ class DetachedButtonsException extends Exception
     const INVALID_ID_MESSAGE = 'Entry ID cannot be lesser than 1.';
     const INVALID_ID_CODE = -72;
 
+    const DELETING_FAILURE_MESSAGE = 'Data deleting failure.';
+    const DELETING_FAILURE_CODE = -73;
+
 }
