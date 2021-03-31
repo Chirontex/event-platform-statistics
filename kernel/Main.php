@@ -12,6 +12,7 @@ final class Main extends MainCluster
 
     private $output_script_file;
     private $titles_script_file;
+    private $detached_buttons_script_file;
 
     public function __construct(string $path, string $url)
     {
@@ -20,6 +21,7 @@ final class Main extends MainCluster
 
         $this->output_script_file = 'event-platform-statistics-output.php';
         $this->titles_script_file = 'event-platform-statistics-titles.php';
+        $this->detached_buttons_script_file = 'event-platform-statistics-detached-buttons.php';
 
         $this->apiRoutesInit();
 
@@ -35,6 +37,10 @@ final class Main extends MainCluster
         $this->visitWrite();
 
         if (strpos(
+                $_SERVER['REQUEST_URI'],
+                'wp-admin'
+            ) !== false &&
+            strpos(
                 $_GET['page'],
                 $this->output_script_file
             ) !== false) {
@@ -46,6 +52,10 @@ final class Main extends MainCluster
         }
 
         if (strpos(
+                $_SERVER['REQUEST_URI'],
+                'wp-admin'
+            ) !== false &&
+            strpos(
                 $_GET['page'],
                 $this->titles_script_file
             ) !== false) {
@@ -64,6 +74,22 @@ final class Main extends MainCluster
             if (isset($_POST['eps-titles-title-delete'])) $main_titles->titleDelete();
 
             $main_titles->titlesOutput();
+
+        }
+
+        if (strpos(
+                $_SERVER['REQUEST_URI'],
+                'wp-admin'
+            ) !== false &&
+            strpos(
+                $_GET['page'],
+                $this->detached_buttons_script_file
+            ) !== false) {
+
+            $main_detached_buttons = new MainDetachedButtons(
+                $this->path,
+                $this->url
+            );
 
         }
 
@@ -86,6 +112,13 @@ final class Main extends MainCluster
                 'Титры',
                 8,
                 $this->path.$this->titles_script_file
+            );
+
+            add_menu_page(
+                'Отд. кнопки',
+                'Отд. кнопки',
+                8,
+                $this->path.$this->detached_buttons_script_file
             );
 
         });
