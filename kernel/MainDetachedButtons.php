@@ -63,4 +63,58 @@ class MainDetachedButtons extends AdminPage
 
     }
 
+    public function entryAdd() : self
+    {
+
+        add_action('plugins_loaded', function() {
+
+            if (wp_verify_nonce(
+                $_POST['eps-detached-button-add-wpnp'],
+                'eps-detached-button-add'
+            ) === false) $this->adminStatusSet(
+                'danger',
+                'Произошла ошибка при отправке формы. Пожалуйста, попробуйте ещё раз.'
+            );
+            else {
+
+                $detached_buttons = new DetachedButtons($this->wpdb);
+
+                if ($detached_buttons->add(
+                    trim($_POST['eps-detached-buttons-add-button-id']),
+                    strtotime(
+                        trim($_POST['eps-detached-buttons-add-date']).
+                        ' '.trim($_POST['eps-detached-buttons-add-time'])
+                    )
+                )) $this->adminStatusSet(
+                    'success',
+                    'Разблокировка кнопки сохранена.'
+                );
+                else $this->adminStatusSet(
+                    'danger',
+                    'Не удалось сохранить разблокировку кнопки.'
+                );
+
+            }
+
+        });
+
+        return $this;
+
+    }
+
+    public function filterEntries() : self
+    {
+
+        add_filter('eps-detached-buttons-tbody', function() {
+
+            $detached_buttons = new DetachedButtons($this->wpdb);
+
+            return $detached_buttons->selectAll();
+
+        });
+
+        return $this;
+
+    }
+
 }

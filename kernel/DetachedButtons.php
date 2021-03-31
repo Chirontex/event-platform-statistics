@@ -156,7 +156,7 @@ class DetachedButtons extends Storage
 
             foreach ($select as $entry) {
 
-                $result[$entry['button_id']][] = $entry['enable_datetime'];
+                $result[$entry['button_id']][$entry['id']] = $entry['enable_datetime'];
 
             }
 

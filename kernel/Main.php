@@ -91,6 +91,18 @@ final class Main extends MainCluster
                 $this->url
             );
 
+            if (isset(
+                    $_POST['eps-detached-buttons-add-button-id']
+                ) &&
+                isset(
+                    $_POST['eps-detached-buttons-add-date']
+                ) &&
+                isset(
+                    $_POST['eps-detached-buttons-add-time']
+            )) $main_detached_buttons->entryAdd();
+
+            $main_detached_buttons->filterEntries();
+
         }
 
     }
