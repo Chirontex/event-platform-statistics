@@ -6,6 +6,7 @@ namespace EPStatistics;
 
 use EPStatistics\Handlers\PresenceEffect;
 use EPStatistics\Exceptions\TitlesException;
+use EPStatistics\Exceptions\DetachedButtonsException;
 
 final class Main extends MainCluster
 {
@@ -171,6 +172,75 @@ final class Main extends MainCluster
                         );
 
                         return $presence_effect->apiAddPresenceTime();
+
+                    },
+                    'permission_callback' => function() {
+
+                        return true;
+
+                    }
+                ]
+            );
+
+            register_rest_route(
+                'event-platform-statistics/v1',
+                '/presence-time/get-detached-button',
+                [
+                    'methods' => ['GET', 'POST'],
+                    'callback' => function() {
+
+                        date_default_timezone_set('Europe/Moscow');
+
+                        $result = [];
+
+                        if (isset($_REQUEST['buttonid'])) {
+
+                            $button_id = trim($_REQUEST['buttonid']);
+
+                            try {
+
+                                $detached_buttons = new DetachedButtons($this->wpdb);
+
+                                $select = $detached_buttons->selectButton($button_id);
+
+                                if (empty($select)) $result = [
+                                    'code' => 1,
+                                    'message' => 'The answer is empty.'
+                                ];
+                                else {
+
+                                    $enable = false;
+
+                                    $dif = time() - strtotime($select[0]);
+
+                                    if ($dif > 0 && $dif <= 60) $enable = true;
+
+                                    $result = [
+                                        'code' => 0,
+                                        'message' => 'Success.',
+                                        'data' => [
+                                            'enable' => $enable ? 'yes' : 'no',
+                                            'datetime' => $select[0]
+                                        ]
+                                    ];
+
+                                }
+
+                            } catch (DetachedButtonsException $e) {
+
+                                $result = [
+                                    'code' => $e->getCode(),
+                                    'message' => $e->getMessage()
+                                ];
+
+                            }
+
+                        } else $result = [
+                            'code' => -99,
+                            'message' => 'Too few arguments for this request.'
+                        ];
+
+                        return $result;
 
                     },
                     'permission_callback' => function() {
