@@ -17,11 +17,11 @@ const EPSDetachedButtons = {
         }
     },
     updateOpen: (id) => {
-        const button_id = document.
-            getElementById('eps-detached-button-entry-'+id+'-button-id');
+        const button_id = document
+            .getElementById('eps-detached-button-entry-'+id+'-button-id');
 
-        const enable_datetime = document.
-            getElementById('eps-detached-button-entry-'+id+'-enable-datetime');
+        const enable_datetime = document
+            .getElementById('eps-detached-button-entry-'+id+'-enable-datetime');
 
         const datetime = enable_datetime.innerHTML.split(' ');
 
@@ -104,10 +104,17 @@ const EPSDetachedButtons = {
         update.appendChild(a);
     },
     updateCheckSubmit: (id) => {
-        const button_id = document.getElementById('eps-detached-button-update-'+id+'-button-id');
-        const date = document.getElementById('eps-detached-button-update-'+id+'-date');
-        const time = document.getElementById('eps-detached-button-update-'+id+'-time');
-        const submit = document.getElementById('eps-detached-button-update-'+id+'-submit');
+        const button_id = document
+            .getElementById('eps-detached-button-update-'+id+'-button-id');
+
+        const date = document
+            .getElementById('eps-detached-button-update-'+id+'-date');
+
+        const time = document
+            .getElementById('eps-detached-button-update-'+id+'-time');
+
+        const submit = document
+            .getElementById('eps-detached-button-update-'+id+'-submit');
 
         if (button_id.value != '' &&
             date.value != '' &&
@@ -121,6 +128,54 @@ const EPSDetachedButtons = {
         }
     },
     updateSave: (id) => {
+        const form = document
+            .getElementById('eps-detached-button-entry-update-form');
 
+        const button_id = document
+            .getElementById('eps-detached-button-update-'+id+'-button-id');
+
+        const date = document
+            .getElementById('eps-detached-button-update-'+id+'-date');
+
+        const time = document
+            .getElementById('eps-detached-button-update-'+id+'-time');
+
+        let input = document.createElement('input');
+
+        input.setAttribute('type', 'hidden');
+        input.setAttribute('name', 'eps-detached-button-update-button-id');
+        input.setAttribute('value', button_id.value);
+        input.setAttribute('required', 'true');
+
+        form.appendChild(input);
+
+        input = document.createElement('input');
+
+        input.setAttribute('type', 'hidden');
+        input.setAttribute('name', 'eps-detached-button-update-date');
+        input.setAttribute('value', date.value);
+        input.setAttribute('required', 'true');
+
+        form.appendChild(input);
+
+        input = document.createElement('input');
+
+        input.setAttribute('type', 'hidden');
+        input.setAttribute('name', 'eps-detached-button-update-time');
+        input.setAttribute('value', time.value);
+        input.setAttribute('required', 'true');
+
+        form.appendChild(input);
+
+        input = document.createElement('input');
+
+        input.setAttribute('type', 'hidden');
+        input.setAttribute('name', 'eps-detached-button-update-entry-id');
+        input.setAttribute('value', id);
+        input.setAttribute('required', 'true');
+
+        form.appendChild(input);
+
+        form.submit();
     }
 }

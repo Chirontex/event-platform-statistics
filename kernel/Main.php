@@ -101,6 +101,19 @@ final class Main extends MainCluster
                     $_POST['eps-detached-buttons-add-time']
             )) $main_detached_buttons->entryAdd();
 
+            if (isset(
+                    $_POST['eps-detached-button-update-entry-id']
+                ) &&
+                isset(
+                    $_POST['eps-detached-button-update-button-id']
+                ) &&
+                isset(
+                    $_POST['eps-detached-button-update-date']
+                ) &&
+                isset(
+                    $_POST['eps-detached-button-update-time']
+            )) $main_detached_buttons->entryUpdate();
+
             $main_detached_buttons->filterEntries();
 
         }

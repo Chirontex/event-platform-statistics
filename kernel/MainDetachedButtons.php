@@ -54,7 +54,7 @@ class MainDetachedButtons extends AdminPage
                 'detached-buttons',
                 $this->url.'js/detached-buttons.js',
                 [],
-                '1.0.6'
+                '1.1.0'
             );
 
         });
@@ -65,6 +65,8 @@ class MainDetachedButtons extends AdminPage
 
     public function entryAdd() : self
     {
+
+        date_default_timezone_set('Europe/Moscow');
 
         add_action('plugins_loaded', function() {
 
@@ -92,6 +94,48 @@ class MainDetachedButtons extends AdminPage
                 else $this->adminStatusSet(
                     'danger',
                     'Не удалось сохранить разблокировку кнопки.'
+                );
+
+            }
+
+        });
+
+        return $this;
+
+    }
+
+    public function entryUpdate() : self
+    {
+
+        date_default_timezone_set('Europe/Moscow');
+
+        add_action('plugins_loaded', function() {
+
+            if (wp_verify_nonce(
+                $_POST['eps-detached-button-update-wpnp'],
+                'eps-detached-button-update'
+            ) === false) $this->adminStatusSet(
+                'danger',
+                'Произошла ошибка при отправке формы. Пожалуйста, попробуйте ещё раз.'
+            );
+            else {
+
+                $detached_buttons = new DetachedButtons($this->wpdb);
+
+                if ($detached_buttons->update(
+                    (int)$_POST['eps-detached-button-update-entry-id'],
+                    trim($_POST['eps-detached-button-update-button-id']),
+                    strtotime(
+                        trim($_POST['eps-detached-button-update-date']).
+                        ' '.trim($_POST['eps-detached-button-update-time'])
+                    )
+                )) $this->adminStatusSet(
+                    'success',
+                    'Изменения успешно сохранены.'
+                );
+                else $this->adminStatusSet(
+                    'danger',
+                    'Не удалось сохранить изменения.'
                 );
 
             }
