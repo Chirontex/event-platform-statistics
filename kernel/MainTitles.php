@@ -125,6 +125,8 @@ class MainTitles extends AdminPage
     public function titleAdd() : void
     {
 
+        date_default_timezone_set('Europe/Moscow');
+
         add_action('plugins_loaded', function() {
 
             if (wp_verify_nonce(
@@ -202,6 +204,8 @@ class MainTitles extends AdminPage
      */
     public function titleUpdate() : void
     {
+
+        date_default_timezone_set('Europe/Moscow');
 
         add_action('plugins_loaded', function() {
 
