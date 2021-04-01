@@ -21,6 +21,8 @@ class MainTitles extends AdminPage
     public function titlesOutput() : void
     {
 
+        date_default_timezone_set('Europe/Moscow');
+
         add_action('admin_enqueue_scripts', function() {
 
             wp_enqueue_style(
