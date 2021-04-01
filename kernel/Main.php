@@ -209,19 +209,27 @@ final class Main extends MainCluster
                                 ];
                                 else {
 
-                                    $enable = false;
+                                    foreach ($select as $datetime) {
 
-                                    $dif = time() - strtotime($select[0]);
+                                        $dif = time() - strtotime($datetime);
 
-                                    if ($dif > 0 && $dif <= 60) $enable = true;
+                                        if ($dif > 0 && $dif <= 60) {
 
-                                    $result = [
-                                        'code' => 0,
-                                        'message' => 'Success.',
-                                        'data' => [
-                                            'enable' => $enable ? 'yes' : 'no',
-                                            'datetime' => $select[0]
-                                        ]
+                                            $result = [
+                                                'code' => 0,
+                                                'message' => 'Success.',
+                                                'datetime' => $datetime
+                                            ];
+
+                                            break;
+
+                                        }
+
+                                    }
+
+                                    if (empty($result)) $result = [
+                                        'code' => 2,
+                                        'message' => 'No actual datetimes.'
                                     ];
 
                                 }
@@ -368,9 +376,24 @@ final class Main extends MainCluster
             ob_start();
 
 ?>
-<button type="button" eps-peb-list="<?= $atts['titles-detach'] === 'no' ? htmlspecialchars($atts['list']) : '' ?>" name="eps-presence-effect-button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>');"><?= htmlspecialchars($content) ?></button>
+<button type="button" eps-peb-list="<?= $atts['titles-detach'] === 'no' ? htmlspecialchars($atts['list']) : '' ?>" name="eps-presence-effect-button" id="<?= htmlspecialchars($atts['id']) ?>" class="<?= htmlspecialchars($atts['button-class']) ?>" style="<?= htmlspecialchars($atts['button-style']) ?>" onclick="epsPresenceConfirmationSend('<?= $atts['message-position'] ?>', '<?= htmlspecialchars($atts['message-class']) ?>', '<?= htmlspecialchars($atts['message-style']) ?>', '<?= htmlspecialchars($atts['id']) ?>', '<?= htmlspecialchars($atts['list']) ?>'); <?= $atts['titles-detach'] === 'no' ? '' : 'epsPresenceDetachedButtonSended(\''.htmlspecialchars($atts['id']).'\');' ?>"><?= htmlspecialchars($content) ?></button>
 <script>
-window.eps_button_text_default['<?= htmlspecialchars($atts['id']) ?>'] = '<?= htmlspecialchars($content) ?>'
+window.eps_button_text_default['<?= htmlspecialchars($atts['id']) ?>'] = '<?= htmlspecialchars($content) ?>';
+<?php
+
+            if ($atts['titles-detach'] !== 'no') {
+
+?>
+
+document.getElementById('<?= htmlspecialchars($atts['id']) ?>').setAttribute('disabled', 'true');
+document.getElementById('<?= htmlspecialchars($atts['id']) ?>').innerHTML = 'Подтверждение не требуется';
+
+epsPresenceDetachedButtonGet('<?= htmlspecialchars($atts['id']) ?>');
+<?php
+
+            }
+
+?>
 </script>
 <?php
 
@@ -421,7 +444,7 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 'eps-presence-effect',
                 $this->url.'js/presence-effect-button.js',
                 [],
-                '2.0.2'
+                '2.0.8'
             );
 
             wp_enqueue_script(

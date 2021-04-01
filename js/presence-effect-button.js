@@ -1,5 +1,7 @@
 if (eps_button_text_default == undefined) var eps_button_text_default = {}
 
+if (eps_detached_buttons == undefined) var eps_detached_buttons = {}
+
 async function epsPresenceConfirmationSend(message_position, message_class, message_style, button_id, list_name)
 {
     const button = document.getElementById(button_id)
@@ -50,8 +52,11 @@ async function epsPresenceConfirmationSend(message_position, message_class, mess
             button: button_id
         })
 
-        button.removeAttribute('disabled')
-        button.innerHTML = window.eps_button_text_default[button_id]
+        if (window.eps_detached_buttons[button_id] == undefined)
+        {
+            button.removeAttribute('disabled')
+            button.innerHTML = window.eps_button_text_default[button_id]
+        }
 
     })
 }
@@ -76,4 +81,60 @@ function epsPresenceConfirmationMessage(atts)
 function epsPresenceConfirmationTimerHandler(button_node, message_node)
 {
     button_node.parentNode.removeChild(message_node)
+}
+
+async function epsPresenceDetachedButtonGet(button_id)
+{
+    const button = document.getElementById(button_id);
+
+    const body = new FormData;
+
+    body.append('buttonid', button_id);
+
+    await fetch(
+        '/wp-json/event-platform-statistics/v1/presence-time/get-detached-button',
+        {
+            method: 'POST',
+            body: body
+        }
+    ).then(async (response) => {
+        const answer = response.ok ?
+            await response.json() :
+            {code: -9999, message: 'Ошибка отправки.'};
+
+        if (answer.code == 0)
+        {
+            if (window.eps_detached_buttons[button_id] ==
+                undefined ||
+                window.eps_detached_buttons[button_id].datetime !=
+                answer.datetime) window.eps_detached_buttons[button_id] = {
+                sended: false,
+                datetime: answer.datetime
+            };
+
+            if (window.eps_detached_buttons[button_id].sended == false)
+            {
+                if (button.hasAttribute('disabled')) button.removeAttribute('disabled');
+    
+                button.innerHTML = window.eps_button_text_default[button_id];
+            }
+        }
+
+        const message = `epsPresenceDetachedButtonGet() :\n\tcode: `+answer.code+`\n\tmessage: `+answer.message;
+
+        if (answer.code < 0) console.error(message);
+        else console.log(message);
+    });
+
+    setTimeout(epsPresenceDetachedButtonGet, 5000, button_id);
+}
+
+function epsPresenceDetachedButtonSended(button_id)
+{
+    window.eps_detached_buttons[button_id].sended = true;
+
+    const button = document.getElementById(button_id);
+
+    button.innerHTML = 'Подтверждение не требуется';
+    button.setAttribute('disabled', 'true');
 }
