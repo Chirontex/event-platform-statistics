@@ -444,14 +444,14 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
                 'eps-presence-effect',
                 $this->url.'js/presence-effect-button.js',
                 [],
-                '2.0.8'
+                '2.5.0'
             );
 
             wp_enqueue_script(
                 'eps-titles-client',
                 $this->url.'js/titles-client.js',
                 [],
-                '2.1.4'
+                '2.5.0'
             );
 
         });

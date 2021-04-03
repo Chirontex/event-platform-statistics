@@ -23,7 +23,7 @@ async function epsTitleGet(title_id, list_name)
             await response.json() :
             {
                 code: -9999,
-                message: 'Не удалось обновить заголовок. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.'
+                message: ''
             }
 
         const placeholders = [
@@ -42,14 +42,16 @@ async function epsTitleGet(title_id, list_name)
 
         let actualTitle
 
+        console.clear();
+
         switch (await answer.code) {
             case -9999:
-                console.error(`epsTitleGet() :\n\tcode: -9999\n\tmessage: `+answer.message)
+                console.error(`epsTitleGet('`+title_id+`', '`+list_name+`') :\n\tcode: -9999\n\tmessage: `+answer.message)
                 title.innerHTML = 'Не удалось обновить заголовок. Пожалуйста, проверьте ваше интернет-подключение и обратитесь в техподдержку.'
                 break
 
             case 0:
-                console.log(`epsTitleGet() :\n\tcode: 0\n\tmessage: `+answer.message)
+                console.log(`epsTitleGet('`+title_id+`', '`+list_name+`') :\n\tcode: 0\n\tmessage: `+answer.message)
                 
                 actualTitle = answer.data.title
 
@@ -69,12 +71,12 @@ async function epsTitleGet(title_id, list_name)
             default:
                 if (answer.code < 0)
                 {
-                    console.error(`epsTitleGet() :\n\tcode: `+answer.code+`\n\tmessage: `+answer.message)
+                    console.error(`epsTitleGet('`+title_id+`', '`+list_name+`') :\n\tcode: `+answer.code+`\n\tmessage: `+answer.message)
                     title.innerHTML = 'Ошибка, код '+answer.code+': "'+answer.message+'"'
                 }
                 else if (answer.code > 0)
                 {
-                    console.log(`epsTitleGet() :\n\tcode: `+answer.code+`\n\tmessage: `+answer.message)
+                    console.log(`epsTitleGet('`+title_id+`', '`+list_name+`') :\n\tcode: `+answer.code+`\n\tmessage: `+answer.message)
                     title.innerHTML = window.eps_title_default[title_id]
 
                     epsButtonOpen(list_name)
@@ -89,7 +91,7 @@ async function epsTitleGet(title_id, list_name)
 
 function epsTitleTimeout(title_id, list_name)
 {
-    setTimeout(epsTitleGet, 5000, title_id, list_name)
+    setTimeout(epsTitleGet, 180000, title_id, list_name)
 }
 
 function epsButtonHide(list_name)

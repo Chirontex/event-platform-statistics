@@ -26,6 +26,8 @@ async function epsPresenceConfirmationSend(message_position, message_class, mess
         
         let message_text
 
+        console.clear();
+
         switch (await answer.code) {
             case -9999:
                 message_text = answer.message
@@ -122,11 +124,13 @@ async function epsPresenceDetachedButtonGet(button_id)
 
         const message = `epsPresenceDetachedButtonGet() :\n\tcode: `+answer.code+`\n\tmessage: `+answer.message;
 
+        console.clear();
+
         if (answer.code < 0) console.error(message);
         else console.log(message);
     });
 
-    setTimeout(epsPresenceDetachedButtonGet, 5000, button_id);
+    setTimeout(epsPresenceDetachedButtonGet, 15000, button_id);
 }
 
 function epsPresenceDetachedButtonSended(button_id)
