@@ -88,18 +88,26 @@ class Attendance extends UsersWorksheetHandler
                         );
 
                 $worksheet
-                        ->getCell('C'.$row)
-                            ->setValueExplicit(
-                                $datetime[1],
-                                DataType::TYPE_STRING
-                            );
+                    ->getCell('C'.$row)
+                        ->setValueExplicit(
+                            $datetime[1],
+                            DataType::TYPE_STRING
+                        );
 
                 $worksheet
-                        ->getCell('D'.$row)
-                            ->setValueExplicit(
-                                $visit['user_id'],
-                                DataType::TYPE_STRING
-                            );
+                    ->getCell('D'.$row)
+                        ->setValueExplicit(
+                            $visit['user_id'],
+                            DataType::TYPE_STRING
+                        );
+
+                $worksheet
+                    ->getCell('E'.$row)
+                        ->setValueExplicit(
+                            $this->users_data[$visit['user_id']]['email'],
+                            DataType::TYPE_STRING
+                        );
+                        
 
                 $col = $col_base;
 
