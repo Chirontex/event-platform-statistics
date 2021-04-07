@@ -11,35 +11,44 @@ if (!defined('ABSPATH')) die;
     </datalist>
     <h1 class="h3 text-center mt-5 mb-3">Статистика</h1>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
             <h4 class="text-center mb-3">Выгрузить статистику</h4>
             <form class="eps-column mx-auto" action="" method="post">
-                <p class="mb-2">
-                    <input type="checkbox" class="eps-admin-checkbox" name="eps-download-participants" id="eps-download-participants" value="true" checked="true" onclick="epsAdminSubmitCheck();">
-                    <label for="eps-download-participants" class="form-check-label">Участники</label>
-                </p>
-                <p class="mb-2">
-                    <input type="checkbox" class="eps-admin-checkbox" name="eps-download-demography" id="eps-download-demography" value="true" checked="true" onclick="epsAdminSubmitCheck();">
-                    <label for="eps-download-demography" class="form-check-label">Демография</label>
-                </p>
-                <p class="mb-2">
-                    <input type="checkbox" class="eps-admin-checkbox" name="eps-download-visits" id="eps-download-visits" value="true" checked="true" onclick="epsAdminSubmitCheck();">
-                    <label for="eps-download-visits" class="form-check-label">Посещения</label>
-                </p>
-                <p class="mb-2">
-                    <input type="checkbox" class="eps-admin-checkbox" name="eps-download-nmo-titles" id="eps-download-nmo-titles" value="true" checked="true" onclick="epsAdminSubmitCheck();">
-                    <label for="eps-download-nmo-titles" class="form-check-label">НМО</label>
-                </p>
-                <p class="mb-5">
-                    <input type="checkbox" class="eps-admin-checkbox" name="eps-download-nmo-raw" id="eps-download-nmo-raw" value="true" checked="true" onclick="epsAdminSubmitCheck();">
-                    <label for="eps-download-nmo-raw" class="form-check-label">НМО (детализация)</label>
-                </p>
+                <div class="row mb-3">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <p class="mb-2">
+                            <input type="checkbox" class="eps-admin-checkbox" name="eps-download-participants" id="eps-download-participants" value="true" checked="true" onclick="epsAdminSubmitCheck();">
+                            <label for="eps-download-participants" class="form-check-label">Участники</label>
+                        </p>
+                        <p class="mb-2">
+                            <input type="checkbox" class="eps-admin-checkbox" name="eps-download-demography" id="eps-download-demography" value="true" checked="true" onclick="epsAdminSubmitCheck();">
+                            <label for="eps-download-demography" class="form-check-label">Демография</label>
+                        </p>
+                        <p class="mb-2">
+                            <input type="checkbox" class="eps-admin-checkbox" name="eps-download-visits" id="eps-download-visits" value="true" checked="true" onclick="epsAdminSubmitCheck();">
+                            <label for="eps-download-visits" class="form-check-label">Посещения</label>
+                        </p>
+                        <p class="mb-2">
+                            <input type="checkbox" class="eps-admin-checkbox" name="eps-download-nmo-titles" id="eps-download-nmo-titles" value="true" checked="true" onclick="epsAdminSubmitCheck();">
+                            <label for="eps-download-nmo-titles" class="form-check-label">НМО</label>
+                        </p>
+                        <p class="mb-5">
+                            <input type="checkbox" class="eps-admin-checkbox" name="eps-download-nmo-raw" id="eps-download-nmo-raw" value="true" checked="true" onclick="epsAdminSubmitCheck();">
+                            <label for="eps-download-nmo-raw" class="form-check-label">НМО (детализация)</label>
+                        </p>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <textarea name="eps-download-url-matching" id="eps-download-url-matching" cols="40" rows="5" class="form-control" placeholder="Сопоставьте здесь URL залов с их обозначениями; новый URL — с новой строки. Пример сопоставления: https://site.ru - ЗАЛ 1"></textarea>
+                    </div>
+                </div>
                 <input type="hidden" name="eps-download-init" value="true">
                 <?php wp_nonce_field('eps-download-nonce', 'eps-download-wpnp') ?>
-                <button type="submit" id="eps-admin-form-submit" class="button button-primary mx-auto">Скачать</button>
+                <div class="text-center">
+                    <button type="submit" id="eps-admin-form-submit" class="button button-primary">Скачать</button>
+                </div>
             </form>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <h4 class="text-center mb-3">Сопоставление метаданных пользователей</h4>
             <form class="eps-metadata-form mx-auto" action="" method="post">
                 <div class="form-group mb-3">

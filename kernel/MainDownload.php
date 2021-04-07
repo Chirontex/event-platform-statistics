@@ -39,7 +39,7 @@ class MainDownload extends AdminPage
                 'eps-output',
                 $this->url.'css/output.css',
                 [],
-                '1.0.0'
+                '1.0.2'
             );
         
             wp_enqueue_script(
@@ -129,12 +129,17 @@ class MainDownload extends AdminPage
 
                     if (isset($_POST['eps-download-nmo-titles'])) {
 
-                        $titles_worksheet = new TitlesWorksheet(new Titles($this->wpdb));
+                        $titles_worksheet = new TitlesWorksheet(
+                            new Titles($this->wpdb),
+                            new Visits($this->wpdb)
+                        );
 
                         $spreadsheet_file->worksheetAdd(
                             $titles_worksheet->worksheetGet(
                                 $spreadsheet_file->spreadsheetGet(),
-                                'Программа'
+                                'Программа',
+                                isset($_POST['eps-download-url-matching']) ?
+                                    trim($_POST['eps-download-url-matching']) : ''
                             )
                         );
 

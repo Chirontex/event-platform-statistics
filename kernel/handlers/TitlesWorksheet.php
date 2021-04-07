@@ -5,6 +5,7 @@
 namespace EPStatistics\Handlers;
 
 use EPStatistics\Titles;
+use EPStatistics\Visits;
 use EPStatistics\Interfaces\WorksheetHandler;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -14,15 +15,18 @@ class TitlesWorksheet implements WorksheetHandler
 {
 
     protected $titles;
+    protected $visits;
 
-    public function __construct(Titles $titles)
+    public function __construct(Titles $titles, Visits $visits)
     {
         
         $this->titles = $titles;
 
+        $this->visits = $visits;
+
     }
 
-    public function worksheetGet(Spreadsheet $spreadsheet, string $name): Worksheet
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name, string $url_matching = ''): Worksheet
     {
         
         if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
@@ -31,13 +35,29 @@ class TitlesWorksheet implements WorksheetHandler
 
         $titles_selected = $this->titles->selectTitles();
 
+        if (!empty($url_matching)) {
+
+            $url_matching = explode(PHP_EOL, $url_matching);
+
+            $url_matching = array_map(function($match) {
+
+                $match = explode(' - ', $match);
+                $match[$match[1]] = $match[0];
+
+                return $match;
+
+            }, $url_matching);
+
+        }
+
         $worksheet->setCellValue('A1', 'ID лекции');
         $worksheet->setCellValue('B1', 'Заголовок');
         $worksheet->setCellValue('C1', 'Зал');
         $worksheet->setCellValue('D1', 'Начало');
         $worksheet->setCellValue('E1', 'Конец');
         $worksheet->setCellValue('F1', 'Продолжительность');
-        $worksheet->setCellValue('G1', 'НМО');
+        $worksheet->setCellValue('G1', 'Средняя продолжительность просмотра');
+        $worksheet->setCellValue('H1', 'НМО');
 
         $i = 2;
 
@@ -89,7 +109,7 @@ class TitlesWorksheet implements WorksheetHandler
                     );
 
             $worksheet->setCellValue(
-                'G'.$i,
+                'H'.$i,
                 $title['nmo'] === '1' ?
                 'Да' :
                 'Нет'

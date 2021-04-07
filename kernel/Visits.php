@@ -95,16 +95,45 @@ class Visits extends Storage
     /**
      * Getting visits ordered by users.
      * 
+     * @param string $page_url
+     * Page URL. Optional.
+     * 
+     * @param int $since_timestamp
+     * Timestamp since which we need visits. Optional.
+     * 
+     * @param int $to_timestamp
+     * Timestamp to wich we need visits. Optional.
+     * 
      * @return array
+     * 
+     * @throws EPStatistics\Exceptions\VisitsException
      */
-    public function getVisitsByUsers() : array
+    public function getVisitsByUsers(string $page_url = '', int $since_timestamp = 0, int $to_timestamp = 0) : array
     {
 
         $result = [];
 
-        $visits = $this->getVisits();
+        $where = "";
 
-        if (!empty($visits)) {
+        if (!empty($page_url)) $where = $this->wpdb->prepare(
+            " WHERE t.page_url = %s", $page_url
+        );
+
+        if ($since_timestamp !== 0) $where .= (empty($where) ?
+            " WHERE" : " AND")." t.datetime > '".
+                date("Y-m-d H:i:s", $since_timestamp)."'";
+
+        if ($to_timestamp !== 0) $where .= (empty($where) ?
+            " WHERE" : " AND")." t.datetime < '".
+                date("Y-m-d H:i:s", $to_timestamp)."'";
+
+        $visits = $this->wpdb->get_results(
+            "SELECT t.user_id, t.page_url, t.datetime
+                FROM `".$this->wpdb->prefix.$this->table."` AS t".$where,
+            ARRAY_A
+        );
+
+        if (is_array($visits)) {
 
             foreach ($visits as $entry) {
 
@@ -115,7 +144,10 @@ class Visits extends Storage
 
             }
 
-        }
+        } else throw new VisitsException(
+            VisitsException::GET_VISITS_FAILURE_MESSAGE,
+            VisitsException::GET_VISITS_FAILURE_CODE
+        );
 
         return $result;
 
@@ -124,14 +156,43 @@ class Visits extends Storage
     /**
      * Getting visits ordered by pages.
      * 
+     * @param int $user_id
+     * 
+     * @param int $since_timestamp
+     * Timestamp since which we need visits. Optional.
+     * 
+     * @param int $to_timestamp
+     * Timestamp to which we need visits. Optional.
+     * 
      * @return array
+     * 
+     * @throws EPStatistics\Exceptions\VisitsException
      */
-    public function getVisitsByPages() : array
+    public function getVisitsByPages(int $user_id = 0, int $since_timestamp = 0, int $to_timestamp = 0) : array
     {
 
         $result = [];
 
-        $visits = $this->getVisits();
+        $where = "";
+
+        if ($user_id !== 0) $where = $this->wpdb->prepare(
+            " WHERE t.user_id = %d",
+            $user_id
+        );
+
+        if ($since_timestamp !== 0) $where .= (empty($where) ?
+            " WHERE" : " AND")." t.datetime > '".
+                date("Y-m-d H:i:s", $since_timestamp)."'";
+
+        if ($to_timestamp !== 0) $where .= (empty($where) ?
+            " WHERE" : " AND")." t.datetime < '".
+                date("Y-m-d H:i:s", $to_timestamp)."'";
+
+        $visits = $this->wpdb->get_results(
+            "SELECT t.user_id, t.page_url, t.datetime
+                FROM `".$this->wpdb->prefix.$this->table."` AS t".$where,
+            ARRAY_A
+        );
 
         if (!empty($visits)) {
 
@@ -145,92 +206,6 @@ class Visits extends Storage
             }
 
         }
-
-        return $result;
-
-    }
-
-    /**
-     * Get page visits.
-     * 
-     * @param string $page_url
-     * Full page URL.
-     * 
-     * @param int $since_timestamp
-     * Optional. Defines a datetime since which selecting visits.
-     * 
-     * @param int $to_timestamp
-     * Optional. Defines a datetime to which selecting visits.
-     * 
-     * @return array
-     * 
-     * @throws EPStatistics\Exceptions\VisitsException
-     */
-    public function getPageVisits(string $page_url, int $since_timestamp = 0, int $to_timestamp = 0) : array
-    {
-
-        $since = "";
-
-        $to = "";
-
-        if ($since_timestamp !== 0) $since = " AND t.datetime > '".
-            date("Y-m-d H:i:s", $since_timestamp)."'";
-
-        if ($to_timestamp !== 0) $to = " AND t.datetime < '".
-            date("Y-m-d H:i:s", $to_timestamp)."'";
-
-        $result = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT t.user_id, t.datetime
-                    FROM `".$this->wpdb->prefix.$this->table."` AS t
-                    WHERE t.page_url = %s".$since.$to,
-                $page_url
-            ),
-            ARRAY_A
-        );
-
-        if (!is_array($result)) throw new VisitsException(
-            VisitsException::GET_VISITS_FAILURE_MESSAGE,
-            VisitsException::GET_VISITS_FAILURE_CODE
-        );
-
-        return $result;
-
-    }
-
-    /**
-     * Get page visits by user.
-     * 
-     * @param int $user_id
-     * Cannot be lesser than 1.
-     * 
-     * @return array
-     * 
-     * @throws EPStatistics\Exceptions\VisitsException
-     */
-    public function getUserVisits(int $user_id) : array
-    {
-
-        if ($user_id < 1) throw new VisitsException(
-            VisitsException::INVALID_USER_ID_MESSAGE,
-            VisitsException::INVALID_USER_ID_CODE
-        );
-
-        $result = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT t.page_url, t.datetime
-                    FROM `".$this->wpdb->prefix.$this->table."` AS t
-                    WHERE t.user_id = %d
-                    ORDER BY t.datetime ASC",
-                    $user_id
-            ),
-            ARRAY_A
-        );
-
-        if (!is_array($result)) throw new VisitsException(
-            VisitsException::GET_VISITS_FAILURE_MESSAGE,
-            VisitsException::GET_VISITS_FAILURE_CODE
-        );
 
         return $result;
 
