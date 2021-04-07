@@ -1,4 +1,4 @@
-# Event Platform Statistics 1.9.8
+# Event Platform Statistics 1.9.9
 
 Плагин, реализующий сбор статистики на площадке мероприятий.
 

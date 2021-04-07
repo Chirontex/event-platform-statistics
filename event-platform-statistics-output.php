@@ -38,7 +38,8 @@ if (!defined('ABSPATH')) die;
                         </p>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                        <textarea name="eps-download-url-matching" id="eps-download-url-matching" cols="40" rows="5" class="form-control" placeholder="Сопоставьте здесь URL залов с их обозначениями; новый URL — с новой строки. Пример сопоставления: https://site.ru - ЗАЛ 1"></textarea>
+                        <p><label for="eps-download-url-matching" class="form-check-label">Сопоставление URL залам. Новый URL — с новой строки.</label></p>
+                        <textarea name="eps-download-url-matching" id="eps-download-url-matching" cols="40" rows="3" class="form-control" placeholder="Пример: https://site.ru/hall-1/ ::: ЗАЛ 1"></textarea>
                     </div>
                 </div>
                 <input type="hidden" name="eps-download-init" value="true">

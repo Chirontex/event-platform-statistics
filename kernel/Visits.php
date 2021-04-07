@@ -129,7 +129,8 @@ class Visits extends Storage
 
         $visits = $this->wpdb->get_results(
             "SELECT t.user_id, t.page_url, t.datetime
-                FROM `".$this->wpdb->prefix.$this->table."` AS t".$where,
+                FROM `".$this->wpdb->prefix.$this->table."` AS t".
+                $where." ORDER BY t.datetime ASC",
             ARRAY_A
         );
 
@@ -190,7 +191,8 @@ class Visits extends Storage
 
         $visits = $this->wpdb->get_results(
             "SELECT t.user_id, t.page_url, t.datetime
-                FROM `".$this->wpdb->prefix.$this->table."` AS t".$where,
+                FROM `".$this->wpdb->prefix.$this->table."` AS t".
+                $where." ORDER BY t.datetime ASC",
             ARRAY_A
         );
 

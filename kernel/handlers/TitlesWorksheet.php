@@ -28,6 +28,8 @@ class TitlesWorksheet implements WorksheetHandler
 
     public function worksheetGet(Spreadsheet $spreadsheet, string $name, string $url_matching = ''): Worksheet
     {
+
+        date_default_timezone_set('Europe/Moscow');
         
         if (empty($name)) $name = 'Лист '.$spreadsheet->getSheetCount();
 
@@ -37,16 +39,17 @@ class TitlesWorksheet implements WorksheetHandler
 
         if (!empty($url_matching)) {
 
-            $url_matching = explode(PHP_EOL, $url_matching);
+            $url_matching_exp = explode(PHP_EOL, $url_matching);
 
-            $url_matching = array_map(function($match) {
+            $url_matching = [];
 
-                $match = explode(' - ', $match);
-                $match[$match[1]] = $match[0];
+            foreach ($url_matching_exp as $row) {
 
-                return $match;
+                $row = explode(':::', $row);
 
-            }, $url_matching);
+                $url_matching[trim($row[1])] = trim($row[0]);
+
+            }
 
         }
 
@@ -107,6 +110,55 @@ class TitlesWorksheet implements WorksheetHandler
                         date("H:i:s", mktime(0, 0, $duration)),
                         DataType::TYPE_STRING
                     );
+
+            if (empty($url_matching)) $worksheet->setCellValue(
+                'G'.$i,
+                'неизвестно'
+            );
+            else {
+
+                $average_viewing = '00:00:00';
+
+                if (isset($url_matching[$title['list_name']])) {
+
+                    $page_visits = $this->visits->getVisitsByUsers(
+                        $url_matching[$title['list_name']],
+                        strtotime($title['datetime_start']),
+                        strtotime($title['datetime_end'])
+                    );
+
+                    if (!empty($page_visits)) {
+
+                        $viewers_count = count($page_visits);
+
+                        $time_full = 0;
+
+                        foreach ($page_visits as $views) {
+
+                            $time_full += strtotime($title['datetime_end']) -
+                                strtotime($views[0]['datetime']);
+
+                        }
+
+                        $time_average = (int)round($time_full/$viewers_count);
+
+                        $average_viewing = date(
+                            "H:i:s",
+                            mktime(0, 0, $time_average)
+                        );
+
+                    }
+
+                }
+
+                $worksheet
+                    ->getCell('G'.$i)
+                        ->setValueExplicit(
+                            $average_viewing,
+                            DataType::TYPE_STRING
+                        );
+
+            }
 
             $worksheet->setCellValue(
                 'H'.$i,
