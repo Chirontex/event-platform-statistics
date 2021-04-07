@@ -173,8 +173,8 @@ class Visits extends Storage
 
         $to = "";
 
-        if ($since_timestamp !== 0) $since = " AND t.datetime > '"
-            .date("Y-m-d H:i:s", $since_timestamp)."'";
+        if ($since_timestamp !== 0) $since = " AND t.datetime > '".
+            date("Y-m-d H:i:s", $since_timestamp)."'";
 
         if ($to_timestamp !== 0) $to = " AND t.datetime < '".
             date("Y-m-d H:i:s", $to_timestamp)."'";
@@ -185,6 +185,44 @@ class Visits extends Storage
                     FROM `".$this->wpdb->prefix.$this->table."` AS t
                     WHERE t.page_url = %s".$since.$to,
                 $page_url
+            ),
+            ARRAY_A
+        );
+
+        if (!is_array($result)) throw new VisitsException(
+            VisitsException::GET_VISITS_FAILURE_MESSAGE,
+            VisitsException::GET_VISITS_FAILURE_CODE
+        );
+
+        return $result;
+
+    }
+
+    /**
+     * Get page visits by user.
+     * 
+     * @param int $user_id
+     * Cannot be lesser than 1.
+     * 
+     * @return array
+     * 
+     * @throws EPStatistics\Exceptions\VisitsException
+     */
+    public function getUserVisits(int $user_id) : array
+    {
+
+        if ($user_id < 1) throw new VisitsException(
+            VisitsException::INVALID_USER_ID_MESSAGE,
+            VisitsException::INVALID_USER_ID_CODE
+        );
+
+        $result = $this->wpdb->get_results(
+            $this->wpdb->prepare(
+                "SELECT t.page_url, t.datetime
+                    FROM `".$this->wpdb->prefix.$this->table."` AS t
+                    WHERE t.user_id = %d
+                    ORDER BY t.datetime ASC",
+                    $user_id
             ),
             ARRAY_A
         );
