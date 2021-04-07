@@ -173,11 +173,11 @@ class Visits extends Storage
 
         $to = "";
 
-        if ($since_timestamp !== 0) $since = " AND t.datetime > "
-            .date("Y-m-d H:i:s", $since_timestamp);
+        if ($since_timestamp !== 0) $since = " AND t.datetime > '"
+            .date("Y-m-d H:i:s", $since_timestamp)."'";
 
-        if ($to_timestamp !== 0) $to = " AND t.datetime < ".
-            date("Y-m-d H:i:s", $to_timestamp);
+        if ($to_timestamp !== 0) $to = " AND t.datetime < '".
+            date("Y-m-d H:i:s", $to_timestamp)."'";
 
         $result = $this->wpdb->get_results(
             $this->wpdb->prepare(
