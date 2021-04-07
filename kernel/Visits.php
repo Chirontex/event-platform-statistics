@@ -150,4 +150,52 @@ class Visits extends Storage
 
     }
 
+    /**
+     * Get page visits.
+     * 
+     * @param string $page_url
+     * Full page URL.
+     * 
+     * @param int $since_timestamp
+     * Optional. Defines a datetime since which selecting visits.
+     * 
+     * @param int $to_timestamp
+     * Optional. Defines a datetime to which selecting visits.
+     * 
+     * @return array
+     * 
+     * @throws EPStatistics\Exceptions\VisitsException
+     */
+    public function getPageVisits(string $page_url, int $since_timestamp = 0, int $to_timestamp = 0) : array
+    {
+
+        $since = "";
+
+        $to = "";
+
+        if ($since_timestamp !== 0) $since = " AND t.datetime > "
+            .date("Y-m-d H:i:s", $since_timestamp);
+
+        if ($to_timestamp !== 0) $to = " AND t.datetime < ".
+            date("Y-m-d H:i:s", $to_timestamp);
+
+        $result = $this->wpdb->get_results(
+            $this->wpdb->prepare(
+                "SELECT t.user_id, t.datetime
+                    FROM `".$this->wpdb->prefix.$this->table."` AS t
+                    WHERE t.page_url = %s".$since.$to,
+                $page_url
+            ),
+            ARRAY_A
+        );
+
+        if (!is_array($result)) throw new VisitsException(
+            VisitsException::GET_VISITS_FAILURE_MESSAGE,
+            VisitsException::GET_VISITS_FAILURE_CODE
+        );
+
+        return $result;
+
+    }
+
 }

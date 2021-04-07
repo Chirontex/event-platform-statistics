@@ -36,7 +36,8 @@ class TitlesWorksheet implements WorksheetHandler
         $worksheet->setCellValue('C1', 'Зал');
         $worksheet->setCellValue('D1', 'Начало');
         $worksheet->setCellValue('E1', 'Конец');
-        $worksheet->setCellValue('F1', 'НМО');
+        $worksheet->setCellValue('F1', 'Продолжительность');
+        $worksheet->setCellValue('G1', 'НМО');
 
         $i = 2;
 
@@ -77,8 +78,18 @@ class TitlesWorksheet implements WorksheetHandler
                         DataType::TYPE_STRING
                     );
 
+            $duration = strtotime($title['datetime_end']) -
+                strtotime($title['datetime_start']);
+
+            $worksheet
+                ->getCell('F'.$i)
+                    ->setValueExplicit(
+                        date("H:i:s", mktime(0, 0, $duration)),
+                        DataType::TYPE_STRING
+                    );
+
             $worksheet->setCellValue(
-                'F'.$i,
+                'G'.$i,
                 $title['nmo'] === '1' ?
                 'Да' :
                 'Нет'
