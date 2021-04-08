@@ -81,7 +81,10 @@ class MainDownload extends AdminPage
 
                     if (isset($_POST['eps-download-participants'])) {
 
-                        $participants = new Participants(new Users($this->wpdb));
+                        $participants = new Participants(
+                            new Users($this->wpdb),
+                            new Visits($this->wpdb)
+                        );
 
                         $spreadsheet_file->worksheetAdd(
                             $participants->worksheetGet(

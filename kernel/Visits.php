@@ -111,6 +111,8 @@ class Visits extends Storage
     public function getVisitsByUsers(string $page_url = '', int $since_timestamp = 0, int $to_timestamp = 0) : array
     {
 
+        date_default_timezone_set("Europe/Moscow");
+
         $result = [];
 
         $where = "";
