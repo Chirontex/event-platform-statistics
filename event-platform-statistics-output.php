@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) die;
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
             <h4 class="text-center mb-3">Выгрузить статистику</h4>
-            <form class="eps-column mx-auto" action="" method="post">
+            <form class="eps-column mx-auto" id="eps-download-form" action="" method="post">
                 <div class="row mb-3">
                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                         <p class="mb-2">

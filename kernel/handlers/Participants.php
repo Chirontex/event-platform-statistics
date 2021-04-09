@@ -20,6 +20,7 @@ class Participants extends UsersWorksheetHandler
 
     protected $users;
     protected $visits;
+    protected $nmo_trick = false;
     protected $attendance_days = [];
 
     public function __construct(Users $users, Visits $visits)
@@ -86,6 +87,22 @@ class Participants extends UsersWorksheetHandler
 
     }
 
+    /**
+     * Define nmo trick status.
+     * 
+     * @param bool $def
+     * 
+     * @return $this
+     */
+    public function defineNmoTrick(bool $def) : self
+    {
+
+        $this->nmo_trick = $def;
+
+        return $this;
+
+    }
+
     public function worksheetGet(Spreadsheet $spreadsheet, string $name, array $users_data = []) : Worksheet
     {
 
@@ -123,8 +140,8 @@ class Participants extends UsersWorksheetHandler
 
                 $ad_users_visits[$day] = $this->visits->getVisitsByUsers(
                     '',
-                    strtotime($day.' '.$times['start']),
-                    strtotime($day.' '.$times['end'])
+                    strtotime($day.' '.$times['start_time']),
+                    strtotime($day.' '.$times['end_time'])
                 );
 
                 $col += 1;
@@ -141,6 +158,8 @@ class Participants extends UsersWorksheetHandler
             $presence_count_cell = $this->getColumnName($presence_col).'2';
 
             $worksheet->setCellValue('A2', 'Всего');
+
+            $col += 1;
 
             foreach ($matches as $match) {
 
@@ -177,6 +196,8 @@ class Participants extends UsersWorksheetHandler
                             DataType::TYPE_STRING
                         );
 
+                $attendance_timeint_total = 0;
+
                 foreach ($ad_users_visits as $users_visits) {
 
                     $attendance_time = '00:00:00';
@@ -185,6 +206,8 @@ class Participants extends UsersWorksheetHandler
 
                         $attendance_seconds = strtotime($users_visits[$user_id][count($users_visits[$user_id]) - 1]['datetime']) -
                             strtotime($users_visits[$user_id][0]['datetime']);
+
+                        $attendance_timeint_total += $attendance_seconds;
 
                         $attendance_time = date(
                             "H:i:s",
@@ -220,6 +243,16 @@ class Participants extends UsersWorksheetHandler
 
                 $presence = empty($values['presence_times']) ?
                     0 : count($values['presence_times']);
+
+                if ($this->nmo_trick) {
+
+                    $presence_suggested = (int)round($attendance_timeint_total/3600);
+
+                    if ($presence_suggested - $presence > 3) $presence = rand(
+                        $presence_suggested - 3, $presence_suggested
+                    );
+
+                }
 
                 $worksheet
                     ->getCell($this->getColumnName($presence_col).$row)

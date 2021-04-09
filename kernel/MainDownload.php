@@ -22,6 +22,8 @@ class MainDownload extends AdminPage
     public function downloadInit() : void
     {
 
+        date_default_timezone_set("Europe/Moscow");
+
         add_action('admin_enqueue_scripts', function() {
 
             wp_enqueue_style(
@@ -85,6 +87,25 @@ class MainDownload extends AdminPage
                             new Users($this->wpdb),
                             new Visits($this->wpdb)
                         );
+
+                        if (isset($_POST['eps-download-nmo-trick'])) $participants->defineNmoTrick(true);
+
+                        if (isset($_POST['eps-download-attendance-days'])) {
+
+                            $attendance_days = explode(';', $_POST['eps-download-attendance-days']);
+
+                            foreach ($attendance_days as $day) {
+
+                                $day = explode('=>', trim($day));
+
+                                $participants->addAttendanceDay(
+                                    strtotime(trim($day[0])),
+                                    strtotime(trim($day[1]))
+                                );
+
+                            }
+
+                        }
 
                         $spreadsheet_file->worksheetAdd(
                             $participants->worksheetGet(
