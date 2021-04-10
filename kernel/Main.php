@@ -8,31 +8,33 @@ use EPStatistics\Handlers\PresenceEffect;
 use EPStatistics\Exceptions\TitlesException;
 use EPStatistics\Exceptions\DetachedButtonsException;
 
+/**
+ * Main POE.
+ * @since 1.9.11
+ * 
+ * @final
+ */
 final class Main extends MainCluster
 {
 
-    private $output_script_file;
-    private $titles_script_file;
-    private $detached_buttons_script_file;
+    protected $output_admin_page = 'event-platform-statistics-output.php';
+    protected $titles_admin_page = 'event-platform-statistics-titles.php';
+    protected $detached_buttons_admin_page = 'event-platform-statistics-detached-buttons.php';
 
-    public function __construct(string $path, string $url)
+    /**
+     * @since 1.9.17
+     */
+    protected function init() : self
     {
-
-        parent::__construct($path, $url);
-
-        $this->output_script_file = 'event-platform-statistics-output.php';
-        $this->titles_script_file = 'event-platform-statistics-titles.php';
-        $this->detached_buttons_script_file = 'event-platform-statistics-detached-buttons.php';
-
-        $this->apiRoutesInit();
 
         new MainApiToken($this->path, $this->url);
 
-        $this->clientJSInit();
-        $this->shortcodesInit();
-        $this->adminMenuInit();
-
-        $this->visitWrite();
+        $this
+            ->apiRoutesInit()
+            ->clientJSInit()
+            ->shortcodesInit()
+            ->adminMenuInit()
+            ->visitWrite();
 
         if (strpos(
                 $_SERVER['REQUEST_URI'],
@@ -40,7 +42,7 @@ final class Main extends MainCluster
             ) !== false &&
             strpos(
                 $_GET['page'],
-                $this->output_script_file
+                $this->output_admin_page
             ) !== false) new MainDownload($this->path, $this->url);
 
         if (strpos(
@@ -49,7 +51,7 @@ final class Main extends MainCluster
             ) !== false &&
             strpos(
                 $_GET['page'],
-                $this->titles_script_file
+                $this->titles_admin_page
             ) !== false) new MainTitles($this->path, $this->url);
 
         if (strpos(
@@ -58,12 +60,20 @@ final class Main extends MainCluster
             ) !== false &&
             strpos(
                 $_GET['page'],
-                $this->detached_buttons_script_file
+                $this->detached_buttons_admin_page
             ) !== false) new MainDetachedButtons($this->path, $this->url);
+
+        return $this;
 
     }
 
-    private function adminMenuInit() : void
+    /**
+     * Add pages to admin menu.
+     * @since 1.9.11
+     * 
+     * @return $this
+     */
+    protected function adminMenuInit() : self
     {
 
         add_action('admin_menu', function() {
@@ -72,28 +82,36 @@ final class Main extends MainCluster
                 'Статистика',
                 'Статистика',
                 8,
-                $this->path.$this->output_script_file
+                $this->path.$this->output_admin_page
             );
 
             add_menu_page(
                 'Титры',
                 'Титры',
                 8,
-                $this->path.$this->titles_script_file
+                $this->path.$this->titles_admin_page
             );
 
             add_menu_page(
                 'Отд. кнопки',
                 'Отд. кнопки',
                 8,
-                $this->path.$this->detached_buttons_script_file
+                $this->path.$this->detached_buttons_admin_page
             );
 
         });
 
+        return $this;
+
     }
 
-    private function apiRoutesInit() : void
+    /**
+     * Add API routes.
+     * @since 1.9.11
+     * 
+     * @return $this
+     */
+    protected function apiRoutesInit() : self
     {
 
         add_action('rest_api_init', function() {
@@ -288,9 +306,17 @@ final class Main extends MainCluster
 
         });
 
+        return $this;
+
     }
 
-    private function shortcodesInit() : void
+    /**
+     * Add shortcodes.
+     * @since 1.9.11
+     * 
+     * @return $this
+     */
+    protected function shortcodesInit() : self
     {
 
         add_shortcode('eps-presence-effect-button', function($atts, $content) {
@@ -371,9 +397,17 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
 
         });
 
+        return $this;
+
     }
 
-    private function clientJSInit() : void
+    /**
+     * Add client JS scripts to enqueue.
+     * @since 1.9.11
+     * 
+     * @return $this
+     */
+    protected function clientJSInit() : self
     {
 
         add_action('wp_enqueue_scripts', function() {
@@ -394,9 +428,17 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
 
         });
 
+        return $this;
+
     }
 
-    private function visitWrite() : void
+    /**
+     * Writing visits.
+     * @since 1.9.11
+     * 
+     * @return $this
+     */
+    protected function visitWrite() : self
     {
 
         add_action('template_redirect', function() {
@@ -429,6 +471,8 @@ epsTitleGet('<?= $atts['id'] ?>', '<?= $atts['list'] ?>');
             }
 
         });
+
+        return $this;
 
     }
 
