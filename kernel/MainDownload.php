@@ -76,50 +76,15 @@ final class MainDownload extends AdminPage
         
         });
 
-        add_filter('eps-metadata-datalist', function($content) {
+        add_filter('eps-metadata-datalist', function() {
 
-            $keys = $this->metadata->keysAll();
-
-            ob_start();
-
-            foreach ($keys as $key) {
-
-?>
-<option value="<?= htmlspecialchars($key) ?>">
-<?php
-
-            }
-
-            $content = ob_get_clean();
-
-            return $content;
+            return $this->metadata->keysAll();
 
         });
 
-        add_filter('eps-metadata-tbody', function($content) {
+        add_filter('eps-metadata-tbody', function() {
 
-            $matches = $this->metadata->matchesAll();
-
-            ob_start();
-
-            foreach ($matches as $match) {
-
-?>
-<tr id="eps-metadata-match-<?= $match['id'] ?>">
-    <td id="eps-metadata-match-name-<?= $match['id'] ?>" style="text-align: center;"><?= htmlspecialchars($match['name']) ?></td>
-    <td id="eps-metadata-match-key-<?= $match['id'] ?>" style="text-align: center;"><?= htmlspecialchars($match['key']) ?></td>
-    <td id="eps-metadata-match-pn-<?= $match['id'] ?>" style="text-align: center;"><?= $match['periodic_number'] ?></td>
-    <td id="eps-metadata-match-include-<?= $match['id'] ?>" style="text-align: center;"><?= (int)$match['include'] === 1 ? 'Да' : 'Нет' ?></td>
-    <td id="eps-metadata-match-update-<?= $match['id'] ?>" style="text-align: center;"><a href="javascript:void(0)" onclick="epsMetadataMatchUpdate(<?= $match['id'] ?>);">Редактировать</a></td>
-    <td id="eps-metadata-match-delete-<?= $match['id'] ?>" style="text-align: center;"><a href="javascript:void(0)" onclick="epsMetadataMatchDelete(<?= $match['id'] ?>);">Удалить</a></td>
-</tr>
-<?php
-
-            }
-
-            $content = ob_get_clean();
-
-            return $content;
+            return $this->metadata->matchesAll();
 
         });
 

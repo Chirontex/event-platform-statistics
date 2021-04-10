@@ -228,6 +228,8 @@ class Participants extends UsersWorksheetHandler
 
                 }
 
+                $col += 1;
+
                 foreach ($matches as $match) {
 
                     if (isset($values[$match['key']])) $worksheet
