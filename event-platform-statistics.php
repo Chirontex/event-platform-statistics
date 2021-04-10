@@ -3,9 +3,14 @@
  * Plugin Name: Event Platform Statistics
  * Plugin URI: https://github.com/chirontex/event-platform-statistics
  * Description: Плагин, реализующий сбор статистики на площадке мероприятий.
- * Version: 1.9.11
+ * Version: 1.9.12
  * Author: Дмитрий Шумилин
- * Author URI: mailto://ds@brandpro.ru
+ * Author URI: mailto://chirontex@yandex.com
+ */
+/**
+ * @package Event Platform Statistics
+ * @author Dmitry Shumilin (chirontex@yandex.com)
+ * @version 1.9.12
  */
 use EPStatistics\Main;
 

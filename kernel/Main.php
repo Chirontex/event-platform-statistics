@@ -46,9 +46,7 @@ final class Main extends MainCluster
                 $this->output_script_file
             ) !== false) {
 
-            $main_download = new MainDownload($this->path, $this->url);
-
-            $main_download->downloadInit();
+            new MainDownload($this->path, $this->url);
 
         }
 
