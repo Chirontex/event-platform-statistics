@@ -62,43 +62,7 @@ final class Main extends MainCluster
             strpos(
                 $_GET['page'],
                 $this->detached_buttons_script_file
-            ) !== false) {
-
-            $main_detached_buttons = new MainDetachedButtons(
-                $this->path,
-                $this->url
-            );
-
-            if (isset(
-                    $_POST['eps-detached-buttons-add-button-id']
-                ) &&
-                isset(
-                    $_POST['eps-detached-buttons-add-date']
-                ) &&
-                isset(
-                    $_POST['eps-detached-buttons-add-time']
-            )) $main_detached_buttons->entryAdd();
-
-            if (isset(
-                    $_POST['eps-detached-button-update-entry-id']
-                ) &&
-                isset(
-                    $_POST['eps-detached-button-update-button-id']
-                ) &&
-                isset(
-                    $_POST['eps-detached-button-update-date']
-                ) &&
-                isset(
-                    $_POST['eps-detached-button-update-time']
-            )) $main_detached_buttons->entryUpdate();
-
-            if (isset(
-                $_POST['eps-detached-button-delete-entry-id']
-            )) $main_detached_buttons->entryDelete();
-
-            $main_detached_buttons->filterEntries();
-
-        }
+            ) !== false) new MainDetachedButtons($this->path, $this->url);
 
     }
 

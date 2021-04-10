@@ -9,6 +9,8 @@ use EPStatistics\Exceptions\TitlesException;
 /**
  * POE which initiates titles admin page.
  * @final
+ * 
+ * @since 1.9.11
  */
 final class MainTitles extends AdminPage
 {

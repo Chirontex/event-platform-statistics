@@ -4,6 +4,8 @@
  */
 if (!defined('ABSPATH')) die;
 
+date_default_timezone_set("Europe/Moscow");
+
 ?>
 <div class="container-fluid">
     <h1 class="h1 text-center my-5">Отдельные кнопки</h1>

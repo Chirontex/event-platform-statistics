@@ -17,6 +17,7 @@ use EPStatistics\Exceptions\MetadataMatchingException;
 /**
  * POE which initiates statistics downloading.
  * @since 1.9.11
+ * 
  * @final
  */
 final class MainDownload extends AdminPage
