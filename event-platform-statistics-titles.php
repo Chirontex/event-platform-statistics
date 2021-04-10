@@ -4,6 +4,8 @@
  */
 if (!defined('ABSPATH')) die;
 
+date_default_timezone_set("Europe/Moscow");
+
 ?>
 <div class="container-fluid">
     <h1 class="h3 text-center my-5">Титры</h1>
@@ -57,7 +59,26 @@ if (!defined('ABSPATH')) die;
             </tr>
         </thead>
         <tbody>
-        <?= apply_filters('eps-titles-tbody', '') ?>
+<?php
+
+foreach (apply_filters('eps-titles-tbody', []) as $title) {
+
+?>
+            <tr id="eps-title-<?= $title['id'] ?>">
+                <td><?= $title['id'] ?></td>
+                <td id="eps-title-title-<?= $title['id'] ?>"><?= htmlspecialchars($title['title']) ?></td>
+                <td id="eps-title-list-name-<?= $title['id'] ?>"><?= htmlspecialchars($title['list_name']) ?></td>
+                <td id="eps-title-datetime-start-<?= $title['id'] ?>"><?= date("d.m.Y H:i", strtotime($title['datetime_start'])) ?></td>
+                <td id="eps-title-datetime-end-<?= $title['id'] ?>"><?= date("d.m.Y H:i", strtotime($title['datetime_end'])) ?></td>
+                <td id="eps-title-nmo-<?= $title['id'] ?>"><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>
+                <td id="eps-title-update-button-<?= $title['id'] ?>"><a href="javascript:void(0)" onclick="epsTitlesUpdate(<?= $title['id'] ?>);">Редактировать</a></td>
+                <td><a href="javascript:void(0)" onclick="epsTitlesDelete(<?= $title['id'] ?>);">Удалить</a></td>
+            </tr>
+<?php
+
+}
+
+?>
         </tbody>
     </table>
     <form action="" method="post" hidden="true">

@@ -34,8 +34,6 @@ final class MainDownload extends AdminPage
     protected function init() : self
     {
 
-        date_default_timezone_set("Europe/Moscow");
-
         add_action('admin_enqueue_scripts', function() {
 
             wp_enqueue_style(
@@ -108,6 +106,8 @@ final class MainDownload extends AdminPage
      */
     protected function download() : self
     {
+
+        date_default_timezone_set("Europe/Moscow");
 
         add_action('plugins_loaded', function() {
 

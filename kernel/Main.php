@@ -44,11 +44,7 @@ final class Main extends MainCluster
             strpos(
                 $_GET['page'],
                 $this->output_script_file
-            ) !== false) {
-
-            new MainDownload($this->path, $this->url);
-
-        }
+            ) !== false) new MainDownload($this->path, $this->url);
 
         if (strpos(
                 $_SERVER['REQUEST_URI'],
@@ -57,24 +53,7 @@ final class Main extends MainCluster
             strpos(
                 $_GET['page'],
                 $this->titles_script_file
-            ) !== false) {
-
-            $main_titles = new MainTitles($this->path, $this->url);
-
-            if (isset($_POST['eps-titles-header']) &&
-                isset($_POST['eps-titles-list']) &&
-                isset($_POST['eps-titles-start-date']) &&
-                isset($_POST['eps-titles-start-time']) &&
-                isset($_POST['eps-titles-end-date']) &&
-                isset($_POST['eps-titles-end-time'])) $main_titles->titleAdd();
-
-            if (isset($_POST['eps-titles-title-update'])) $main_titles->titleUpdate();
-
-            if (isset($_POST['eps-titles-title-delete'])) $main_titles->titleDelete();
-
-            $main_titles->titlesOutput();
-
-        }
+            ) !== false) new MainTitles($this->path, $this->url);
 
         if (strpos(
                 $_SERVER['REQUEST_URI'],

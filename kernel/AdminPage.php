@@ -25,19 +25,21 @@ class AdminPage extends MainCluster
      * Display notice at admin page.
      * @since 1.9.11
      * 
-     * @param string $alert_type
+     * @param string $type
+     * Notice type. Available: 'success', 'warning', 'error' (or 'danger').
      * 
      * @param string $text
+     * Notice text.
      * 
      * @return $this
      */
-    protected function adminPageNotice(string $alert_type, string $text) : self
+    protected function adminPageNotice(string $type, string $text) : self
     {
 
-        if ($alert_type === 'danger') $alert_type = 'error';
+        if ($type === 'danger') $type = 'error';
 
         $this->admin_notice = [
-            'type' => $alert_type,
+            'type' => $type,
             'text' => $text
         ];
 

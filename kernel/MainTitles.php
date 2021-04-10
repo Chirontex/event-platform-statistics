@@ -1,24 +1,29 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
 use EPStatistics\Exceptions\TitlesException;
 
-class MainTitles extends AdminPage
+/**
+ * POE which initiates titles admin page.
+ * @final
+ */
+final class MainTitles extends AdminPage
 {
 
     protected $titles_tbody;
 
     /**
      * Output the titles.
+     * @since 1.9.13
      * 
-     * @return void
+     * @return $this
      * 
      * @throws EPStatistics\Exceptions\TitlesException
      */
-    public function titlesOutput() : void
+    protected function init() : self
     {
 
         date_default_timezone_set('Europe/Moscow');
@@ -63,66 +68,36 @@ class MainTitles extends AdminPage
         
         });
 
-        add_action('init', function() {
+        add_filter('eps-titles-tbody', function() {
 
             $titles = new Titles($this->wpdb);
 
-            try {
-
-                $select = $titles->selectTitles();
-
-            } catch (TitlesException $e) {
-
-                $this->adminStatusSet(
-                    'danger',
-                    'Ошибка загрузки титров, '.$e->getCode().': "'.$e->getMessage().'"'
-                );
-
-            }
-
-            if (!isset($e) && !empty($select)) {
-
-                ob_start();
-
-                foreach ($select as $title) {
-
-    ?>
-    <tr id="eps-title-<?= $title['id'] ?>">
-        <td><?= $title['id'] ?></td>
-        <td id="eps-title-title-<?= $title['id'] ?>"><?= htmlspecialchars($title['title']) ?></td>
-        <td id="eps-title-list-name-<?= $title['id'] ?>"><?= htmlspecialchars($title['list_name']) ?></td>
-        <td id="eps-title-datetime-start-<?= $title['id'] ?>"><?= date("d.m.Y H:i", strtotime($title['datetime_start'])) ?></td>
-        <td id="eps-title-datetime-end-<?= $title['id'] ?>"><?= date("d.m.Y H:i", strtotime($title['datetime_end'])) ?></td>
-        <td id="eps-title-nmo-<?= $title['id'] ?>"><?= $title['nmo'] === '1' ? 'Да' : 'Нет' ?></td>
-        <td id="eps-title-update-button-<?= $title['id'] ?>"><a href="javascript:void(0)" onclick="epsTitlesUpdate(<?= $title['id'] ?>);">Редактировать</a></td>
-        <td><a href="javascript:void(0)" onclick="epsTitlesDelete(<?= $title['id'] ?>);">Удалить</a></td>
-    </tr>
-    <?php
-
-                }
-
-                $this->titles_tbody = ob_get_clean();
-
-                add_filter('eps-titles-tbody', function() {
-
-                    return $this->titles_tbody;
-
-                });
-
-            }
+            return $titles->selectTitles();
 
         });
+
+        if (isset($_POST['eps-titles-header']) &&
+            isset($_POST['eps-titles-list']) &&
+            isset($_POST['eps-titles-start-date']) &&
+            isset($_POST['eps-titles-start-time']) &&
+            isset($_POST['eps-titles-end-date']) &&
+            isset($_POST['eps-titles-end-time'])) $this->titleAdd();
+        elseif (isset($_POST['eps-titles-title-update'])) $this->titleUpdate();
+        elseif (isset($_POST['eps-titles-title-delete'])) $this->titleDelete();
+
+        return $this;
 
     }
 
     /**
      * Add a title.
+     * @since 1.9.11
      * 
-     * @return void
+     * @return $this
      * 
      * @throws EPStatistics\Exceptions\TitlesException
      */
-    public function titleAdd() : void
+    protected function titleAdd() : self
     {
 
         date_default_timezone_set('Europe/Moscow');
@@ -132,7 +107,7 @@ class MainTitles extends AdminPage
             if (wp_verify_nonce(
                 $_POST['eps-titles-wpnp'],
                 'eps-titles-add'
-            ) === false) $this->adminStatusSet(
+            ) === false) $this->adminPageNotice(
                 'danger',
                 'Произошла ошибка отправки формы.'
             );
@@ -151,7 +126,7 @@ class MainTitles extends AdminPage
 
                 if ($timestamp_start === false ||
                     $timestamp_end === false ||
-                    $timestamp_start >= $timestamp_end) $this->adminStatusSet(
+                    $timestamp_start >= $timestamp_end) $this->adminPageNotice(
                         'danger',
                         'Дата и время были указаны некорректно.'
                     );
@@ -169,18 +144,18 @@ class MainTitles extends AdminPage
                             $nmo
                         );
 
-                        if ($add) $this->adminStatusSet(
+                        if ($add) $this->adminPageNotice(
                             'success',
                             'Элемент программы успешно сохранён!'
                         );
-                        else $this->adminStatusSet(
+                        else $this->adminPageNotice(
                             'danger',
                             'Не удалось сохранить элемент программы.'
                         );
 
                     } catch (TitlesException $e) {
 
-                        $this->adminStatusSet(
+                        $this->adminPageNotice(
                             'danger',
                             'Ошибка, код '.$e->getCode().': "'.$e->getMessage().'"'
                         );
@@ -193,16 +168,19 @@ class MainTitles extends AdminPage
 
         });
 
+        return $this;
+
     }
 
     /**
      * Update the title.
+     * @since 1.9.11
      * 
-     * @return void
+     * @return $this
      * 
      * @throws EPStatistics\Exceptions\TitlesException
      */
-    public function titleUpdate() : void
+    protected function titleUpdate() : self
     {
 
         date_default_timezone_set('Europe/Moscow');
@@ -212,7 +190,7 @@ class MainTitles extends AdminPage
             if (wp_verify_nonce(
                 $_POST['eps-titles-update-wpnp'],
                 'eps-titles-update'
-            ) === false) $this->adminStatusSet(
+            ) === false) $this->adminPageNotice(
                 'danger',
                 'Произошла ошибка при отправке формы.'
             );
@@ -228,7 +206,7 @@ class MainTitles extends AdminPage
                     $_POST['eps-titles-title-update-date-end'].' '.$_POST['eps-titles-title-update-time-end']
                 );
 
-                if ($timestamp_start >= $timestamp_end) $this->adminStatusSet(
+                if ($timestamp_start >= $timestamp_end) $this->adminPageNotice(
                     'danger',
                     'Дата и время были указаны некорректно.'
                 );
@@ -243,12 +221,12 @@ class MainTitles extends AdminPage
                             $timestamp_start,
                             $timestamp_end,
                             (int)$_POST['eps-titles-title-update-nmo']
-                        )) $this->adminStatusSet('success', 'Элемент программы успешно отредактирован!');
-                        else $this->adminStatusSet('danger', 'Не удалось отредактировать элемент программы.');
+                        )) $this->adminPageNotice('success', 'Элемент программы успешно отредактирован!');
+                        else $this->adminPageNotice('danger', 'Не удалось отредактировать элемент программы.');
 
                     } catch (TitlesException $e) {
 
-                        $this->adminStatusSet(
+                        $this->adminPageNotice(
                             'danger',
                             'Ошибка редактирования, код '.$e->getCode().': "'.$e->getMessage().'"'
                         );
@@ -261,16 +239,19 @@ class MainTitles extends AdminPage
 
         });
 
+        return $this;
+
     }
 
     /**
      * Delete the title.
+     * @since 1.9.11
      * 
-     * @return void
+     * @return $this
      * 
      * @throws EPStatistics\Exceptions\TitlesException
      */
-    public function titleDelete() : void
+    protected function titleDelete() : self
     {
 
         add_action('plugins_loaded', function() {
@@ -278,7 +259,7 @@ class MainTitles extends AdminPage
             if (wp_verify_nonce(
                 $_POST['eps-title-delete-wpnp'],
                 'eps-titles-delete'
-            ) === false) $this->adminStatusSet(
+            ) === false) $this->adminPageNotice(
                 'danger',
                 'Произошла ошибка при отправке формы.'
             );
@@ -292,7 +273,7 @@ class MainTitles extends AdminPage
 
                 } catch (TitlesException $e) {
 
-                    $this->adminStatusSet(
+                    $this->adminPageNotice(
                         'danger',
                         'Ошибка удаления элемента программы, код '.$e->getCode().': "'.$e->getMessage().'"'
                     );
@@ -301,11 +282,11 @@ class MainTitles extends AdminPage
 
                 if (!isset($e)) {
 
-                    if ($delete) $this->adminStatusSet(
+                    if ($delete) $this->adminPageNotice(
                         'success',
                         'Элемент программы успешно удалён!'
                     );
-                    else $this->adminStatusSet(
+                    else $this->adminPageNotice(
                         'danger',
                         'Не удалось удалить элемент программы'
                     );
@@ -315,6 +296,8 @@ class MainTitles extends AdminPage
             }
 
         });
+
+        return $this;
 
     }
 

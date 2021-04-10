@@ -1,4 +1,4 @@
-# Event Platform Statistics 1.9.13
+# Event Platform Statistics 1.9.14
 
 Плагин, реализующий сбор статистики на площадке медицинских мероприятий.
 
