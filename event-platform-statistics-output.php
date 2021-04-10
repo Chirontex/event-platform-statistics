@@ -90,7 +90,7 @@ foreach (apply_filters('eps-metadata-datalist', []) as $key) {
         <tbody>
 <?php
 
-foreach (apply_filters('eps-metadata-tbody', '') as $match) {
+foreach (apply_filters('eps-metadata-tbody', []) as $match) {
 
 ?>
             <tr id="eps-metadata-match-<?= $match['id'] ?>">
