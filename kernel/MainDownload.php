@@ -76,6 +76,8 @@ final class MainDownload extends AdminPage
         
         });
 
+        $this->metadata = new MetadataMatching($this->wpdb);
+
         add_filter('eps-metadata-datalist', function() {
 
             return $this->metadata->keysAll();
@@ -87,8 +89,6 @@ final class MainDownload extends AdminPage
             return $this->metadata->matchesAll();
 
         });
-
-        $this->metadata = new MetadataMatching($this->wpdb);
 
         if (isset($_POST['eps-download-init'])) $this->download();
         elseif (isset($_POST['eps-metadata-add-name']) &&
