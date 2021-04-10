@@ -13,15 +13,8 @@ use EPStatistics\Exceptions\TitlesException;
 final class MainTitles extends AdminPage
 {
 
-    protected $titles_tbody;
-
     /**
-     * Output the titles.
      * @since 1.9.13
-     * 
-     * @return $this
-     * 
-     * @throws EPStatistics\Exceptions\TitlesException
      */
     protected function init() : self
     {
