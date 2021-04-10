@@ -4,15 +4,37 @@
  */
 namespace EPStatistics;
 
-class MainApiToken extends MainCluster
+/**
+ * POE which implements API tokens functiuonality.
+ * 
+ * @since 1.9.11
+ * 
+ * @final
+ */
+final class MainApiToken extends MainCluster
 {
 
     /**
-     * Get API token.
-     * 
-     * @return void
+     * @since 1.9.16
      */
-    public function apiTokenGet() : void
+    protected function init(): self
+    {
+
+        $this
+            ->apiTokenGet()
+            ->apiTokenRemove();
+        
+        return $this;
+
+    }
+
+    /**
+     * Get API token.
+     * @since 1.9.11
+     * 
+     * @return $this
+     */
+    protected function apiTokenGet() : self
     {
 
         add_action('wp_loaded', function() {
@@ -40,14 +62,17 @@ class MainApiToken extends MainCluster
 
         });
 
+        return $this;
+
     }
 
     /**
      * Remove exist token.
+     * @since 1.9.11
      * 
-     * @return void
+     * @return $this
      */
-    public function apiTokenRemove() : void
+    protected function apiTokenRemove() : self
     {
 
         add_action('clear_auth_cookie', function() {
@@ -67,6 +92,8 @@ class MainApiToken extends MainCluster
             }
 
         });
+
+        return $this;
 
     }
 

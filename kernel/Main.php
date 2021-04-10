@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
@@ -26,10 +26,7 @@ final class Main extends MainCluster
 
         $this->apiRoutesInit();
 
-        $main_api_token = new MainApiToken($this->path, $this->url);
-
-        $main_api_token->apiTokenGet();
-        $main_api_token->apiTokenRemove();
+        new MainApiToken($this->path, $this->url);
 
         $this->clientJSInit();
         $this->shortcodesInit();

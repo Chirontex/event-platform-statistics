@@ -35,6 +35,13 @@ abstract class MainCluster
      */
     protected $wpdb;
 
+    /**
+     * @param string $path
+     * Plugin root path.
+     * 
+     * @param string $url
+     * Plugin root URL.
+     */
     public function __construct(string $path, string $url)
     {
 
