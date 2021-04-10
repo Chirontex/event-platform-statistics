@@ -1,34 +1,31 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
 use EPStatistics\Exceptions\TitlesException;
-use wpdb;
 
+/**
+ * Titles storage.
+ * @since 1.9.11
+ */
 class Titles extends Storage
 {
 
-    public function __construct(wpdb $wpdb)
-    {
+    protected $table = 'epstatistics_titles';
 
-        $this->table = 'epstatistics_titles';
-
-        $this->fields = [
-            'title' => 'TEXT NOT NULL',
-            'list_name' => 'TEXT NOT NULL',
-            'datetime_start' => 'DATETIME NOT NULL',
-            'datetime_end' => 'DATETIME NOT NULL',
-            'nmo' => 'TINYINT UNSIGNED NOT NULL DEFAULT 0'
-        ];
-
-        parent::__construct($wpdb);
-
-    }
+    protected $fields = [
+        'title' => 'TEXT NOT NULL',
+        'list_name' => 'TEXT NOT NULL',
+        'datetime_start' => 'DATETIME NOT NULL',
+        'datetime_end' => 'DATETIME NOT NULL',
+        'nmo' => 'TINYINT UNSIGNED NOT NULL DEFAULT 0'
+    ];
 
     /**
      * Add a title.
+     * @since 1.9.11
      * 
      * @param string $title
      * Title cannot be empty.
@@ -78,6 +75,7 @@ class Titles extends Storage
 
     /**
      * Update a title.
+     * @since 1.9.11
      * 
      * @param int $id
      * ID cannot be lesser than 1.
@@ -139,6 +137,7 @@ class Titles extends Storage
 
     /**
      * Return all titles.
+     * @since 1.9.11
      * 
      * @param string $list_name
      * 
@@ -187,6 +186,7 @@ class Titles extends Storage
 
     /**
      * Delete a title by its ID.
+     * @since 1.9.11
      * 
      * @param int $id
      * ID cannot be lesser than 1.

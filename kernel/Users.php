@@ -1,30 +1,37 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
 use EPStatistics\PresenceTimes;
 use wpdb;
 
+/**
+ * Users DB table access class.
+ * @since 1.9.11
+ */
 class Users extends Storage
 {
 
-    protected $wpdb;
-
+    /**
+     * @var PresenceTimes $presence_times
+     * Presence times storage class.
+     */
     protected $presence_times;
 
     public function __construct(wpdb $wpdb)
     {
-        
-        $this->wpdb = $wpdb;
 
-        $this->presence_times = new PresenceTimes($this->wpdb);
+        $this->presence_times = new PresenceTimes($wpdb);
+
+        parent::__construct($wpdb);
 
     }
 
     /**
      * Return all users data.
+     * @since 1.9.11
      * 
      * @return array
      */
@@ -74,6 +81,7 @@ class Users extends Storage
 
     /**
      * Return users IDs grouped by towns.
+     * @since 1.9.11
      * 
      * @return array
      */
@@ -109,6 +117,7 @@ class Users extends Storage
 
     /**
      * Return users IDs grouped by countries and towns.
+     * @since 1.9.11
      * 
      * @return array
      */
@@ -173,6 +182,7 @@ class Users extends Storage
     /**
      * Handle MetadataMatching::getMatchByName() results
      * to get the first key.
+     * @since 1.9.11
      * 
      * @param array $names
      * 

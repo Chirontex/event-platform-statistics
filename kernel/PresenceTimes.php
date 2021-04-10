@@ -1,32 +1,29 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
 use EPStatistics\Exceptions\PresenceTimesException;
-use wpdb;
 
+/**
+ * Presence times storage.
+ * @since 1.9.11
+ */
 class PresenceTimes extends Storage
 {
 
-    public function __construct(wpdb $wpdb)
-    {
+    protected $table = 'epstatistics_presence_times';
 
-        $this->table = 'epstatistics_presence_times';
-
-        $this->fields = [
-            'user_id' => 'BIGINT UNSIGNED NOT NULL',
-            'presence_datetime' => 'DATETIME NOT NULL',
-            'titles_list_name' => 'TEXT NOT NULL'
-        ];
-
-        parent::__construct($wpdb);
-
-    }
+    protected $fields = [
+        'user_id' => 'BIGINT UNSIGNED NOT NULL',
+        'presence_datetime' => 'DATETIME NOT NULL',
+        'titles_list_name' => 'TEXT NOT NULL'
+    ];
 
     /**
      * Add presence time record.
+     * @since 1.9.11
      * 
      * @param int $user_id
      * If $user_id lesser than 1, an exception will be thrown.
@@ -65,6 +62,7 @@ class PresenceTimes extends Storage
 
     /**
      * Return all presence times records.
+     * @since 1.9.11
      * 
      * @return array
      * 
@@ -89,6 +87,7 @@ class PresenceTimes extends Storage
 
     /**
      * Return presence times records ordered by users.
+     * @since 1.9.11
      * 
      * @return array
      * 

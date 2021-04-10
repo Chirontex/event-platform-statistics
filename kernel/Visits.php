@@ -1,32 +1,29 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
 use EPStatistics\Exceptions\VisitsException;
-use wpdb;
 
+/**
+ * Visits storage.
+ * @since 1.9.11
+ */
 class Visits extends Storage
 {
 
-    public function __construct(wpdb $wpdb)
-    {
+    protected $table = 'epstatistics_visits';
 
-        $this->table = 'epstatistics_visits';
-
-        $this->fields = [
-            'user_id' => 'BIGINT UNSIGNED NOT NULL',
-            'page_url' => 'TEXT NOT NULL',
-            'datetime' => 'DATETIME NOT NULL'
-        ];
-
-        parent::__construct($wpdb);
-
-    }
+    protected $fields = [
+        'user_id' => 'BIGINT UNSIGNED NOT NULL',
+        'page_url' => 'TEXT NOT NULL',
+        'datetime' => 'DATETIME NOT NULL'
+    ];
 
     /**
      * Add a visit entry in the table.
+     * @since 1.9.11
      * 
      * @param string $url
      * URL of the page was visited.
@@ -63,6 +60,7 @@ class Visits extends Storage
 
     /**
      * Get all visits.
+     * @since 1.9.11
      * 
      * @return array
      * 
@@ -94,6 +92,7 @@ class Visits extends Storage
 
     /**
      * Getting visits ordered by users.
+     * @since 1.9.11
      * 
      * @param string $page_url
      * Page URL. Optional.
@@ -158,6 +157,7 @@ class Visits extends Storage
 
     /**
      * Getting visits ordered by pages.
+     * @since 1.9.11
      * 
      * @param int $user_id
      * 

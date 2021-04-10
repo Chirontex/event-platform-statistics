@@ -1,38 +1,35 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
 use EPStatistics\Traits\Randomizer;
 use EPStatistics\Exceptions\TokensException;
-use wpdb;
 
+/**
+ * Tokens storage.
+ * @since 1.9.11
+ */
 class Tokens extends Storage
 {
 
     use Randomizer;
 
-    public function __construct(wpdb $wpdb)
-    {
+    protected $table = 'epstatistics_api_tokens';
 
-        $this->table = 'epstatistics_api_tokens';
+    protected $fields = [
+        'user_id' => 'BIGINT NOT NULL',
+        'token' => 'CHAR(128) NOT NULL'
+    ];
 
-        $this->fields = [
-            'user_id' => 'BIGINT NOT NULL',
-            'token' => 'CHAR(128) NOT NULL'
-        ];
-
-        $this->indexes = [
-            'token' => 'UNIQUE INDEX'
-        ];
-
-        parent::__construct($wpdb);
-
-    }
+    protected $indexes = [
+        'token' => 'UNIQUE INDEX'
+    ];
 
     /**
      * Return token by user ID.
+     * @since 1.9.11
      * 
      * @param int $user_id
      * User ID cannot be lesser than 1.
@@ -71,6 +68,7 @@ class Tokens extends Storage
 
     /**
      * Check token for uniqueness.
+     * @since 1.9.11
      * 
      * @param string $token
      * 
@@ -87,6 +85,7 @@ class Tokens extends Storage
 
     /**
      * Generate and/or return user's token.
+     * @since 1.9.11
      * 
      * @param int $user_id
      * User ID cannot be lesser than 1.
@@ -126,6 +125,7 @@ class Tokens extends Storage
 
     /**
      * Delete an existing token.
+     * @since 1.9.11
      * 
      * @param string $token
      * 
@@ -146,6 +146,7 @@ class Tokens extends Storage
 
     /**
      * Delete tokens of certain user.
+     * @since 1.9.11
      * 
      * @param int $user_id
      * User ID cannot be lesser than 1.
@@ -174,6 +175,7 @@ class Tokens extends Storage
     
     /**
      * Return user ID by token.
+     * @since 1.9.11
      * 
      * @param string $token
      * 
@@ -191,6 +193,7 @@ class Tokens extends Storage
 
     /**
      * Inserting token into DB table.
+     * @since 1.9.11
      * 
      * @param int $user_id
      * User ID cannot be lesser than 1.
@@ -229,6 +232,7 @@ class Tokens extends Storage
 
     /**
      * Selecting token in DB.
+     * @since 1.9.11
      * 
      * @param string $token
      * 

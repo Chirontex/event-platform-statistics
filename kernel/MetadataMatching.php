@@ -1,33 +1,30 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
 use EPStatistics\Exceptions\MetadataMatchingException;
-use wpdb;
 
+/**
+ * Metadata matchings storage.
+ * @since 1.9.11
+ */
 class MetadataMatching extends Storage
 {
 
-    public function __construct(wpdb $wpdb)
-    {
+    protected $table = 'epstatistics_metadata_matching';
 
-        $this->table = 'epstatistics_metadata_matching';
-
-        $this->fields = [
-            'name' => 'CHAR(64) NOT NULL',
-            'key' => 'CHAR(64) NOT NULL',
-            'periodic_number' => 'BIGINT NOT NULL',
-            'include' => 'TINYINT UNSIGNED NOT NULL DEFAULT 1'
-        ];
-        
-        parent::__construct($wpdb);
-
-    }
+    protected $fields = [
+        'name' => 'CHAR(64) NOT NULL',
+        'key' => 'CHAR(64) NOT NULL',
+        'periodic_number' => 'BIGINT NOT NULL',
+        'include' => 'TINYINT UNSIGNED NOT NULL DEFAULT 1'
+    ];
 
     /**
      * Add a new match.
+     * @since 1.9.11
      * 
      * @param string $name
      * Metadata name to display in file.
@@ -36,11 +33,11 @@ class MetadataMatching extends Storage
      * @param string $key
      * Metadata table key. Cannot be empty.
      * 
-     * @return void
+     * @return $this
      * 
      * @throws EPStatistics\Exceptions\MetadataMatchingException
      */
-    public function matchAdd(string $name, string $key) : void
+    public function matchAdd(string $name, string $key) : self
     {
 
         if (empty($name)) throw new MetadataMatchingException(
@@ -78,10 +75,13 @@ class MetadataMatching extends Storage
             MetadataMatchingException::MATCH_INSERT_FAILURE_CODE
         );
 
+        return $this;
+
     }
 
     /**
      * Update an existing match.
+     * @since 1.9.11
      * 
      * @param int $id
      * Match ID. Cannot be lesser than 1.
@@ -99,11 +99,11 @@ class MetadataMatching extends Storage
      * @param int $include
      * May be 0 or 1. Default value is 1.
      * 
-     * @return void
+     * @return $this
      * 
      * @throws EPStatistics\Exceptions\MetadataMatchingException
      */
-    public function matchUpdate(int $id, string $name, string $key, int $periodic_number, int $include) : void
+    public function matchUpdate(int $id, string $name, string $key, int $periodic_number, int $include) : self
     {
 
         if ($id < 1) throw new MetadataMatchingException(
@@ -142,19 +142,22 @@ class MetadataMatching extends Storage
             MetadataMatchingException::MATCH_UPDATE_FAILURE_CODE
         );
 
+        return $this;
+
     }
 
     /**
      * Delete the match.
+     * @since 1.9.11
      * 
      * @param int $id
      * Match ID. Cannot be lesser than 1.
      * 
-     * @return void
+     * @return $this
      * 
      * @throws EPStatistics\Exceptions\MetadataMatchingException
      */
-    public function matchDelete(int $id) : void
+    public function matchDelete(int $id) : self
     {
 
         if ($id < 1) throw new MetadataMatchingException(
@@ -174,10 +177,13 @@ class MetadataMatching extends Storage
                 MetadataMatchingException::MATCH_DELETE_FAILURE_CODE
             );
 
+        return $this;
+
     }
 
     /**
      * Get all existing matches.
+     * @since 1.9.11
      * 
      * @param string $pn_order
      * Periodic numbers order mode, ASC or DESC.
@@ -217,6 +223,7 @@ class MetadataMatching extends Storage
 
     /**
      * Get match by name.
+     * @since 1.9.11
      * 
      * @param string $name
      * The name cannot be empty.
@@ -254,6 +261,7 @@ class MetadataMatching extends Storage
 
     /**
      * Get match by key.
+     * @since 1.9.11
      * 
      * @param string $key
      * The key cannot be empty.
@@ -291,6 +299,7 @@ class MetadataMatching extends Storage
 
     /**
      * Getting all existing keys.
+     * @since 1.9.11
      * 
      * @return array
      * 

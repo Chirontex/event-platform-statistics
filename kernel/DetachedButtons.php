@@ -1,31 +1,28 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics;
 
 use EPStatistics\Exceptions\DetachedButtonsException;
-use wpdb;
 
+/**
+ * Detached buttons storage.
+ * @since 1.9.11
+ */
 class DetachedButtons extends Storage
 {
 
-    public function __construct(wpdb $wpdb)
-    {
-        
-        $this->table = 'epstatistics_detached_buttons';
+    protected $table = 'epstatistics_detached_buttons';
 
-        $this->fields = [
-            'button_id' => 'TEXT NOT NULL',
-            'enable_datetime' => 'DATETIME NOT NULL'
-        ];
-
-        parent::__construct($wpdb);
-
-    }
+    protected $fields = [
+        'button_id' => 'TEXT NOT NULL',
+        'enable_datetime' => 'DATETIME NOT NULL'
+    ];
 
     /**
      * Add detached button enabling datetime.
+     * @since 1.9.11
      * 
      * @param string $button_id
      * Cannot be empty.
@@ -60,6 +57,7 @@ class DetachedButtons extends Storage
 
     /**
      * Update detached button datetime.
+     * @since 1.9.11
      * 
      * @param int $id
      * Entry ID. Cannot be lesser than 1.
@@ -104,6 +102,7 @@ class DetachedButtons extends Storage
 
     /**
      * Select all datetimes.
+     * @since 1.9.11
      * 
      * @param bool $order_by_datetime
      * If true, order datetimes ASC.
@@ -140,6 +139,7 @@ class DetachedButtons extends Storage
 
     /**
      * Select all entries grouped by buttons.
+     * @since 1.9.11
      * 
      * @return array
      * 
@@ -168,6 +168,7 @@ class DetachedButtons extends Storage
 
     /**
      * Select datetimes by button.
+     * @since 1.9.11
      * 
      * @param string $button_id
      * Cannot be empty.
@@ -216,6 +217,7 @@ class DetachedButtons extends Storage
 
     /**
      * Delete entry.
+     * @since 1.9.11
      * 
      * @param int $id
      * Entry ID. Cannot be lesser than 1.
@@ -249,6 +251,7 @@ class DetachedButtons extends Storage
 
     /**
      * Delete all button datetimes.
+     * @since 1.9.11
      * 
      * @param string $button_id
      * Cannot be empty.
@@ -282,6 +285,7 @@ class DetachedButtons extends Storage
 
     /**
      * Delete all datetime of all buttons.
+     * @since 1.9.11
      * 
      * @return bool
      * 
