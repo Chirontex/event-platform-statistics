@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Handlers;
 
@@ -13,14 +13,37 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
+/**
+ * Participants worksheet handler.
+ * @since 1.9.11
+ */
 class Participants extends UsersWorksheetHandler
 {
 
     use Randomizer;
 
+    /**
+     * @var Users $users
+     * Users storage.
+     */
     protected $users;
+
+    /**
+     * @var Visits $visits
+     * Visits storage.
+     */
     protected $visits;
-    protected $nmo_trick = false;
+
+    /**
+     * @var bool $presence_alt_calc
+     * Defines calculating presence by time.
+     */
+    protected $presence_alt_calc = false;
+
+    /**
+     * @var array $attendance_days
+     * Attendance days data.
+     */
     protected $attendance_days = [];
 
     public function __construct(Users $users, Visits $visits)
@@ -34,6 +57,7 @@ class Participants extends UsersWorksheetHandler
 
     /**
      * Add attendance day to the participants worksheet.
+     * @since 1.9.11
      * 
      * @param int $start
      * Start timestamp. Day must be equal to day of end timestamp.
@@ -88,16 +112,17 @@ class Participants extends UsersWorksheetHandler
     }
 
     /**
-     * Define nmo trick status.
+     * Define presence calculation by time.
+     * @since 1.9.11
      * 
      * @param bool $def
      * 
      * @return $this
      */
-    public function defineNmoTrick(bool $def) : self
+    public function presenceAltCalc(bool $def) : self
     {
 
-        $this->nmo_trick = $def;
+        $this->presence_alt_calc = $def;
 
         return $this;
 
@@ -246,7 +271,7 @@ class Participants extends UsersWorksheetHandler
                 $presence = empty($values['presence_times']) ?
                     0 : count($values['presence_times']);
 
-                if ($this->nmo_trick) {
+                if ($this->presence_alt_calc) {
 
                     $presence_suggested = (int)round($attendance_timeint_total/3600);
 

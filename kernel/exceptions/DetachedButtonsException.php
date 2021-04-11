@@ -1,11 +1,14 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Exceptions;
 
 use Exception;
 
+/**
+ * @since 1.9.11
+ */
 class DetachedButtonsException extends Exception
 {
 

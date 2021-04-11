@@ -130,7 +130,7 @@ final class MainDownload extends AdminPage
                         new Visits($this->wpdb)
                     );
 
-                    if (isset($_POST['eps-download-nmo-trick'])) $participants->defineNmoTrick(true);
+                    if (isset($_POST['eps-download-nmo-trick'])) $participants->presenceAltCalc(true);
 
                     if (isset($_POST['eps-download-attendance-days'])) {
 

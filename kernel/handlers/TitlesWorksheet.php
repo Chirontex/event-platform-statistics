@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Handlers;
 
@@ -11,10 +11,23 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
+/**
+ * Titles worksheet handler.
+ * @since 1.9.11
+ */
 class TitlesWorksheet implements WorksheetHandler
 {
 
+    /**
+     * @var Titles $titles
+     * Titles storage.
+     */
     protected $titles;
+
+    /**
+     * @var Visits $visits
+     * Visits storage.
+     */
     protected $visits;
 
     public function __construct(Titles $titles, Visits $visits)
@@ -26,6 +39,10 @@ class TitlesWorksheet implements WorksheetHandler
 
     }
 
+    /**
+     * @param string $url_matching
+     * Url matching with hall ID.
+     */
     public function worksheetGet(Spreadsheet $spreadsheet, string $name, string $url_matching = ''): Worksheet
     {
 

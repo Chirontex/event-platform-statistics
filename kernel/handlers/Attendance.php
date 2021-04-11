@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Handlers;
 
@@ -11,10 +11,23 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
+/**
+ * Attendance handler.
+ * @since 1.9.11
+ */
 class Attendance extends UsersWorksheetHandler
 {
 
+    /**
+     * @var Users $users
+     * Users storage.
+     */
     protected $users;
+
+    /**
+     * @var Visits $visits
+     * Visits storage.
+     */
     protected $visits;
 
     public function __construct(Visits $visits, Users $users)

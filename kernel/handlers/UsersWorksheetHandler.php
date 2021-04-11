@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Handlers;
 
@@ -8,6 +8,12 @@ use EPStatistics\Interfaces\UsersWorksheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
+/**
+ * Worksheet handler abstract class which uses users data.
+ * @since 1.9.11
+ * 
+ * @abstract
+ */
 abstract class UsersWorksheetHandler implements UsersWorksheet
 {
 
@@ -24,6 +30,7 @@ abstract class UsersWorksheetHandler implements UsersWorksheet
 
     /**
      * Get users data.
+     * @since 1.9.11
      * 
      * @return array
      */
@@ -38,6 +45,7 @@ abstract class UsersWorksheetHandler implements UsersWorksheet
 
     /**
      * Calculates a column name by it's periodic number.
+     * @since 1.9.11
      * 
      * @param int $number
      * If $number lesser than 1 or bigger than 650,

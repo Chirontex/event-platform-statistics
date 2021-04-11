@@ -1,14 +1,19 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Traits;
 
+/**
+ * Add random generating methods.
+ * @since 1.9.11
+ */
 trait Randomizer
 {
 
     /**
      * Generage a random string of digits and letters.
+     * @since 1.9.11
      * 
      * @param int $length
      * 
@@ -35,6 +40,7 @@ trait Randomizer
 
     /**
      * Generate a random attendance time.
+     * @since 1.9.11
      * 
      * @param int $max_hour
      * Optional. If $max_hour < 0, it will be equal 0.

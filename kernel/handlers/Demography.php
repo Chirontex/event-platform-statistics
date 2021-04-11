@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Handlers;
 
@@ -10,9 +10,17 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
+/**
+ * Demography handler.
+ * @since 1.9.11
+ */
 class Demography implements WorksheetHandler
 {
 
+    /**
+     * @var Users $users
+     * Users storage.
+     */
     protected $users;
 
     public function __construct(Users $users)

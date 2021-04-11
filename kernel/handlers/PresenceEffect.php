@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Handlers;
 
@@ -14,9 +14,17 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
+/**
+ * Presence effect handler.
+ * @since 1.9.11
+ */
 class PresenceEffect extends UsersWorksheetHandler
 {
 
+    /**
+     * @var PresenceTimes $presence_times
+     * Presence times storage.
+     */
     protected $presence_times;
 
     const WORKSHEET_MODE_RAW = 'raw';
@@ -31,6 +39,7 @@ class PresenceEffect extends UsersWorksheetHandler
 
     /**
      * Implementation of /event-platform-statistics/v1/presence-time/add route.
+     * @since 1.9.11
      * 
      * @return array
      */
@@ -117,6 +126,7 @@ class PresenceEffect extends UsersWorksheetHandler
 
     /**
      * Add raw data to worksheet.
+     * @since 1.9.11
      * 
      * @param PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $worksheet
      * 
@@ -223,6 +233,7 @@ class PresenceEffect extends UsersWorksheetHandler
 
     /**
      * Add data with titles to worksheet.
+     * @since 1.9.11
      * 
      * @param PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $worksheet
      * 

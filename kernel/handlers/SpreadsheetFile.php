@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Platform Statistics
+ * @package Event Platform Statistics
  */
 namespace EPStatistics\Handlers;
 
@@ -9,11 +9,29 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+/**
+ * Spreadsheet handler.
+ * @since 1.9.11
+ */
 class SpreadsheetFile extends Handler
 {
 
+    /**
+     * @var \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet
+     * PhpOffice spreadsheet object.
+     */
     protected $spreadsheet;
+
+    /**
+     * @var int $worksheets_count
+     * Worksheet counter.
+     */
     protected $worksheets_count;
+
+    /**
+     * @var array $users_data
+     * Users data.
+     */
     protected $users_data;
 
     public function __construct(string $path)
@@ -32,8 +50,9 @@ class SpreadsheetFile extends Handler
 
     /**
      * Add worksheet to spreadsheet.
+     * @since 1.9.11
      * 
-     * @param Worksheet $worksheet
+     * @param PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $worksheet
      * 
      * @return int
      * Amount of worksheets in spreadsheet at this moment.
@@ -51,8 +70,9 @@ class SpreadsheetFile extends Handler
 
     /**
      * Return spreadsheet object.
+     * @since 1.9.11
      * 
-     * @return Spreadsheet
+     * @return PhpOffice\PhpSpreadsheet\Spreadsheet
      */
     public function spreadsheetGet() : Spreadsheet
     {
@@ -63,12 +83,13 @@ class SpreadsheetFile extends Handler
 
     /**
      * Save spreadsheet to file.
+     * @since 1.9.11
      * 
-     * @return void
+     * @return $this
      * 
-     * @throws SpreadsheetFileException
+     * @throws EPStatistics\Exceptions\SpreadsheetFileException
      */
-    public function spreadsheetSave() : void
+    public function spreadsheetSave() : self
     {
 
         if (!$this->fileCreate()) throw new SpreadsheetFileException(
@@ -79,24 +100,30 @@ class SpreadsheetFile extends Handler
         $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
         $writer->save($this->pathfile);
 
+        return $this;
+
     }
 
     /**
      * Set users data.
+     * @since 1.9.11
      * 
      * @param array $users_data
      * 
-     * @return void
+     * @return $this
      */
-    public function usersDataSet(array $users_data) : void
+    public function usersDataSet(array $users_data) : self
     {
 
         $this->users_data = $users_data;
+
+        return $this;
 
     }
 
     /**
      * Get users data.
+     * @since 1.9.11
      * 
      * @return array
      */
