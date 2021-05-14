@@ -71,9 +71,34 @@ class PresenceTimes extends Storage
     public function getAll() : array
     {
 
+        $date_start = $_POST['eps-download-date-start'];
+        $date_start .= empty($date_start) ? '' : ' 00:00:00';
+
+        $date_end = $_POST['eps-download-date-end'];
+        $date_end .= empty($date_end) ? '' : ' 23:59:59';
+
+        $where = '';
+
+        if (!empty($date_start) ||
+            !empty($date_end)) {
+
+            $where = " WHERE";
+
+            if (!empty($date_start)) $where .= " t.presence_datetime > '".$date_start."'";
+
+            if (!empty($date_end)) {
+
+                if ($where !== " WHERE") $where .= " AND";
+
+                $where .= " t.presence_datetime < '".$date_end."'";
+
+            }
+
+        }
+
         $select = $this->wpdb->get_results(
             "SELECT *
-                FROM `".$this->wpdb->prefix.$this->table."`",
+                FROM `".$this->wpdb->prefix.$this->table."` AS t".$where,
             ARRAY_A
         );
 

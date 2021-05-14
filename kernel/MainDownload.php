@@ -123,6 +123,12 @@ final class MainDownload extends AdminPage
 
                 $spreadsheet_file = new SpreadsheetFile($this->path.'temp');
 
+                $date_start = $_POST['eps-download-date-start'];
+                $date_start .= empty($date_start) ? '' : ' 00:00:00';
+
+                $date_end = $_POST['eps-download-date-end'];
+                $date_end .= empty($date_end) ? '' : ' 23:59:59';
+
                 if (isset($_POST['eps-download-participants'])) {
 
                     $participants = new Participants(
@@ -185,7 +191,9 @@ final class MainDownload extends AdminPage
                         $attendance->worksheetGet(
                             $spreadsheet_file->spreadsheetGet(),
                             'Посещения',
-                            $spreadsheet_file->usersDataGet()
+                            $spreadsheet_file->usersDataGet(),
+                            $date_start,
+                            $date_end
                         )
                     );
 

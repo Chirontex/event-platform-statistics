@@ -62,18 +62,43 @@ class Visits extends Storage
      * Get all visits.
      * @since 1.9.11
      * 
+     * @param string $date_start
+     * Start date.
+     * 
+     * @param string $date_end
+     * End date.
+     * 
      * @return array
      * 
      * @throws EPStatistics\Exceptions\VisitsException
      */
-    public function getVisits() : array
+    public function getVisits(string $date_start = '', string $date_end = '') : array
     {
 
         $result = [];
 
+        $where = '';
+
+        if (!empty($date_start) ||
+            !empty($date_end)) {
+
+            $where = " WHERE";
+
+            if (!empty($date_start)) $where .= " t.datetime > '".$date_start."'";
+
+            if (!empty($date_end)) {
+
+                if ($where !== " WHERE") $where .= " AND";
+
+                $where .= " t.datetime < '".$date_end."'";
+
+            }
+
+        }
+
         $select = $this->wpdb->get_results(
             "SELECT t.user_id, t.page_url, t.datetime
-                FROM `".$this->wpdb->prefix.$this->table."` AS t",
+                FROM `".$this->wpdb->prefix.$this->table."` AS t".$where,
             ARRAY_A
         );
 

@@ -38,7 +38,7 @@ class Attendance extends UsersWorksheetHandler
 
     }
 
-    public function worksheetGet(Spreadsheet $spreadsheet, string $name, array $users_data = []): Worksheet
+    public function worksheetGet(Spreadsheet $spreadsheet, string $name, array $users_data = [], string $date_start = '', string $date_end = ''): Worksheet
     {
         
         $worksheet = parent::worksheetGet($spreadsheet, $name);
@@ -74,7 +74,7 @@ class Attendance extends UsersWorksheetHandler
         $this->users_data = empty($users_data) ?
             $this->users->getAllData() : $users_data;
 
-        $visits_data = $this->visits->getVisits();
+        $visits_data = $this->visits->getVisits($date_start, $date_end);
 
         if (!empty($visits_data)) {
 
